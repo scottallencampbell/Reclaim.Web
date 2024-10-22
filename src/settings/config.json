@@ -1,0 +1,11 @@
+{
+    "ApiRootUrl": "http://localhost:50000",    
+    "ApiSignalRUrl": "http://localhost:50000", 
+    "AccessTokenTimeout": 600,
+    "AccessTokenMinimumRefreshMargin": 30,
+    "AccessTokenRefreshMarginPercent": 10,
+    "IdleTimeout": 600,
+    "IdlePopupDuration": 15,
+    "GoogleOAuthClientID": "697557080680-s1rg0g7ce1knv0sjq6e2gjvgfcik9lls.apps.googleusercontent.com",
+    "GoogleOAuthCallbackUrl": "https://reclaim.com/oauth/redirect/google"
+}
