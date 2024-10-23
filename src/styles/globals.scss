@@ -1336,12 +1336,12 @@ form.form-error .input-container {
   }
 
   .styled-button {
-    background-color: $secondaryColor;
+    background-color: $primaryColor;
   }
 
   .styled-button:hover {
     background-color: $whiteColor;
-    color: $secondaryColor; 
+    color: $primaryColor; 
     box-shadow: 0 0 10px rgba(255,255,255,.5), 0 0 5px rgba(255,255,255,.5);
   }
 
