@@ -1,22 +1,21 @@
-import { FontAwesomeIcon, FontAwesomeIconProps } from "@fortawesome/react-fontawesome"
-const { library, config } = require('@fortawesome/fontawesome-svg-core');
-import { fas } from "@fortawesome/free-solid-svg-icons"
-import "@fortawesome/fontawesome-svg-core/styles.css"
-
-library.add(fas)
-config.autoAddCss = false
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
+import { library } from '@fortawesome/fontawesome-svg-core'
+library.add(fas, far)
 
 interface IIcon {
   name: any,
   className?: string,
+  style?: string,
   toolTip?: string,
   onClick?: any
 }
 
-const Icon = ({ name, className, toolTip, onClick }: IIcon) => {
+const Icon = ({ name, className = "", style = "", toolTip, onClick }: IIcon) => {
   return (
-    <span className={`icon ${className ?? ""} icon-${name}`}>
-      <FontAwesomeIcon title={toolTip} icon={name} onClick={onClick} />
+    <span className={`icon fa-${className} icon-${name}`}>
+       <FontAwesomeIcon title={toolTip} icon={style === "regular" ? far['fa' + name] : fas['fa' + name]} onClick={onClick} />      
     </span>
   )
 }

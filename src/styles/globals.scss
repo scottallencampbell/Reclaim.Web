@@ -440,8 +440,8 @@ form.form-error .input-container {
   }
 
   .logo img {
-    height: 37px;
-    margin: 8px 0 18px 15px !important;
+    height: 52px;
+    margin: 8px 0 20px 25px !important;
 
     @media (max-width: 900px) {
       height: 27px;      
@@ -455,7 +455,7 @@ form.form-error .input-container {
   }
 
   .position-sticky {
-    padding-top: 18px !important;
+    padding-top: 1px !important;
     background-color: $backgroundColor !important;
   }
 
@@ -499,26 +499,31 @@ form.form-error .input-container {
       }  
     }
     
-    .icon-home {
+    .iconHome {
       top: -1px;
       left: 0px;
     }
 
-    .icon-users {
+    .iconUsers {
       top: 0px;
       left: -1px;
     }
   
-    .icon-building {
+    .iconBuilding {
       top: 0px;
       left: 3px;
     }
   
-    .icon-network-wired {
+    .icon-NetworkWired {
       left: -2px;
       top: 0px;
     }
-  
+
+    .icon-FileText {
+      font-size: 20px;
+      left: 1px;
+    }
+
     span {
       font-size: 16px;   
       position: relative;

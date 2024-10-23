@@ -11,6 +11,7 @@ import CommandBar from "components/CommandBar"
 import { useOutletContext } from "react-router"
 import { exportInvestigators } from "helpers/exporter"
 import { AdministratorContext } from "contexts/AdministratorContext"
+import { postalCodeRegex } from "helpers/constants"
 
 const Investigators = () => {
   const [investigators, setInvestigators] = useState<Investigator[]>();
@@ -34,13 +35,19 @@ const Investigators = () => {
         accessor: "emailAddress"
       },
       {
-        label: "Telephone",
-        accessor: "telephone"
+        label: "Address",
+        accessor: "address",
+        type: "addressAddress2"
+      }, 
+      {
+        label: "City",
+        accessor: "city",
+        type: "cityStatePostalCode"
       },
       {
-        label: "Unique ID",
-        accessor: "uniqueID"
-      },       
+        label: "Telephone",
+        accessor: "telephone"
+      },   
       {
         label: "Last active",
         accessor: "lastActiveTimestamp",
@@ -70,6 +77,42 @@ const Investigators = () => {
         label: "Email address",
         accessor: "emailAddress",
         type: "text",
+        required: true
+      },
+      {
+        label: "Address",
+        accessor: "address",
+        type: "text",
+        group: "addressBlock",
+        required: true
+      },
+      {
+        label: "Apartment, suite, etc.",
+        accessor: "address2",
+        type: "text"
+      },
+      {
+        label: "City",
+        accessor: "city",
+        type: "text",
+        group: "addressBlock",
+        required: true
+      },
+      {
+        label: "State",
+        accessor: "state",
+        type: "state",
+        group: "addressBlock",
+        columnSpec: "2",
+        required: true
+      },
+      {
+        label: "Postal code",
+        accessor: "postalCode",
+        type: "text",
+        regex: postalCodeRegex,
+        group: "addressBlock",
+        columnSpec: "2-last",
         required: true
       },
       {
