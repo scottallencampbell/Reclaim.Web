@@ -1,0 +1,1 @@
+nswag openapi2tsclient /input:http://localhost:50000/swagger/v1/swagger.json /output:src/api/schema.ts
