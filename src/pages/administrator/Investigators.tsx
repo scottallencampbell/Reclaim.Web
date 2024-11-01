@@ -26,6 +26,11 @@ const Investigators = () => {
   const columns = useMemo(
     () => [     
       {
+        label: "",
+        accessor: "avatarUrl",
+        type: "avatar"
+      },
+      {
         label: "Name",
         accessor: "lastName",
         type: "fullName"
@@ -58,7 +63,7 @@ const Investigators = () => {
   );
 
   const fields = useMemo(
-    () => [      
+    () => [       
       {
         label: "First name",
         accessor: "firstName",
@@ -139,24 +144,6 @@ const Investigators = () => {
     // handleSearchTermsDebounce(""); 
   }
 
-  /*
-  const handleSearchTermsDebounce = async (inputValue: string) => {
-    await search(inputValue)
-      .then((result: { data: SetStateAction<Customer[] | undefined> }) => {
-        setCustomers(result.data);
-      })
-      .catch((error: any) => {
-        console.log(JSON.stringify(error));
-      });
-  }
-  */
-
-  /*
-  const handleSearchTermsChange = (terms: string) => {
-    searchTermsDebouncer(terms);
-  }
-  */
-
   const handleRowClick = (clickedInvestigator: Investigator) => {
     setEditInvestigator({ ...clickedInvestigator });
     setIsPropertyBarVisible(true);
@@ -177,19 +164,10 @@ const Investigators = () => {
     }    
   }
 
-
   const handleAddInvestigator = () => {
     setEditInvestigator(Object);
     setIsPropertyBarVisible(true);
   }
-
-  /*
-  const searchTermsDebouncer = useCallback(debounce(handleSearchTermsDebounce, 250), []);
-
-  useEffect(() => {
-    handleSearchTermsDebounce("");
-  }, []);
-  */
 
   useEffect(() => {    
     const asyncGetAllInvestigators = async () => {
@@ -220,8 +198,9 @@ const Investigators = () => {
               isPropertyBarVisible={isPropertyBarVisible}
               onSearchTermsChange={null}
               // onSearchTermsChange={handleSearchTermsChange}
-              onRowClick={handleRowClick}>
-              <Icon toolTip="Add investigator" className="context-icon" name="user-plus" onClick={handleAddInvestigator} />
+              onRowClick={handleRowClick}
+              initialSortColumn={"lastName"}>
+              <Icon toolTip="Add investigator" className="context-icon" name="UserPlus" onClick={handleAddInvestigator} />
               </Table>
           </div>
           <PropertyBar entityID={editInvestigator.uniqueID?.toString()} isVisible={isPropertyBarVisible} onSave={handleInvestigatorUpdate} onCancel={handleCancel}>

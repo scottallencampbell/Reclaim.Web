@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Icon from "./Icon";
 import moment from "moment";
 import React from "react";
+import Avatar from "./Avatar";
+import configSettings from "settings/config.json";
 
 interface ITable {
   children: any,
@@ -193,7 +195,7 @@ const Table = ({ children, id, type, keyField, columns, sourceData, isPropertyBa
           <div className="table-options">
             {children}
             <input type="text" className="search-terms" value={searchTerms} onChange={(e) => handleSearchTermsChange(e.target.value)}></input>
-            <Icon name="search" className="search-terms-icon"></Icon>
+            <Icon name="Search" className="search-terms-icon"></Icon>
           </div>
           <table id={id}>
             <thead>
@@ -201,17 +203,17 @@ const Table = ({ children, id, type, keyField, columns, sourceData, isPropertyBa
                 {columns.map(({ label, accessor, sortable, type }) => {
                   const cl = sortable !== false
                     ? sortColumn === accessor && sortOrder === "asc"
-                      ? "up"
+                      ? "Up"
                       : sortColumn === accessor && sortOrder === "desc"
-                        ? "down"
-                        : "default"
+                        ? "Down"
+                        : "Default"
                     : "";
                   return (
-                    <th key={accessor} className={cl} onClick={() => sort(accessor, sortOrder!, type)}>
+                    <th key={accessor} className={`${cl} ${type}-header`} onClick={() => sort(accessor, sortOrder!, type)}>
                       <div>
                         <span>{label}</span>
-                        {sortColumn === accessor ?
-                          <Icon name={`caret-${cl}`} className="sort-icon"></Icon>
+                        {sortColumn === accessor && cl !== "Default" ?
+                          <Icon name={`Caret${cl}`} className="sort-icon"></Icon>
                           :
                           <></>
                         }
@@ -229,9 +231,13 @@ const Table = ({ children, id, type, keyField, columns, sourceData, isPropertyBa
                       let cell = "-";
                       let tag = undefined;
                       const value = item[accessor];
-
+                      
                       if (item[accessor]) {
                         switch (type) {
+                          case "avatar":                          
+                            tag = <Avatar url={`${configSettings.ApiRootUrl}/content${value}`} initials="" />;
+                            break;
+
                           case "cityStatePostalCode":
                             if (value != null && value != "")
                               cell = `${item["city"]}, ${item["state"]} ${item["postalCode"]}`;                   
@@ -283,10 +289,19 @@ const Table = ({ children, id, type, keyField, columns, sourceData, isPropertyBa
                         }
                       } else {
                         switch (type) {
+                          case "avatar":
+                            let initials = "??";
+                            if (Object.prototype.hasOwnProperty.call(item, "firstName") && Object.prototype.hasOwnProperty.call(item, "lastName")) {
+                              initials = `${item["firstName"].charAt(0)}${item["lastName"].charAt(0)}`.toUpperCase();
+                            } else if (Object.prototype.hasOwnProperty.call(item, "emailAddress")) {
+                              initials = item["emailAddress"].slice(0,2).toUpperCase();
+                            }
+                            tag = <Avatar initials={initials} />;
+
                           case "thumbnail2":
                             if (item["extension"] != null && item["extension"] != "")
                               tag = <div style={{ backgroundImage: `url(/filetypes/${item["extension"].split('.').pop()}.png)` }} className="thumbnail-icon"></div>;
-                            break;
+                            break;                        
                         }
                       }
 

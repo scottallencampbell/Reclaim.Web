@@ -11,7 +11,7 @@ import SignIn from "./public/SignIn";
 import ThankYou from "./public/ThankYou";
 
 import AdministratorDashboard from "./administrator/Dashboard";
-import AdministratorInvestigators from "./administrator/Investigator";
+import AdministratorInvestigators from "./administrator/Investigators";
 import AdministratorCustomers from "./administrator/Customers";
 import AdministratorSignIns from "./administrator/Signins";
 import AdministratorJobs from "./administrator/Jobs";

@@ -16,6 +16,11 @@ const SignIns = () => {
   const columns = useMemo(
     () => [      
       {
+        label: "",
+        accessor: "avatarUrl",
+        type: "avatar"
+      },
+      {
         label: "Email address",
         accessor: "emailAddress"
       },
@@ -65,7 +70,8 @@ const SignIns = () => {
               sourceData={accounts}
               isPropertyBarVisible={false}
               onSearchTermsChange={null}
-              onRowClick={null}  >         
+              onRowClick={null}
+              initialSortColumn={"emailAddress"}  >         
             </Table>
         </div>
       </div>

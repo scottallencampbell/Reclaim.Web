@@ -53,7 +53,7 @@ const Context = createContext({} as IAdministratorContext);
 
 export function AdministratorProvider({ children }: { children: any }) {  
   const getAuthenticatedAccounts = async (): Promise<AxiosResponse<Account[], any>> => {
-    return await axiosRequest.get("/account/authenticated");
+    return await axiosRequest.get("/administrator/account/authenticated");
   }
 
   return (

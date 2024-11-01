@@ -64,7 +64,7 @@ const PropertyBar = ({ children, entityID, isVisible, onSave, onCancel }: IPrope
     <nav id="property-bar" className={`property-bar${isVisible ? "" : " collapsed"}`}>
       <form onSubmit={handleSubmit}>
         <div className="collapse-button" onClick={onCancel}>
-          <Icon name="angle-double-right"></Icon>
+          <Icon name="AngleDoubleRight"></Icon>
         </div>
         {children}
         <div className="row buttons">

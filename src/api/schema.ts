@@ -389,7 +389,7 @@ export class AccountClient {
      * @return Account list
      */
     authenticated(): Promise<Account[]> {
-        let url_ = this.baseUrl + "/account/authenticated";
+        let url_ = this.baseUrl + "/administrator/account/authenticated";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {

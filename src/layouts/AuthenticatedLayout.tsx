@@ -117,10 +117,10 @@ export const AuthenticatedLayout = ({header, children}: IAuthenticatedLayout) =>
       <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;800;900&display=swap" rel="preload prefetch stylesheet" media="print" />
     </HelmetProvider>
     <IdlePopup isOpen={isIdlePopupOpen} onClose={onIdlePopupClose}></IdlePopup>
-    <div className={`auth-container ${isAuthenticated ? "" : "not-authenticated"}`}>
-      <div className="auth-timeout-bar">
+    <div className="auth-timeout-bar">
         <div style={{width: `${jwtAccessTokenLifeRemaining}%`}}></div>
-      </div>            
+    </div>            
+    <div className={`auth-container ${isAuthenticated ? "" : "not-authenticated"}`}>
       <div className="outer">         
         <NavBar role={role} jwtAccessTokenLifeRemaining={jwtAccessTokenLifeRemaining} idleLifeRemaining={idleLifeRemaining}></NavBar>           
         <Outlet context={logout} />  

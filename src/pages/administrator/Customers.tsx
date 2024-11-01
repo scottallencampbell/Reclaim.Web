@@ -241,7 +241,7 @@ const Customers = () => {
               onSearchTermsChange={null}
               // onSearchTermsChange={handleSearchTermsChange}
               onRowClick={handleRowClick}>
-              <Icon toolTip="Add customer" className="context-icon" name="user-plus" onClick={handleAddCustomer} />
+              <Icon toolTip="Add customer" className="context-icon" name="UserPlus" onClick={handleAddCustomer} />
               </Table>
           </div>
           <PropertyBar entityID={editCustomer.uniqueID?.toString()} isVisible={isPropertyBarVisible} onSave={handleCustomerUpdate} onCancel={handleCancel}>

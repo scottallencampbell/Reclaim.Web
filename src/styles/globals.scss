@@ -377,7 +377,7 @@ form.form-error .input-container {
     }
 
     .search-bar {
-      width: calc(100% - 124px);
+      width: calc(100% - 144px);
       border: none;
       outline: none;
     }
@@ -395,9 +395,10 @@ form.form-error .input-container {
 .auth-timeout-bar {
   width: 100%;
   height: 2px;
-  position: absolute;
+  position: fixed;
   top: 0;
-  z-index: 1000;
+  background-color: $backgroundColor;
+  z-index: 1000000;
   
   div {
     width: 100%;
@@ -794,6 +795,7 @@ form.form-error .input-container {
   margin-left: 10px;
   position: relative;
   top: 1px;  
+  
 }
 
 .filepond--credits {
@@ -858,11 +860,15 @@ form.form-error .input-container {
       }
 
       span.icon {        
-        padding: 5px 0 5px 0;
+        padding: 5px 0 5px 5px;
       }
 
       div:hover  {
         color: $primaryColor;
+      }
+
+      &.avatar-header {
+        width: 52px;
       }
     }
     
@@ -962,6 +968,7 @@ form.form-error .input-container {
       height: calc(100% - 60px);
       padding: 12px 30px 20px 32px;
       box-shadow: 0 0 12px rgba(0,0,0,0.2);
+      min-height: calc(100vh - 110px);
     };
 
     .header {
@@ -988,7 +995,6 @@ form.form-error .input-container {
 
   .outer {
     display: flex;
-    height: 100%;
   }
   
 }
@@ -1403,5 +1409,30 @@ form.form-error .input-container {
     background-color: $primaryColor;
     height: 4px;
     display: inline-block;
+  }
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  top: 1px;
+
+  .initials {
+    width: 100%;
+    height: 100%;
+    border-radius: 40px;
+    background-color: $primaryColor;
+    color: $whiteColor;
+    text-align: center;
+    padding-top: 6px;
+    font-size: 18px;
+    font-weight: semibold;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 41px;
   }
 }
