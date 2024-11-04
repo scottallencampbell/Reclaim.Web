@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react"
 import { AxiosResponse } from "axios";
 import jwt from "jwt-decode"
 import { ErrorCode } from "helpers/errorcodes"
-import { Investigator } from "@/models/Investigator";
+import { Investigator } from "api/schema";
 import { axiosRequest } from "api/api";
 
 interface IInvestigatorContext {

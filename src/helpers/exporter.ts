@@ -1,9 +1,6 @@
-import { Customer } from "models/Customer"
-import { Account } from "models/Account"
-import { Job } from "models/Job"
 import moment from "moment";
 import * as Excel from "exceljs";
-import { Investigator } from "@/models/Investigator";
+import { Account, Customer, Investigator, Job } from "api/schema";
 
 const exportFile = async (name: string, data: any) => {     
   const wb = new Excel.Workbook();
@@ -89,9 +86,8 @@ export async function exportCustomers (customers: Customer[]) {
       "City": o.city,
       "State": o.state,
       "Postal code": o.postalCode,
-      "Telephone": o.telephone,
-      "Last active": o.lastActiveTimestamp == null ? null : moment(o.lastActiveTimestamp).format("MM/DD/YYYY hh:mmA")
-     }});
+      "Telephone": o.telephone
+    }});
 
      await exportFile("Customers", data);
 }
@@ -101,8 +97,7 @@ export async function exportInvestigators (investigators: Investigator[]) {
     "Last name": o.lastName,
     "First name": o.firstName,
     "Email address": o.emailAddress,
-    "Telephone": o.telephone,
-    "Last active": o.lastActiveTimestamp == null ? null : moment(o.lastActiveTimestamp).format("MM/DD/YYYY hh:mmA")
+    "Telephone": o.telephone
    }});
 
    await exportFile("Customers", data);

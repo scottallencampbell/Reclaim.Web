@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import Table from "components/Table"
-import { Job } from "models/Job"
+import { Job, JobStatus } from "api/schema";
 import { JobContext } from "contexts/JobContext"
 import * as signalR from "@microsoft/signalr";
 import configSettings from "settings/config.json";
@@ -69,17 +69,17 @@ const Jobs = () => {
   });
 
   hubConnection.on("SetJobStatus", (id: number, status: string, nextEvent: string) => {    
-    var job = jobs?.find(x => x.id == id);
+    const job = jobs?.find(x => x.id === id);
 
-    if (job !== undefined) {  
+    if (job) {  
       nextEvent += "Z"; // booooo, can't add custom datetime formatter to signalr init on the backend :("    
       console.log(`Updating jobStatus for ID ${id} to ${status} and nextEvent to ${nextEvent}`);
       
       setTimeout(() => {
-        job!.status = status;
-        job!.nextEvent = nextEvent;
+        job.status = status as JobStatus;
+        job.nextEvent = new Date(nextEvent);
         setJobs([...jobs!]);
-      }, status == "Waiting" ? 2000 : 0);
+      }, status === "Waiting" ? 2000 : 0);
     } 
   });
 
@@ -111,8 +111,8 @@ const Jobs = () => {
               sourceData={jobs}
               isPropertyBarVisible={false}
               onRowClick={handleRowClick}
-              onSearchTermsChange={null}>            
-              </Table>
+              onSearchTermsChange={null} >
+            </Table>
           </div>      
         </div>
       </main>

@@ -80,7 +80,7 @@ const SignIn = () => {
   }
 
   const signIn = async(authFunction: () => Promise<void>) => {   
-         
+    console.log('here');
     try {    
       await authFunction();
      

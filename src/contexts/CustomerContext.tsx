@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react"
 import { AxiosResponse } from "axios";
 import jwt from "jwt-decode"
 import { ErrorCode } from "helpers/errorcodes"
-import { Customer } from "models/Customer";
+import { Customer } from "api/schema";
 import { axiosRequest } from "api/api";
 
 interface ICustomerContext {

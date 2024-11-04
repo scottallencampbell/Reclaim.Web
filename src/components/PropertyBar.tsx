@@ -25,10 +25,10 @@ const PropertyBar = ({ children, entityID, isVisible, onSave, onCancel }: IPrope
           return true;
       }).catch((error: any) => { 
         if (error.response)
+        {
           setErrorMessage(error.response?.data?.message); 
-        else if (error == ErrorCode.CustomerAddressBlockIncomplete) {
-          setErrorMessage("Please complete all fields in the address block, or leave the fields blank.");             
         }
+
         return false;
       });
 

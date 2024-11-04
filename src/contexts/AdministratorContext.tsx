@@ -1,9 +1,7 @@
 import { createContext, useContext, useState } from "react"
 import { AxiosResponse } from "axios";
 import { axiosRequest } from "api/api";
-import { Account } from "models/Account";
-import { Customer } from "models/Customer";
-import { Investigator } from "models/Investigator";
+import { Account, Customer, Investigator } from "api/schema";
 
 interface IAdministratorContext {
     getAuthenticatedAccounts: () => Promise<AxiosResponse<Account[], any>>,

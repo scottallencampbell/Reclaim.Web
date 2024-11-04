@@ -3,7 +3,7 @@ import Table from "components/Table"
 import { debounce } from "lodash"
 import PropertyBar from "components/PropertyBar"
 import TextInput from "components/TextInput"
-import { Investigator } from "models/Investigator"
+import { Investigator } from "api/schema";
 import { ErrorCode } from "helpers/errorcodes"
 import moment from "moment"
 import Icon from "components/Icon"
@@ -15,7 +15,7 @@ import { postalCodeRegex } from "helpers/constants"
 
 const Investigators = () => {
   const [investigators, setInvestigators] = useState<Investigator[]>();
-  const [editInvestigator, setEditInvestigator] = useState<Investigator>(Object);
+  const [editInvestigator, setEditInvestigator] = useState<Investigator>({} as Investigator);
   const [isPropertyBarVisible, setIsPropertyBarVisible] = useState(false);
   const [groupError, setGroupError] = useState("");
 
@@ -88,7 +88,6 @@ const Investigators = () => {
         label: "Address",
         accessor: "address",
         type: "text",
-        group: "addressBlock",
         required: true
       },
       {
@@ -100,14 +99,12 @@ const Investigators = () => {
         label: "City",
         accessor: "city",
         type: "text",
-        group: "addressBlock",
         required: true
       },
       {
         label: "State",
         accessor: "state",
         type: "state",
-        group: "addressBlock",
         columnSpec: "2",
         required: true
       },
@@ -116,7 +113,6 @@ const Investigators = () => {
         accessor: "postalCode",
         type: "text",
         regex: postalCodeRegex,
-        group: "addressBlock",
         columnSpec: "2-last",
         required: true
       },
@@ -132,7 +128,7 @@ const Investigators = () => {
 
   const handleCancel = () => {
     setIsPropertyBarVisible(false);
-    setTimeout(() => { setEditInvestigator(new Investigator()); }, 500)
+    setTimeout(() => { setEditInvestigator({} as Investigator); }, 500)
   }
 
   const handleInvestigatorUpdate = async () => {
@@ -145,7 +141,7 @@ const Investigators = () => {
   }
 
   const handleRowClick = (clickedInvestigator: Investigator) => {
-    setEditInvestigator({ ...clickedInvestigator });
+    setEditInvestigator(clickedInvestigator);
     setIsPropertyBarVisible(true);
   }
 
@@ -165,7 +161,7 @@ const Investigators = () => {
   }
 
   const handleAddInvestigator = () => {
-    setEditInvestigator(Object);
+    setEditInvestigator({} as Investigator);
     setIsPropertyBarVisible(true);
   }
 
@@ -203,7 +199,7 @@ const Investigators = () => {
               <Icon toolTip="Add investigator" className="context-icon" name="UserPlus" onClick={handleAddInvestigator} />
               </Table>
           </div>
-          <PropertyBar entityID={editInvestigator.uniqueID?.toString()} isVisible={isPropertyBarVisible} onSave={handleInvestigatorUpdate} onCancel={handleCancel}>
+          <PropertyBar entityID={editInvestigator.uniqueID ?? ""} isVisible={isPropertyBarVisible} onSave={handleInvestigatorUpdate} onCancel={handleCancel}>
             <>                  
               <div className="caption">{editInvestigator.uniqueID == undefined ? "New investigator" : "Edit investigator"}</div>
               {fields.map((o, i) => {          

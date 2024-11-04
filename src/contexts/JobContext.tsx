@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react"
 import { AxiosResponse } from "axios";
 import { axiosRequest } from "api/api";
-import { Job } from "models/Job"
+import { Job } from "api/schema";
 
 interface IJobContext {
   getAll: () => Promise<AxiosResponse<Job[], any>>

@@ -3,7 +3,7 @@ import Table from "components/Table"
 import { debounce } from "lodash"
 import PropertyBar from "components/PropertyBar"
 import TextInput from "components/TextInput"
-import { Customer } from "models/Customer"
+import { Customer } from "api/schema";
 import { ErrorCode } from "helpers/errorcodes"
 import { postalCodeRegex } from "helpers/constants"
 import moment from "moment"
@@ -15,7 +15,7 @@ import { AdministratorContext } from "contexts/AdministratorContext"
 
 const Customers = () => {
   const [customers, setCustomers] = useState<Customer[]>();
-  const [editCustomer, setEditCustomer] = useState<Customer>(Object);
+  const [editCustomer, setEditCustomer] = useState<Customer>(new Customer());
   const [isPropertyBarVisible, setIsPropertyBarVisible] = useState(false);
   const [groupError, setGroupError] = useState("");
 
@@ -84,7 +84,6 @@ const Customers = () => {
         label: "Address",
         accessor: "address",
         type: "text",
-        group: "addressBlock",
         required: true
       },
       {
@@ -96,14 +95,12 @@ const Customers = () => {
         label: "City",
         accessor: "city",
         type: "text",
-        group: "addressBlock",
         required: true
       },
       {
         label: "State",
         accessor: "state",
         type: "state",
-        group: "addressBlock",
         columnSpec: "2",
         required: true
       },
@@ -112,7 +109,6 @@ const Customers = () => {
         accessor: "postalCode",
         type: "text",
         regex: postalCodeRegex,
-        group: "addressBlock",
         columnSpec: "2-last",
         required: true
       },
@@ -150,7 +146,7 @@ const Customers = () => {
   */
 
   const handleRowClick = (clickedCustomer: Customer) => {
-    setEditCustomer({ ...clickedCustomer });
+    setEditCustomer(Object.assign(new Customer(), clickedCustomer));
     setIsPropertyBarVisible(true);
   }
 
@@ -169,34 +165,13 @@ const Customers = () => {
     }    
   }
 
-  const validateCustomerAddressBlock = (): boolean => {
-    let completedAddressFields
-      = (editCustomer.address?.length > 0 ? 1 : 0)
-      + (editCustomer.city?.length > 0 ? 1 : 0)
-      + (editCustomer.state?.trim()?.length > 0 ? 1 : 0)
-      + (editCustomer.postalCode?.length > 0 ? 1 : 0);
-
-    if (completedAddressFields != 0 && completedAddressFields != 4)
-      return false;
-
-    if (((editCustomer.address?.length ?? 0) == 0) && ((editCustomer.address2?.length ?? 0) > 0))
-      return false;
-
-    return true;
-  }
-
   const handleAddCustomer = () => {
-    setEditCustomer(Object);
+    setEditCustomer(new Customer());
     setIsPropertyBarVisible(true);
   }
 
   const handleCustomerUpdate = async () => {
     setGroupError("");
-
-    if (!validateCustomerAddressBlock()) {
-      setGroupError("addressBlock");
-      throw (ErrorCode.CustomerAddressBlockIncomplete);
-    }
 
     await updateCustomer(editCustomer);
     var customers = await getAllCustomers();
@@ -244,7 +219,7 @@ const Customers = () => {
               <Icon toolTip="Add customer" className="context-icon" name="UserPlus" onClick={handleAddCustomer} />
               </Table>
           </div>
-          <PropertyBar entityID={editCustomer.uniqueID?.toString()} isVisible={isPropertyBarVisible} onSave={handleCustomerUpdate} onCancel={handleCancel}>
+          <PropertyBar entityID={editCustomer.uniqueID ?? ""} isVisible={isPropertyBarVisible} onSave={handleCustomerUpdate} onCancel={handleCancel}>
             <>                  
               <div className="caption">{editCustomer.uniqueID == undefined ? "New customer" : "Edit customer"}</div>
               {fields.map((o, i) => {          
@@ -256,8 +231,6 @@ const Customers = () => {
                   name={o.accessor}
                   value={(editCustomer as any)[o.accessor]}
                   required={o.required ?? false}
-                  group={o.group}
-                  groupError={groupError}
                   regex={o.regex}
                   columnSpec={o.columnSpec}
                   onChange={(value: string) => updateCustomerProperty(o.accessor, value, o.type)} />

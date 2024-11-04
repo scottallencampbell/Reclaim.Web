@@ -135,7 +135,7 @@ export function AuthenticationProvider({ children }: { children: any }) {
     var identity = new Identity(emailAddresses[0], role, null, validUntil);
 
     Cookies.set(identityCookieName, JSON.stringify(identity), params);
-    
+    console.log(identity);
     restartJwtTimers(identity);
   }
 

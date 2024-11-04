@@ -145,91 +145,6 @@ export class AccountClient {
     }
 
     /**
-     * Retrieve a specific account by unique id
-     * @param uniqueID The account's public unique ID
-     * @return Account retrieved
-     */
-    get(uniqueID: string): Promise<Account> {
-        let url_ = this.baseUrl + "/account/{uniqueID}";
-        if (uniqueID === undefined || uniqueID === null)
-            throw new Error("The parameter 'uniqueID' must be defined.");
-        url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGet(_response);
-        });
-    }
-
-    protected processGet(response: Response): Promise<Account> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Account.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Account>(null as any);
-    }
-
-    /**
-     * Retrieve a specific account by email address
-     * @param emailAddress (optional) The account's email address
-     * @return Account retrieved
-     */
-    getByEmailAddress(emailAddress: string | undefined): Promise<Account> {
-        let url_ = this.baseUrl + "/account?";
-        if (emailAddress === null)
-            throw new Error("The parameter 'emailAddress' cannot be null.");
-        else if (emailAddress !== undefined)
-            url_ += "emailAddress=" + encodeURIComponent("" + emailAddress) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processGetByEmailAddress(_response);
-        });
-    }
-
-    protected processGetByEmailAddress(response: Response): Promise<Account> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Account.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Account>(null as any);
-    }
-
-    /**
      * Retrieve the account associated with the current JWT access token
      * @return Account retrieved
      */
@@ -383,13 +298,23 @@ export class AccountClient {
         }
         return Promise.resolve<void>(null as any);
     }
+}
+
+export class AdministratorClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl ?? "http://localhost:50000";
+    }
 
     /**
-     * View a list of currently logged-in accounts
-     * @return Account list
+     * @return Array of Claim DTOs
      */
-    authenticated(): Promise<Account[]> {
-        let url_ = this.baseUrl + "/administrator/account/authenticated";
+    getClaims(): Promise<Claim[]> {
+        let url_ = this.baseUrl + "/administrator/claim/all";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -400,11 +325,11 @@ export class AccountClient {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAuthenticated(_response);
+            return this.processGetClaims(_response);
         });
     }
 
-    protected processAuthenticated(response: Response): Promise<Account[]> {
+    protected processGetClaims(response: Response): Promise<Claim[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -414,7 +339,7 @@ export class AccountClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(Account.fromJS(item));
+                    result200!.push(Claim.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -426,18 +351,54 @@ export class AccountClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<Account[]>(null as any);
+        return Promise.resolve<Claim[]>(null as any);
     }
-}
 
-export class AdministratorClient {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    /**
+     * @return Array of Claim DTOs
+     */
+    getClaimsByCustomer(customerUniqueID: string): Promise<Claim[]> {
+        let url_ = this.baseUrl + "/administrator/customer/{customerUniqueID}/claim/all";
+        if (customerUniqueID === undefined || customerUniqueID === null)
+            throw new Error("The parameter 'customerUniqueID' must be defined.");
+        url_ = url_.replace("{customerUniqueID}", encodeURIComponent("" + customerUniqueID));
+        url_ = url_.replace(/[?&]$/, "");
 
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        this.http = http ? http : window as any;
-        this.baseUrl = baseUrl ?? "http://localhost:50000";
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetClaimsByCustomer(_response);
+        });
+    }
+
+    protected processGetClaimsByCustomer(response: Response): Promise<Claim[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Claim.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Claim[]>(null as any);
     }
 
     /**
@@ -783,6 +744,136 @@ export class AdministratorClient {
         }
         return Promise.resolve<Investigator>(null as any);
     }
+
+    /**
+     * Retrieve a specific account by unique id
+     * @param uniqueID The account's public unique ID
+     * @return Account retrieved
+     */
+    get(uniqueID: string): Promise<Account> {
+        let url_ = this.baseUrl + "/administrator/account/{uniqueID}";
+        if (uniqueID === undefined || uniqueID === null)
+            throw new Error("The parameter 'uniqueID' must be defined.");
+        url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGet(_response);
+        });
+    }
+
+    protected processGet(response: Response): Promise<Account> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Account.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Account>(null as any);
+    }
+
+    /**
+     * Retrieve a specific account by email address
+     * @param emailAddress (optional) The account's email address
+     * @return Account retrieved
+     */
+    getByEmailAddress(emailAddress: string | undefined): Promise<Account> {
+        let url_ = this.baseUrl + "/administrator/account?";
+        if (emailAddress === null)
+            throw new Error("The parameter 'emailAddress' cannot be null.");
+        else if (emailAddress !== undefined)
+            url_ += "emailAddress=" + encodeURIComponent("" + emailAddress) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetByEmailAddress(_response);
+        });
+    }
+
+    protected processGetByEmailAddress(response: Response): Promise<Account> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Account.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Account>(null as any);
+    }
+
+    /**
+     * View a list of currently logged-in accounts
+     * @return Account list
+     */
+    authenticated(): Promise<Account[]> {
+        let url_ = this.baseUrl + "/administrator/account/authenticated";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAuthenticated(_response);
+        });
+    }
+
+    protected processAuthenticated(response: Response): Promise<Account[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Account.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Account[]>(null as any);
+    }
 }
 
 export class ContentClient {
@@ -1075,11 +1166,11 @@ export interface IBase {
 }
 
 export class AuthenticationToken extends Base implements IAuthenticationToken {
-    accessToken?: string;
-    refreshToken?: string;
-    validUntil?: Date;
-    emailAddress?: string;
-    role?: Role;
+    accessToken!: string;
+    refreshToken!: string;
+    validUntil!: Date;
+    emailAddress!: string;
+    role!: Role;
 
     constructor(data?: IAuthenticationToken) {
         super(data);
@@ -1116,11 +1207,11 @@ export class AuthenticationToken extends Base implements IAuthenticationToken {
 }
 
 export interface IAuthenticationToken extends IBase {
-    accessToken?: string;
-    refreshToken?: string;
-    validUntil?: Date;
-    emailAddress?: string;
-    role?: Role;
+    accessToken: string;
+    refreshToken: string;
+    validUntil: Date;
+    emailAddress: string;
+    role: Role;
 }
 
 export enum Role {
@@ -1242,10 +1333,11 @@ export interface IGoogleAccountAuthentication extends IBase {
 }
 
 export class Account extends Base implements IAccount {
-    uniqueID?: string;
-    role?: Role;
-    identityProvider?: IdentityProvider;
-    emailAddress?: string;
+    uniqueID!: string;
+    role!: Role;
+    identityProvider!: IdentityProvider;
+    emailAddress!: string;
+    avatarUrl?: string | undefined;
     authenticatedTimestamp?: Date | undefined;
     sessionAuthenticatedTimestamp?: Date | undefined;
     lastActiveTimestamp?: Date | undefined;
@@ -1262,6 +1354,7 @@ export class Account extends Base implements IAccount {
             this.role = _data["role"];
             this.identityProvider = _data["identityProvider"];
             this.emailAddress = _data["emailAddress"];
+            this.avatarUrl = _data["avatarUrl"];
             this.authenticatedTimestamp = _data["authenticatedTimestamp"] ? new Date(_data["authenticatedTimestamp"].toString()) : <any>undefined;
             this.sessionAuthenticatedTimestamp = _data["sessionAuthenticatedTimestamp"] ? new Date(_data["sessionAuthenticatedTimestamp"].toString()) : <any>undefined;
             this.lastActiveTimestamp = _data["lastActiveTimestamp"] ? new Date(_data["lastActiveTimestamp"].toString()) : <any>undefined;
@@ -1282,6 +1375,7 @@ export class Account extends Base implements IAccount {
         data["role"] = this.role;
         data["identityProvider"] = this.identityProvider;
         data["emailAddress"] = this.emailAddress;
+        data["avatarUrl"] = this.avatarUrl;
         data["authenticatedTimestamp"] = this.authenticatedTimestamp ? this.authenticatedTimestamp.toISOString() : <any>undefined;
         data["sessionAuthenticatedTimestamp"] = this.sessionAuthenticatedTimestamp ? this.sessionAuthenticatedTimestamp.toISOString() : <any>undefined;
         data["lastActiveTimestamp"] = this.lastActiveTimestamp ? this.lastActiveTimestamp.toISOString() : <any>undefined;
@@ -1292,10 +1386,11 @@ export class Account extends Base implements IAccount {
 }
 
 export interface IAccount extends IBase {
-    uniqueID?: string;
-    role?: Role;
-    identityProvider?: IdentityProvider;
-    emailAddress?: string;
+    uniqueID: string;
+    role: Role;
+    identityProvider: IdentityProvider;
+    emailAddress: string;
+    avatarUrl?: string | undefined;
     authenticatedTimestamp?: Date | undefined;
     sessionAuthenticatedTimestamp?: Date | undefined;
     lastActiveTimestamp?: Date | undefined;
@@ -1421,17 +1516,387 @@ export interface IPasswordReset extends IBase {
     token?: string;
 }
 
-export class Customer implements ICustomer {
-    uniqueID?: string;
-    name?: string;
-    code?: string;
-    address?: string;
+export class Claim implements IClaim {
+    uniqueID!: string;
+    type!: ClaimType;
+    status!: ClaimStatus;
+    disposition!: ClaimDisposition;
+    externalID!: string;
+    amountSubmitted?: number | undefined;
+    amountAdjusted?: number | undefined;
+    amountPaid?: number | undefined;
+    eventDate!: Date;
+    eventTime?: string | undefined;
+    ingestedTimestamp?: Date | undefined;
+    adjudicatedTimestamp?: Date | undefined;
+    tombstonedTimestamp?: Date | undefined;
+    attachments!: ClaimAttachment[];
+    policy!: Policy;
+    investigator?: Investigator | undefined;
+
+    constructor(data?: IClaim) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.attachments = [];
+            this.policy = new Policy();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.uniqueID = _data["uniqueID"];
+            this.type = _data["type"];
+            this.status = _data["status"];
+            this.disposition = _data["disposition"];
+            this.externalID = _data["externalID"];
+            this.amountSubmitted = _data["amountSubmitted"];
+            this.amountAdjusted = _data["amountAdjusted"];
+            this.amountPaid = _data["amountPaid"];
+            this.eventDate = _data["eventDate"] ? new Date(_data["eventDate"].toString()) : <any>undefined;
+            this.eventTime = _data["eventTime"];
+            this.ingestedTimestamp = _data["ingestedTimestamp"] ? new Date(_data["ingestedTimestamp"].toString()) : <any>undefined;
+            this.adjudicatedTimestamp = _data["adjudicatedTimestamp"] ? new Date(_data["adjudicatedTimestamp"].toString()) : <any>undefined;
+            this.tombstonedTimestamp = _data["tombstonedTimestamp"] ? new Date(_data["tombstonedTimestamp"].toString()) : <any>undefined;
+            if (Array.isArray(_data["attachments"])) {
+                this.attachments = [] as any;
+                for (let item of _data["attachments"])
+                    this.attachments!.push(ClaimAttachment.fromJS(item));
+            }
+            this.policy = _data["policy"] ? Policy.fromJS(_data["policy"]) : new Policy();
+            this.investigator = _data["investigator"] ? Investigator.fromJS(_data["investigator"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Claim {
+        data = typeof data === 'object' ? data : {};
+        let result = new Claim();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uniqueID"] = this.uniqueID;
+        data["type"] = this.type;
+        data["status"] = this.status;
+        data["disposition"] = this.disposition;
+        data["externalID"] = this.externalID;
+        data["amountSubmitted"] = this.amountSubmitted;
+        data["amountAdjusted"] = this.amountAdjusted;
+        data["amountPaid"] = this.amountPaid;
+        data["eventDate"] = this.eventDate ? formatDate(this.eventDate) : <any>undefined;
+        data["eventTime"] = this.eventTime;
+        data["ingestedTimestamp"] = this.ingestedTimestamp ? this.ingestedTimestamp.toISOString() : <any>undefined;
+        data["adjudicatedTimestamp"] = this.adjudicatedTimestamp ? this.adjudicatedTimestamp.toISOString() : <any>undefined;
+        data["tombstonedTimestamp"] = this.tombstonedTimestamp ? this.tombstonedTimestamp.toISOString() : <any>undefined;
+        if (Array.isArray(this.attachments)) {
+            data["attachments"] = [];
+            for (let item of this.attachments)
+                data["attachments"].push(item.toJSON());
+        }
+        data["policy"] = this.policy ? this.policy.toJSON() : <any>undefined;
+        data["investigator"] = this.investigator ? this.investigator.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IClaim {
+    uniqueID: string;
+    type: ClaimType;
+    status: ClaimStatus;
+    disposition: ClaimDisposition;
+    externalID: string;
+    amountSubmitted?: number | undefined;
+    amountAdjusted?: number | undefined;
+    amountPaid?: number | undefined;
+    eventDate: Date;
+    eventTime?: string | undefined;
+    ingestedTimestamp?: Date | undefined;
+    adjudicatedTimestamp?: Date | undefined;
+    tombstonedTimestamp?: Date | undefined;
+    attachments: ClaimAttachment[];
+    policy: Policy;
+    investigator?: Investigator | undefined;
+}
+
+export enum ClaimType {
+    Water = "Water",
+    Fire = "Fire",
+    Storm = "Storm",
+    Theft = "Theft",
+    Vandalism = "Vandalism",
+    Mold = "Mold",
+    Hail = "Hail",
+    Other = "Other",
+}
+
+export enum ClaimStatus {
+    Unassigned = "Unassigned",
+    Investigating = "Investigating",
+    Adjudicated = "Adjudicated",
+    Resolved = "Resolved",
+    Tombstoned = "Tombstoned",
+}
+
+export enum ClaimDisposition {
+    Undecided = "Undecided",
+    NotFraudulent = "NotFraudulent",
+    Fraudulent = "Fraudulent",
+}
+
+export class ClaimAttachment implements IClaimAttachment {
+    uniqueID!: string;
+    type!: ClaimAttachmentType;
+    path!: string;
+    description!: string;
+    summary?: string | undefined;
+    originatedTimestamp?: Date | undefined;
+    uploadedTimestamp!: Date;
+    summarizedTimestamp?: Date | undefined;
+    tombstonedTimestamp?: Date | undefined;
+
+    constructor(data?: IClaimAttachment) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.uniqueID = _data["uniqueID"];
+            this.type = _data["type"];
+            this.path = _data["path"];
+            this.description = _data["description"];
+            this.summary = _data["summary"];
+            this.originatedTimestamp = _data["originatedTimestamp"] ? new Date(_data["originatedTimestamp"].toString()) : <any>undefined;
+            this.uploadedTimestamp = _data["uploadedTimestamp"] ? new Date(_data["uploadedTimestamp"].toString()) : <any>undefined;
+            this.summarizedTimestamp = _data["summarizedTimestamp"] ? new Date(_data["summarizedTimestamp"].toString()) : <any>undefined;
+            this.tombstonedTimestamp = _data["tombstonedTimestamp"] ? new Date(_data["tombstonedTimestamp"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ClaimAttachment {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClaimAttachment();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uniqueID"] = this.uniqueID;
+        data["type"] = this.type;
+        data["path"] = this.path;
+        data["description"] = this.description;
+        data["summary"] = this.summary;
+        data["originatedTimestamp"] = this.originatedTimestamp ? this.originatedTimestamp.toISOString() : <any>undefined;
+        data["uploadedTimestamp"] = this.uploadedTimestamp ? this.uploadedTimestamp.toISOString() : <any>undefined;
+        data["summarizedTimestamp"] = this.summarizedTimestamp ? this.summarizedTimestamp.toISOString() : <any>undefined;
+        data["tombstonedTimestamp"] = this.tombstonedTimestamp ? this.tombstonedTimestamp.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IClaimAttachment {
+    uniqueID: string;
+    type: ClaimAttachmentType;
+    path: string;
+    description: string;
+    summary?: string | undefined;
+    originatedTimestamp?: Date | undefined;
+    uploadedTimestamp: Date;
+    summarizedTimestamp?: Date | undefined;
+    tombstonedTimestamp?: Date | undefined;
+}
+
+export enum ClaimAttachmentType {
+    PDF = "PDF",
+    MP4 = "MP4",
+    JPG = "JPG",
+    PNG = "PNG",
+    DOCX = "DOCX",
+    XLSX = "XLSX",
+}
+
+export class Policy implements IPolicy {
+    uniqueID!: string;
+    externalID!: string;
+    bindingDate?: Date | undefined;
+    startDate?: Date | undefined;
+    endDate?: Date | undefined;
+    deductible?: number | undefined;
+    annualPremium?: number | undefined;
+    claimsInLastYear?: number | undefined;
+    claimsInLast3Years?: number | undefined;
+    firstName!: string;
+    lastName!: string;
+    address!: string;
     address2?: string | undefined;
-    city?: string;
-    state?: string;
-    postalCode?: string;
-    telephone?: string;
-    emailAddress?: string | undefined;
+    city!: string;
+    state!: string;
+    postalCode!: string;
+    telephone!: string;
+    dateOfBirth?: Date | undefined;
+    bedrooms!: number;
+    bathrooms?: number | undefined;
+    ownershipType?: OwnershipType | undefined;
+    propertyType?: PropertyType | undefined;
+    roofType?: RoofType | undefined;
+    yearBuilt?: number | undefined;
+    customer!: Customer;
+
+    constructor(data?: IPolicy) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.customer = new Customer();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.uniqueID = _data["uniqueID"];
+            this.externalID = _data["externalID"];
+            this.bindingDate = _data["bindingDate"] ? new Date(_data["bindingDate"].toString()) : <any>undefined;
+            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
+            this.deductible = _data["deductible"];
+            this.annualPremium = _data["annualPremium"];
+            this.claimsInLastYear = _data["claimsInLastYear"];
+            this.claimsInLast3Years = _data["claimsInLast3Years"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.address = _data["address"];
+            this.address2 = _data["address2"];
+            this.city = _data["city"];
+            this.state = _data["state"];
+            this.postalCode = _data["postalCode"];
+            this.telephone = _data["telephone"];
+            this.dateOfBirth = _data["dateOfBirth"] ? new Date(_data["dateOfBirth"].toString()) : <any>undefined;
+            this.bedrooms = _data["bedrooms"];
+            this.bathrooms = _data["bathrooms"];
+            this.ownershipType = _data["ownershipType"];
+            this.propertyType = _data["propertyType"];
+            this.roofType = _data["roofType"];
+            this.yearBuilt = _data["yearBuilt"];
+            this.customer = _data["customer"] ? Customer.fromJS(_data["customer"]) : new Customer();
+        }
+    }
+
+    static fromJS(data: any): Policy {
+        data = typeof data === 'object' ? data : {};
+        let result = new Policy();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uniqueID"] = this.uniqueID;
+        data["externalID"] = this.externalID;
+        data["bindingDate"] = this.bindingDate ? formatDate(this.bindingDate) : <any>undefined;
+        data["startDate"] = this.startDate ? formatDate(this.startDate) : <any>undefined;
+        data["endDate"] = this.endDate ? formatDate(this.endDate) : <any>undefined;
+        data["deductible"] = this.deductible;
+        data["annualPremium"] = this.annualPremium;
+        data["claimsInLastYear"] = this.claimsInLastYear;
+        data["claimsInLast3Years"] = this.claimsInLast3Years;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["address"] = this.address;
+        data["address2"] = this.address2;
+        data["city"] = this.city;
+        data["state"] = this.state;
+        data["postalCode"] = this.postalCode;
+        data["telephone"] = this.telephone;
+        data["dateOfBirth"] = this.dateOfBirth ? formatDate(this.dateOfBirth) : <any>undefined;
+        data["bedrooms"] = this.bedrooms;
+        data["bathrooms"] = this.bathrooms;
+        data["ownershipType"] = this.ownershipType;
+        data["propertyType"] = this.propertyType;
+        data["roofType"] = this.roofType;
+        data["yearBuilt"] = this.yearBuilt;
+        data["customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IPolicy {
+    uniqueID: string;
+    externalID: string;
+    bindingDate?: Date | undefined;
+    startDate?: Date | undefined;
+    endDate?: Date | undefined;
+    deductible?: number | undefined;
+    annualPremium?: number | undefined;
+    claimsInLastYear?: number | undefined;
+    claimsInLast3Years?: number | undefined;
+    firstName: string;
+    lastName: string;
+    address: string;
+    address2?: string | undefined;
+    city: string;
+    state: string;
+    postalCode: string;
+    telephone: string;
+    dateOfBirth?: Date | undefined;
+    bedrooms: number;
+    bathrooms?: number | undefined;
+    ownershipType?: OwnershipType | undefined;
+    propertyType?: PropertyType | undefined;
+    roofType?: RoofType | undefined;
+    yearBuilt?: number | undefined;
+    customer: Customer;
+}
+
+export enum OwnershipType {
+    OwnerOccupied = "OwnerOccupied",
+    Rented = "Rented",
+    Investment = "Investment",
+}
+
+export enum PropertyType {
+    House = "House",
+    Condominium = "Condominium",
+}
+
+export enum RoofType {
+    Rolled = "Rolled",
+    BUR = "BUR",
+    Membrane = "Membrane",
+    AsphaltShingles = "AsphaltShingles",
+    Metal = "Metal",
+    Shakes = "Shakes",
+    Clay = "Clay",
+    Concrete = "Concrete",
+    Slate = "Slate",
+    Other = "Other",
+}
+
+export class Customer implements ICustomer {
+    uniqueID!: string;
+    name!: string;
+    code!: string;
+    address!: string;
+    address2?: string | undefined;
+    city!: string;
+    state!: string;
+    postalCode!: string;
+    telephone!: string;
+    emailAddress!: string;
+    avatarUrl?: string | undefined;
 
     constructor(data?: ICustomer) {
         if (data) {
@@ -1454,6 +1919,7 @@ export class Customer implements ICustomer {
             this.postalCode = _data["postalCode"];
             this.telephone = _data["telephone"];
             this.emailAddress = _data["emailAddress"];
+            this.avatarUrl = _data["avatarUrl"];
         }
     }
 
@@ -1476,21 +1942,99 @@ export class Customer implements ICustomer {
         data["postalCode"] = this.postalCode;
         data["telephone"] = this.telephone;
         data["emailAddress"] = this.emailAddress;
+        data["avatarUrl"] = this.avatarUrl;
         return data;
     }
 }
 
 export interface ICustomer {
-    uniqueID?: string;
-    name?: string;
-    code?: string;
-    address?: string;
+    uniqueID: string;
+    name: string;
+    code: string;
+    address: string;
     address2?: string | undefined;
-    city?: string;
-    state?: string;
-    postalCode?: string;
-    telephone?: string;
-    emailAddress?: string | undefined;
+    city: string;
+    state: string;
+    postalCode: string;
+    telephone: string;
+    emailAddress: string;
+    avatarUrl?: string | undefined;
+}
+
+export class Investigator implements IInvestigator {
+    uniqueID!: string;
+    firstName!: string;
+    lastName!: string;
+    address!: string;
+    address2?: string | undefined;
+    city!: string;
+    state!: string;
+    postalCode!: string;
+    telephone!: string;
+    emailAddress!: string;
+    avatarUrl?: string;
+
+    constructor(data?: IInvestigator) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.uniqueID = _data["uniqueID"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.address = _data["address"];
+            this.address2 = _data["address2"];
+            this.city = _data["city"];
+            this.state = _data["state"];
+            this.postalCode = _data["postalCode"];
+            this.telephone = _data["telephone"];
+            this.emailAddress = _data["emailAddress"];
+            this.avatarUrl = _data["avatarUrl"];
+        }
+    }
+
+    static fromJS(data: any): Investigator {
+        data = typeof data === 'object' ? data : {};
+        let result = new Investigator();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uniqueID"] = this.uniqueID;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["address"] = this.address;
+        data["address2"] = this.address2;
+        data["city"] = this.city;
+        data["state"] = this.state;
+        data["postalCode"] = this.postalCode;
+        data["telephone"] = this.telephone;
+        data["emailAddress"] = this.emailAddress;
+        data["avatarUrl"] = this.avatarUrl;
+        return data;
+    }
+}
+
+export interface IInvestigator {
+    uniqueID: string;
+    firstName: string;
+    lastName: string;
+    address: string;
+    address2?: string | undefined;
+    city: string;
+    state: string;
+    postalCode: string;
+    telephone: string;
+    emailAddress: string;
+    avatarUrl?: string;
 }
 
 export class CustomerCreateOrUpdate extends Base implements ICustomerCreateOrUpdate {
@@ -1558,78 +2102,6 @@ export interface ICustomerCreateOrUpdate extends IBase {
     telephone?: string;
 }
 
-export class Investigator implements IInvestigator {
-    uniqueID?: string;
-    firstName?: string;
-    lastName?: string;
-    address?: string;
-    address2?: string | undefined;
-    city?: string;
-    state?: string;
-    postalCode?: string;
-    telephone?: string;
-    emailAddress?: string | undefined;
-
-    constructor(data?: IInvestigator) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.uniqueID = _data["uniqueID"];
-            this.firstName = _data["firstName"];
-            this.lastName = _data["lastName"];
-            this.address = _data["address"];
-            this.address2 = _data["address2"];
-            this.city = _data["city"];
-            this.state = _data["state"];
-            this.postalCode = _data["postalCode"];
-            this.telephone = _data["telephone"];
-            this.emailAddress = _data["emailAddress"];
-        }
-    }
-
-    static fromJS(data: any): Investigator {
-        data = typeof data === 'object' ? data : {};
-        let result = new Investigator();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["uniqueID"] = this.uniqueID;
-        data["firstName"] = this.firstName;
-        data["lastName"] = this.lastName;
-        data["address"] = this.address;
-        data["address2"] = this.address2;
-        data["city"] = this.city;
-        data["state"] = this.state;
-        data["postalCode"] = this.postalCode;
-        data["telephone"] = this.telephone;
-        data["emailAddress"] = this.emailAddress;
-        return data;
-    }
-}
-
-export interface IInvestigator {
-    uniqueID?: string;
-    firstName?: string;
-    lastName?: string;
-    address?: string;
-    address2?: string | undefined;
-    city?: string;
-    state?: string;
-    postalCode?: string;
-    telephone?: string;
-    emailAddress?: string | undefined;
-}
-
 export class InvestigatorCreateOrUpdate extends Base implements IInvestigatorCreateOrUpdate {
     firstName?: string;
     lastName?: string;
@@ -1638,8 +2110,8 @@ export class InvestigatorCreateOrUpdate extends Base implements IInvestigatorCre
     city?: string;
     state?: string;
     postalCode?: string;
-    emailAddress?: string;
     telephone?: string;
+    emailAddress?: string;
 
     constructor(data?: IInvestigatorCreateOrUpdate) {
         super(data);
@@ -1655,8 +2127,8 @@ export class InvestigatorCreateOrUpdate extends Base implements IInvestigatorCre
             this.city = _data["city"];
             this.state = _data["state"];
             this.postalCode = _data["postalCode"];
-            this.emailAddress = _data["emailAddress"];
             this.telephone = _data["telephone"];
+            this.emailAddress = _data["emailAddress"];
         }
     }
 
@@ -1676,8 +2148,8 @@ export class InvestigatorCreateOrUpdate extends Base implements IInvestigatorCre
         data["city"] = this.city;
         data["state"] = this.state;
         data["postalCode"] = this.postalCode;
-        data["emailAddress"] = this.emailAddress;
         data["telephone"] = this.telephone;
+        data["emailAddress"] = this.emailAddress;
         super.toJSON(data);
         return data;
     }
@@ -1691,17 +2163,17 @@ export interface IInvestigatorCreateOrUpdate extends IBase {
     city?: string;
     state?: string;
     postalCode?: string;
-    emailAddress?: string;
     telephone?: string;
+    emailAddress?: string;
 }
 
 export class Job extends Base implements IJob {
-    id?: number;
-    type?: JobType;
-    status?: JobStatus;
-    name?: string;
-    description?: string;
-    interval?: number;
+    id!: number;
+    type!: JobType;
+    status!: JobStatus;
+    name!: string;
+    description!: string;
+    interval!: number;
     nextEvent?: Date | undefined;
 
     constructor(data?: IJob) {
@@ -1743,12 +2215,12 @@ export class Job extends Base implements IJob {
 }
 
 export interface IJob extends IBase {
-    id?: number;
-    type?: JobType;
-    status?: JobStatus;
-    name?: string;
-    description?: string;
-    interval?: number;
+    id: number;
+    type: JobType;
+    status: JobStatus;
+    name: string;
+    description: string;
+    interval: number;
     nextEvent?: Date | undefined;
 }
 
@@ -1761,6 +2233,12 @@ export enum JobStatus {
     Waiting = "Waiting",
     Running = "Running",
     Paused = "Paused",
+}
+
+function formatDate(d: Date) {
+    return d.getFullYear() + '-' + 
+        (d.getMonth() < 9 ? ('0' + (d.getMonth()+1)) : (d.getMonth()+1)) + '-' +
+        (d.getDate() < 10 ? ('0' + d.getDate()) : d.getDate());
 }
 
 export interface FileResponse {

@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.css"
 import { useEffect, useMemo, useState } from "react"
 import Table from "components/Table"
-import { Account } from "models/Account"
+import { Account } from "api/schema";
 import { AdministratorContext } from "contexts/AdministratorContext"
 import CommandBar from "components/CommandBar"
 import { useOutletContext } from "react-router"
