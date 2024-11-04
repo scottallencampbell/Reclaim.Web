@@ -188,6 +188,48 @@ const Table = ({ children, id, type, keyField, columns, sourceData, isPropertyBa
     };
   }
 
+  const getFromAccessor = (obj: any, accessor: string): any => {
+    const parts = accessor.split(".");
+
+    let value = obj;
+
+    for (let i = 0; i < parts.length; i++) {
+      if (value == null)
+        return null;
+
+      value = value[parts[i]];
+    }
+
+    return value;
+  }
+
+  const getCityStatePostalCodeFromAccessor = (obj: any, accessor: string): string => {
+    const parts = accessor.split(".");
+
+    let value = obj;
+
+    for (let i = 0; i < parts.length-1; i++) {
+      value = value[parts[i]];
+    }
+
+    return `${value["city"]}, ${value["state"]} ${value["postalCode"]}`;  
+  }
+
+  const getAddressAddress2FromAccessor = (obj: any, accessor: string): string => {
+    const parts = accessor.split(".");
+
+    let value = obj;
+
+    for (let i = 0; i < parts.length-1; i++) {
+      value = value[parts[i]];
+    }
+
+    if (value["address2"] == null || value["address2"] == "")
+      return value["address"];
+    else
+      return `${value["address"]} ${value["address2"]}`;  
+  }
+
   return (
     (sourceData == null) ? <></> :
       (sourceData.length == 0) ? <div className="no-data">No {type} were found</div> :
@@ -230,9 +272,9 @@ const Table = ({ children, id, type, keyField, columns, sourceData, isPropertyBa
                     {columns.map(({ accessor, type }) => {
                       let cell = "-";
                       let tag = undefined;
-                      const value = item[accessor];
+                      const value = getFromAccessor(item, accessor);
                       
-                      if (item[accessor]) {
+                      if (value) {
                         switch (type) {
                           case "avatar":                          
                             tag = <Avatar url={`${configSettings.ApiRootUrl}/content${value}`} initials="" />;
@@ -240,14 +282,11 @@ const Table = ({ children, id, type, keyField, columns, sourceData, isPropertyBa
 
                           case "cityStatePostalCode":
                             if (value != null && value != "")
-                              cell = `${item["city"]}, ${item["state"]} ${item["postalCode"]}`;                   
+                              cell = getCityStatePostalCodeFromAccessor(item, accessor);                 
                             break;
 
                           case "addressAddress2":
-                            if (item["address2"] == null)
-                              cell = value;
-                            else
-                              cell = `${value}, ${item["address2"]}`;   
+                            cell = getAddressAddress2FromAccessor(item, accessor);   
                             break;
 
                           case "date":
@@ -275,7 +314,7 @@ const Table = ({ children, id, type, keyField, columns, sourceData, isPropertyBa
                             break;
                         
                           case "fullName":
-                            cell = `${item["firstName"]} ${item["middleName"] ?? ""} ${item["lastName"]}`;
+                            cell = `${item["firstName"]} ${item["lastName"]}`;
                             break;      
                         
                           case "thumbnail":

@@ -17,7 +17,6 @@ const Customers = () => {
   const [customers, setCustomers] = useState<Customer[]>();
   const [editCustomer, setEditCustomer] = useState<Customer>(new Customer());
   const [isPropertyBarVisible, setIsPropertyBarVisible] = useState(false);
-  const [groupError, setGroupError] = useState("");
 
   const { getAllCustomers, updateCustomer } = AdministratorContext();
   
@@ -171,8 +170,6 @@ const Customers = () => {
   }
 
   const handleCustomerUpdate = async () => {
-    setGroupError("");
-
     await updateCustomer(editCustomer);
     var customers = await getAllCustomers();
     setCustomers(customers.data);

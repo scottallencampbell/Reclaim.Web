@@ -1,6 +1,6 @@
 import moment from "moment";
 import * as Excel from "exceljs";
-import { Account, Customer, Investigator, Job } from "api/schema";
+import { Account, Customer, Investigator, Job, Claim } from "api/schema";
 
 const exportFile = async (name: string, data: any) => {     
   const wb = new Excel.Workbook();
@@ -114,7 +114,6 @@ export async function exportSignins (accounts: Account[]) {
     await exportFile("Signins", data);
 }
 
-
 export async function exportJobs (jobs: Job[]) {    
   const data = jobs?.map((o, i) => { return { 
     "Name": o.name,
@@ -126,4 +125,22 @@ export async function exportJobs (jobs: Job[]) {
    }});
 
   await exportFile("Jobs", data);
+}
+
+export async function exportClaims (claims: Claim[]) {    
+  const data = claims?.map((o, i) => { return { 
+    "Address": o.policy.address,
+    "Apartment/suite": o.policy.address2,
+    "City": o.policy.city,
+    "State": o.policy.state,
+    "Postal code": o.policy.postalCode,
+    "Telephone": o.policy.telephone,
+    "Event date": o.eventDate == null ? null : moment(o.eventDate).format("MM/DD/YYYY hh:mmA"),
+    "External ID": o.externalID,
+    "Type": o.type, 
+    "Status": o.status,
+    "Disposition": o.disposition
+   }});
+
+  await exportFile("Claims", data);
 }

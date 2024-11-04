@@ -111,8 +111,8 @@ const Jobs = () => {
               sourceData={jobs}
               isPropertyBarVisible={false}
               onRowClick={handleRowClick}
-              onSearchTermsChange={null} >
-            </Table>
+              onSearchTermsChange={null}>            
+              </Table>
           </div>      
         </div>
       </main>

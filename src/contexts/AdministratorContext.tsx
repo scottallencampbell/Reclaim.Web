@@ -1,12 +1,13 @@
 import { createContext, useContext, useState } from "react"
 import { AxiosResponse } from "axios";
 import { axiosRequest } from "api/api";
-import { Account, Customer, Investigator } from "api/schema";
+import { Account, Customer, Investigator, Claim } from "api/schema";
 
 interface IAdministratorContext {
     getAuthenticatedAccounts: () => Promise<AxiosResponse<Account[], any>>,
     getAllCustomers: () => Promise<AxiosResponse<Customer[], any>>,
     getAllInvestigators: () => Promise<AxiosResponse<Investigator[], any>>,
+    getAllClaims: () => Promise<AxiosResponse<Claim[], any>>,
     updateCustomer: (customer: Customer) => Promise<AxiosResponse<Customer, any>>,
     updateInvestigator: (investigator: Investigator) => Promise<AxiosResponse<Investigator, any>>
 }
@@ -20,6 +21,7 @@ export const AdministratorContext = (): IAdministratorContext => {
     getAuthenticatedAccounts,
     getAllCustomers,
     getAllInvestigators,
+    getAllClaims,
     updateCustomer,
     updateInvestigator
   };
@@ -31,6 +33,10 @@ const getAllCustomers = async (): Promise<AxiosResponse<Customer[], any>> => {
 
 const getAllInvestigators = async (): Promise<AxiosResponse<Investigator[], any>> => {
   return await axiosRequest.get("/administrator/investigator/all"); 
+}
+
+const getAllClaims = async (): Promise<AxiosResponse<Claim[], any>> => {
+  return await axiosRequest.get("/administrator/claim/all"); 
 }
 
 const updateCustomer = async (customer: Customer): Promise<AxiosResponse<Customer, any>> => {    
@@ -59,6 +65,7 @@ export function AdministratorProvider({ children }: { children: any }) {
       getAuthenticatedAccounts,
       getAllCustomers,
       getAllInvestigators,
+      getAllClaims,
       updateCustomer,
       updateInvestigator
     }}>{children}
