@@ -1,18 +1,19 @@
 import { createContext, useContext, useState } from "react"
-import { AxiosResponse } from "axios";
-import { axiosRequest } from "api/api";
-import { Account, Customer, Investigator, Claim } from "api/schema";
+import { Account, Customer, Investigator, Claim, AdministratorClient } from "api/schema";
 
 interface IAdministratorContext {
-    getAuthenticatedAccounts: () => Promise<AxiosResponse<Account[], any>>,
-    getAllCustomers: () => Promise<AxiosResponse<Customer[], any>>,
-    getAllInvestigators: () => Promise<AxiosResponse<Investigator[], any>>,
-    getAllClaims: () => Promise<AxiosResponse<Claim[], any>>,
-    updateCustomer: (customer: Customer) => Promise<AxiosResponse<Customer, any>>,
-    updateInvestigator: (investigator: Investigator) => Promise<AxiosResponse<Investigator, any>>
+    getAuthenticatedAccounts: () => Promise<Account[]>,
+    getAllCustomers: () => Promise<Customer[]>,
+    getAllInvestigators: () => Promise<Investigator[]>,
+    getAllClaims: () => Promise<Claim[]>,
+    updateCustomer: (customer: Customer) => Promise<Customer>,
+    updateInvestigator: (investigator: Investigator) => Promise<Investigator>
 }
 
+const apiClient = new AdministratorClient();
+
 export const AdministratorContext = (): IAdministratorContext => {
+  
   const {
     getAuthenticatedAccounts
   } = useContext(Context);
@@ -27,37 +28,37 @@ export const AdministratorContext = (): IAdministratorContext => {
   };
 }
 
-const getAllCustomers = async (): Promise<AxiosResponse<Customer[], any>> => {
-  return await axiosRequest.get("/administrator/customer/all"); 
+const getAllCustomers = async (): Promise<Customer[]> => {
+  return await apiClient.getCustomers(); 
 }
 
-const getAllInvestigators = async (): Promise<AxiosResponse<Investigator[], any>> => {
-  return await axiosRequest.get("/administrator/investigator/all"); 
+const getAllInvestigators = async (): Promise<Investigator[]> => {
+  return await apiClient.getInvestigators();
 }
 
-const getAllClaims = async (): Promise<AxiosResponse<Claim[], any>> => {
-  return await axiosRequest.get("/administrator/claim/all"); 
+const getAllClaims = async (): Promise<Claim[]> => {
+  return await apiClient.getClaims();
 }
 
-const updateCustomer = async (customer: Customer): Promise<AxiosResponse<Customer, any>> => {    
+const updateCustomer = async (customer: Customer): Promise<Customer> => {    
   if (customer.uniqueID != undefined)
-    return await axiosRequest.put(`/administrator/customer/${customer.uniqueID}`, customer);   
+    return await apiClient.updateCustomer(customer.uniqueID, customer);   
   else
-    return await axiosRequest.post("/administrator/customer", customer);         
+    return await apiClient.createCustomer(customer);         
 }
 
-const updateInvestigator = async (investigator: Investigator): Promise<AxiosResponse<Investigator, any>> => {    
+const updateInvestigator = async (investigator: Investigator): Promise<Investigator> => {    
   if (investigator.uniqueID != undefined)
-    return await axiosRequest.put(`/administrator/investigator/${investigator.uniqueID}`, investigator);   
+    return await apiClient.updateInvestigator(investigator.uniqueID, investigator);   
   else
-    return await axiosRequest.post("/administrator/investigator", investigator);         
+    return await apiClient.createInvestigator(investigator);         
 }
 
 const Context = createContext({} as IAdministratorContext);
 
 export function AdministratorProvider({ children }: { children: any }) {  
-  const getAuthenticatedAccounts = async (): Promise<AxiosResponse<Account[], any>> => {
-    return await axiosRequest.get("/administrator/account/authenticated");
+  const getAuthenticatedAccounts = async (): Promise<Account[]> => {
+    return await apiClient.authenticated();
   }
 
   return (

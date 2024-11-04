@@ -1,17 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react"
-import { AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 import { Route, useNavigate } from "react-router-dom";
 import jwt from "jwt-decode"
 import { ErrorCode } from "helpers/errorcodes"
 import { Identity } from "models/Identity";
-import { axiosRequest } from "api/api";
 import configSettings from "settings/config.json";
+import { AccountAuthentication, AccountAuthenticationRefresh, AccountClient, GoogleAccountAuthentication } from "api/schema";
+
 const identityCookieName = "reclaim_identity";
 const providerCookieName = "reclaim_provider";
-const authEndPoint = "/account/authenticate";
-const reauthEndPoint = "/account/authenticate/refresh";
-const googleAuthEndPoint = "/account/authenticate/google";
 const authLocalStorageKey = "reclaim_jwt_timer";
 
 var authTimer: ReturnType<typeof setTimeout>;
@@ -54,6 +51,7 @@ const Context = createContext({} as IAuthenticationContext);
 export function AuthenticationProvider({ children }: { children: any }) {
   const [jwtAccessTokenLifeRemaining, setJwtAccessTokenLifeRemaining] = useState(100);
   
+  const apiClient = new AccountClient();
   const navigate = useNavigate();              
   
   useEffect(() => {
@@ -148,18 +146,19 @@ export function AuthenticationProvider({ children }: { children: any }) {
   const authorize = async (emailAddress: string, password: string): Promise<string> => {
     console.log("authorizing...");
     
-    await axiosRequest.post(authEndPoint, {
-        "emailAddress": emailAddress,
-        "password": password
-      }
-    ).then(async result => {
-      saveIdentity(emailAddress, result.data.role, result.data.validUntil);
+    const request = new AccountAuthentication();
+    request.emailAddress = emailAddress;
+    request.password = password;
+    
+    await apiClient.authenticate(request)
+    .then(async result => {
+      saveIdentity(emailAddress, result.role, result.validUntil.toISOString());
       saveProvider("Local");
      
-      return result.data.accessToken;
+      return result.accessToken;
     }
     ).catch(error => { throw error; });
-
+   
     return "";
   }
 
@@ -167,20 +166,22 @@ export function AuthenticationProvider({ children }: { children: any }) {
     console.log("authorizing google...");
     
     const item = jwt<any>(credential);
-    await axiosRequest.post(googleAuthEndPoint, {
-        "emailAddress": item.email,
-        "googleJwt": credential
-      }
-    ).then(async result => {
+
+    const request = new GoogleAccountAuthentication();
+    request.emailAddress = item.email;
+    request.googleJwt = credential;
+    
+    await apiClient.authenticate(request)
+    .then(async result => {
       if (nonce != item.nonce) {
         clearIdentity();
         throw { response: { data: { errorCode: 2201, errorCodeName: ErrorCode.GoogleJwtNonceInvalid } } };
       }
 
-      saveIdentity(item.email, result.data.role, result.data.validUntil);
+      saveIdentity(item.email, result.role, result.validUntil.toISOString());
       saveProvider("Google");
 
-      return result.data.accessToken;
+      return result.accessToken;
     }
     ).catch(error => { throw error; });
 
@@ -189,13 +190,15 @@ export function AuthenticationProvider({ children }: { children: any }) {
 
   const reauthorize = async (emailAddress: string): Promise<string> => {
     console.log("reauthorizing...");
-    await axiosRequest.post(reauthEndPoint, {
-        "emailAddress": emailAddress,
-        "refreshToken": "_"
-      }
-    ).then(async result => {  
-      saveIdentity(emailAddress, result.data.role, result.data.validUntil);
-      return result.data.accessToken;
+
+    const request = new AccountAuthenticationRefresh();
+    request.emailAddress = emailAddress;
+    request.refreshToken = "_";
+    
+    await apiClient.authenticateRefresh(request)
+    .then(async result => {  
+      saveIdentity(emailAddress, result.role, result.validUntil.toISOString());
+      return result.accessToken;
     }
     ).catch(error => { throw error; });
 

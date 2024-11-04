@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 import Cookies from "js-cookie";
 import { Identity } from "models/Identity";
 import configSettings from "settings/config.json";
@@ -14,10 +14,12 @@ const apiRootUrl = process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL
 console.log("Web URL: " + process.env.REACT_APP_WEB_URL);
 console.log("Api URL: " + apiRootUrl);
 
+/*
 export const axiosRequest = axios.create({
   baseURL: apiRootUrl,
   withCredentials: true
 });
+*/
 
 export const restartIdentityTimer = () => {
   const identity = getIdentity();
@@ -52,6 +54,7 @@ const showOverlay = (isMakingRequest: boolean) => {
   }
 }
 
+/*
 axiosRequest.interceptors.request.use((config) => {
   let isShowOverlay = true;
   
@@ -82,4 +85,4 @@ axiosRequest.interceptors.response.use((config) => {
   showOverlay(false);
   return Promise.reject(error);
 });
-
+*/

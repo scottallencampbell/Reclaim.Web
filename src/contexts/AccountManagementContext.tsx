@@ -1,12 +1,11 @@
+import { Account, AccountClient, AccountConfirmation, PasswordReset, PasswordResetRequest } from "api/schema";
 import { createContext, useContext, useState } from "react"
-import { AxiosResponse } from "axios";
-import { axiosRequest } from "api/api";
 
 interface IAccountManagementContext {
-  confirmAccount: (emailAddress: string, token: string) => Promise<AxiosResponse<any, any>>,
-  requestPasswordReset: (emailAddress: string) => Promise<AxiosResponse<any, any>>,
-  updatePassword: (emailAddress: string, password: string, token: string) => Promise<AxiosResponse<any, any>>,
-  getMe: () => Promise<AxiosResponse<any, any>>
+  confirmAccount: (emailAddress: string, token: string) => Promise<void>,
+  requestPasswordReset: (emailAddress: string) => Promise<void>,
+  updatePassword: (emailAddress: string, password: string, token: string) => Promise<void>,
+  getMe: () => Promise<Account>
 }
 
 export const AccountManagementContext = (): IAccountManagementContext => {
@@ -28,32 +27,28 @@ export const AccountManagementContext = (): IAccountManagementContext => {
 const Context = createContext({} as IAccountManagementContext);
 
 export function AccountManagementProvider({ children }: { children: any }) {
-  const confirmAccount = async (emailAddress: string, token: string): Promise<AxiosResponse<any, any>> => {    
-    return await axiosRequest.post("/account/confirm",
-      JSON.stringify({ 
-        emailAddress,
-        token
-      }));      
+  const apiClient = new AccountClient();
+  
+  const confirmAccount = async (emailAddress: string, token: string): Promise<void> => {  
+    const request = new AccountConfirmation({ emailAddress: emailAddress, token: token }); 
+
+    return apiClient.confirm(request);
   }
 
-  const requestPasswordReset = async (emailAddress: string): Promise<AxiosResponse<any, any>> => {
-    return await axiosRequest.post("/account/password/reset",
-      JSON.stringify({ 
-        emailAddress        
-      }));  
+  const requestPasswordReset = async (emailAddress: string): Promise<void> => {
+    const request = new PasswordResetRequest({ emailAddress: emailAddress });
+
+    return apiClient.resetPassword(request);
   }
 
-  const updatePassword = async (emailAddress: string, newPassword: string, token: string): Promise<AxiosResponse<any, any>> => {
-    return await axiosRequest.put("/account/password",
-      JSON.stringify({ 
-        emailAddress,
-        newPassword,
-        token
-      }));     
+  const updatePassword = async (emailAddress: string, newPassword: string, token: string): Promise<void> => {
+    const request = new PasswordReset({ emailAddress: emailAddress, newPassword: newPassword, token: token });
+    
+    return apiClient.requestResetPassword(request);
   }
   
-  const getMe = async (): Promise<AxiosResponse<any, any>> => {     
-    return await axiosRequest.get("/account/me");
+  const getMe = async (): Promise<Account> => {     
+    return apiClient.me();
   }
   
   return (

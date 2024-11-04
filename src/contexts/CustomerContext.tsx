@@ -1,13 +1,9 @@
 import { createContext, useContext, useState } from "react"
-import { AxiosResponse } from "axios";
-import jwt from "jwt-decode"
 import { ErrorCode } from "helpers/errorcodes"
 import { Customer } from "api/schema";
-import { axiosRequest } from "api/api";
 
 interface ICustomerContext {
-  // search: (terms: string) => Promise<AxiosResponse<Customer[], any>>,
-  update: (customer: Customer) => Promise<AxiosResponse<any, any>>,
+  update: (customer: Customer) => Promise<Customer>,
 }
 
 export const CustomerContext = (): ICustomerContext => {
@@ -21,14 +17,15 @@ export const CustomerContext = (): ICustomerContext => {
 }
     
 const Context = createContext({} as ICustomerContext);
+// const apiClient = new CustomerClient();
 
 export function CustomerProvider({ children }: { children: any }) {
 
-  const update = async (customer: Customer): Promise<AxiosResponse<any, any>> => {    
+  const update = async (customer: Customer): Promise<Customer> => {    
     if (customer.uniqueID != undefined)
-      return await axiosRequest.put(`/administrator/customer/${customer.uniqueID}`, customer);   
+      return new Customer(); // await apiClient.updateCustomer(customer.uniqueID, customer);   
     else
-      return await axiosRequest.post("/administrator/customer", customer);         
+      return new Customer(); //  await apiClient.createCustomer(customer);         
   }
   
   return (

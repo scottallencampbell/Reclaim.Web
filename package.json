@@ -19,7 +19,6 @@
     "@types/react-dom": "18.0.10",
     "@types/react-helmet": "^6.1.6",
     "@upstash/ratelimit": "^0.3.2",
-    "axios": "^1.2.5",
     "bootstrap": "^5.2.3",
     "create-react-app": "^5.0.1",
     "dotnet": "^1.1.4",

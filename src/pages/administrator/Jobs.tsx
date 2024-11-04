@@ -87,7 +87,7 @@ const Jobs = () => {
     const asyncGetJobs = async () => {
       await getAll()
       .then(result => {
-        setJobs(result.data);
+        setJobs(result);
       })
       .catch(error => {
         console.log(JSON.stringify(error));        
@@ -111,8 +111,8 @@ const Jobs = () => {
               sourceData={jobs}
               isPropertyBarVisible={false}
               onRowClick={handleRowClick}
-              onSearchTermsChange={null}>            
-              </Table>
+              onSearchTermsChange={null} 
+              children={undefined} />
           </div>      
         </div>
       </main>

@@ -60,8 +60,8 @@ const Claims = () => {
   /*
   const handleSearchTermsDebounce = async (inputValue: string) => {
     await search(inputValue)
-      .then((result: { data: SetStateAction<Claim[] | undefined> }) => {
-        setClaims(result.data);
+      .then((result: Claim[]) => {
+        setClaims(result);
       })
       .catch((error: any) => {
         console.log(JSON.stringify(error));
@@ -93,8 +93,8 @@ const Claims = () => {
   useEffect(() => {    
     const asyncGetAllClaims = async () => {
       await getAllClaims()
-      .then((result: { data: SetStateAction<Claim[] | undefined> }) => {
-        setClaims(result.data);
+      .then((result: Claim[]) => {
+        setClaims(result);
       })
       .catch((error: any) => {
         console.log(JSON.stringify(error));        

@@ -1,10 +1,8 @@
 import { createContext, useContext, useState } from "react"
-import { AxiosResponse } from "axios";
-import { axiosRequest } from "api/api";
-import { Job } from "api/schema";
+import { Job, JobClient } from "api/schema";
 
 interface IJobContext {
-  getAll: () => Promise<AxiosResponse<Job[], any>>
+  getAll: () => Promise<Job[]>
 }
 
 export const JobContext = (): IJobContext => {
@@ -18,11 +16,12 @@ export const JobContext = (): IJobContext => {
 }
     
 const Context = createContext({} as IJobContext);
+const apiClient = new JobClient();
 
 export function JobProvider({ children }: { children: any }) {
 
-  const getAll = async (): Promise<AxiosResponse<Job[], any>> => {
-    return await axiosRequest.get("/job/all");             
+  const getAll = async (): Promise<Job[]> => {
+    return apiClient.getAll();             
   }
 
   return (

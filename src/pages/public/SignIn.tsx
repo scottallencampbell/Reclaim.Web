@@ -80,7 +80,6 @@ const SignIn = () => {
   }
 
   const signIn = async(authFunction: () => Promise<void>) => {   
-    console.log('here');
     try {    
       await authFunction();
      
@@ -91,7 +90,7 @@ const SignIn = () => {
         navigate(decodeURIComponent(redirectTo));
       else {
         const identity = getIdentity();
-        navigate(`/${getIdentity()!.role.toLowerCase()}/dashboard`);      
+        navigate(`/${identity!.role.toLowerCase()}/dashboard`);      
       }
     }
     catch (error:any) {

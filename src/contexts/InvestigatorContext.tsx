@@ -1,16 +1,13 @@
 import { createContext, useContext, useState } from "react"
-import { AxiosResponse } from "axios";
 import jwt from "jwt-decode"
 import { ErrorCode } from "helpers/errorcodes"
 import { Investigator } from "api/schema";
-import { axiosRequest } from "api/api";
 
 interface IInvestigatorContext {
-  register: (firstName: string, lastName: string, emailAddress: string, password: string, telephone: string) => Promise<AxiosResponse<any, any>>,
+  register: (firstName: string, lastName: string, emailAddress: string, password: string, telephone: string) => Promise<Investigator>,
   registerGoogle: (credential: string, nonce: string) => Promise<string>,
-  // search: (terms: string) => Promise<AxiosResponse<Customer[], any>>,
-  getMe: () => Promise<AxiosResponse<Investigator, any>>,
-  update: (investigator: Investigator) => Promise<AxiosResponse<any, any>>,
+  getMe: () => Promise<Investigator>,
+  update: (investigator: Investigator) => Promise<Investigator>,
 }
 
 export const InvestigatorContext = (): IInvestigatorContext => {
@@ -30,35 +27,41 @@ export const InvestigatorContext = (): IInvestigatorContext => {
 }
     
 const Context = createContext({} as IInvestigatorContext);
+// const apiClient = new InvestigatorClient();
 
 export function InvestigatorProvider({ children }: { children: any }) {
-
-  const register = async (firstName: string, lastName: string, emailAddress: string, telephone: string, password: string): Promise<AxiosResponse<any, any>> => {
+  
+  const register = async (firstName: string, lastName: string, emailAddress: string, telephone: string, password: string): Promise<Investigator> => {
       
     if (password.length == 0) {
-      return await axiosRequest.post("/investigator/me",
+      return new Investigator();
+      /*  await axiosRequest.post("/investigator/me",
         JSON.stringify({ 
           firstName,
           lastName,         
           emailAddress,
           telephone
-        }));             
+        }));  
+      */
     }
     else {
-      return await axiosRequest.post("/investigator/me",
+      return new Investigator();
+      /* await axiosRequest.post("/investigator/me",
         JSON.stringify({ 
           firstName,
           lastName,         
           emailAddress,
           password,
           telephone          
-        }));   
+        }));  
+      */
     }
   }
 
   const registerGoogle = async (credential: string, nonce: string): Promise<string> => {
     const item = jwt<any>(credential);
-
+    return "";
+    /*
     await axiosRequest.post("/investigator/me",
       JSON.stringify({ 
         firstName: item.given_name,
@@ -75,17 +78,18 @@ export function InvestigatorProvider({ children }: { children: any }) {
     }
     ).catch(error => { throw error;});
     return ""; 
+    */
   }
 
-  const getMe = async (): Promise<AxiosResponse<Investigator, any>> => {
-    return await axiosRequest.get("/investigator/me"); 
+  const getMe = async (): Promise<Investigator> => {
+    return new Investigator(); // await axiosRequest.get("/investigator/me"); 
   }
 
-  const update = async (investigator: Investigator): Promise<AxiosResponse<any, any>> => {    
+  const update = async (investigator: Investigator): Promise<Investigator> => {    
     if (investigator.uniqueID != undefined)
-      return await axiosRequest.put("/investigator/me");   
+      return new Investigator(); // await axiosRequest.put("/investigator/me");   
     else
-      return await axiosRequest.post("/investigator/me", investigator);         
+      return new Investigator(); // await axiosRequest.post("/investigator/me", investigator);         
   }
   
   return (

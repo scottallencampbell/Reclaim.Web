@@ -136,7 +136,7 @@ const Investigators = () => {
 
     await updateInvestigator(editInvestigator);
     var investigators = await getAllInvestigators();
-    setInvestigators(investigators.data);
+    setInvestigators(investigators);
     // handleSearchTermsDebounce(""); 
   }
 
@@ -168,8 +168,8 @@ const Investigators = () => {
   useEffect(() => {    
     const asyncGetAllInvestigators = async () => {
       await getAllInvestigators()
-      .then((result: { data: SetStateAction<Investigator[] | undefined> }) => {
-        setInvestigators(result.data);
+      .then((result: Investigator[]) => {
+        setInvestigators(result);
       })
       .catch((error: any) => {
         console.log(JSON.stringify(error));        

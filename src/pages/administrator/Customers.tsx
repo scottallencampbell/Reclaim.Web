@@ -172,7 +172,7 @@ const Customers = () => {
   const handleCustomerUpdate = async () => {
     await updateCustomer(editCustomer);
     var customers = await getAllCustomers();
-    setCustomers(customers.data);
+    setCustomers(customers);
     // handleSearchTermsDebounce(""); 
   }
   /*
@@ -186,9 +186,9 @@ const Customers = () => {
   useEffect(() => {    
     const asyncGetAllCustomers = async () => {
       await getAllCustomers()
-      .then((result: { data: SetStateAction<Customer[] | undefined> }) => {
-        setCustomers(result.data);
-      })
+      .then((result: Customer[]) => {
+        setCustomers(result);
+      })    
       .catch((error: any) => {
         console.log(JSON.stringify(error));        
       });   

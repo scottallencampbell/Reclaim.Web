@@ -12,7 +12,7 @@ const Dashboard = () => {
     const asyncGetDashboard = async () => {    
       await getMe()
       .then(result => {          
-          setContent(JSON.stringify(result.data))
+          setContent(JSON.stringify(result))
         }
       )
       .catch(error => {        

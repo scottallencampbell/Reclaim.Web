@@ -46,7 +46,7 @@ const SignIns = () => {
     const asyncGetAuthenticatedAccounts = async () => {
       await getAuthenticatedAccounts()
       .then(result => {
-        setAccounts(result.data);
+        setAccounts(result);
       })
       .catch(error => {
         console.log(JSON.stringify(error));        
@@ -71,8 +71,8 @@ const SignIns = () => {
               isPropertyBarVisible={false}
               onSearchTermsChange={null}
               onRowClick={null}
-              initialSortColumn={"emailAddress"}  >         
-            </Table>
+              initialSortColumn={"emailAddress"} 
+              children={undefined} />
         </div>
       </div>
     </main>
