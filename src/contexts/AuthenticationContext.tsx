@@ -171,7 +171,7 @@ export function AuthenticationProvider({ children }: { children: any }) {
     request.emailAddress = item.email;
     request.googleJwt = credential;
     
-    await apiClient.authenticate(request)
+    await apiClient.authenticateGoogle(request)
     .then(async result => {
       if (nonce != item.nonce) {
         clearIdentity();

@@ -1,1 +1,3 @@
-nswag openapi2tsclient /input:http://localhost:50000/swagger/v1/swagger.json /output:src/api/schema.ts
+nswag run nswag.json
+remove abstract class from bottom of src/api/schema.ts file
+add import { ApiBase } from "./base" to top of file

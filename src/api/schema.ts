@@ -4,16 +4,19 @@
 // </auto-generated>
 //----------------------
 
+import { ApiBase } from "./base";
+
 /* tslint:disable */
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-export class AccountClient {
+export class AccountClient extends ApiBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl ?? "http://localhost:50000";
     }
@@ -37,7 +40,9 @@ export class AccountClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processAuthenticate(_response);
         });
     }
@@ -79,7 +84,9 @@ export class AccountClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processAuthenticateRefresh(_response);
         });
     }
@@ -121,7 +128,9 @@ export class AccountClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processAuthenticateGoogle(_response);
         });
     }
@@ -159,7 +168,9 @@ export class AccountClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processMe(_response);
         });
     }
@@ -201,7 +212,9 @@ export class AccountClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processConfirm(_response);
         });
     }
@@ -240,7 +253,9 @@ export class AccountClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processRequestResetPassword(_response);
         });
     }
@@ -279,7 +294,9 @@ export class AccountClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processResetPassword(_response);
         });
     }
@@ -300,12 +317,13 @@ export class AccountClient {
     }
 }
 
-export class AdministratorClient {
+export class AdministratorClient extends ApiBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl ?? "http://localhost:50000";
     }
@@ -324,7 +342,9 @@ export class AdministratorClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetClaims(_response);
         });
     }
@@ -371,7 +391,9 @@ export class AdministratorClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetClaimsByCustomer(_response);
         });
     }
@@ -415,7 +437,9 @@ export class AdministratorClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetCustomers(_response);
         });
     }
@@ -462,7 +486,9 @@ export class AdministratorClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetCustomer(_response);
         });
     }
@@ -508,7 +534,9 @@ export class AdministratorClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processUpdateCustomer(_response);
         });
     }
@@ -550,7 +578,9 @@ export class AdministratorClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processCreateCustomer(_response);
         });
     }
@@ -587,7 +617,9 @@ export class AdministratorClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetInvestigators(_response);
         });
     }
@@ -634,7 +666,9 @@ export class AdministratorClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetInvestigator(_response);
         });
     }
@@ -680,7 +714,9 @@ export class AdministratorClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processUpdateInvestigator(_response);
         });
     }
@@ -722,7 +758,9 @@ export class AdministratorClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processCreateInvestigator(_response);
         });
     }
@@ -764,7 +802,9 @@ export class AdministratorClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGet(_response);
         });
     }
@@ -792,7 +832,7 @@ export class AdministratorClient {
      * @param emailAddress (optional) The account's email address
      * @return Account retrieved
      */
-    getByEmailAddress(emailAddress: string | undefined): Promise<Account> {
+    getByEmailAddress(emailAddress?: string | undefined): Promise<Account> {
         let url_ = this.baseUrl + "/administrator/account?";
         if (emailAddress === null)
             throw new Error("The parameter 'emailAddress' cannot be null.");
@@ -807,7 +847,9 @@ export class AdministratorClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetByEmailAddress(_response);
         });
     }
@@ -845,7 +887,9 @@ export class AdministratorClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processAuthenticated(_response);
         });
     }
@@ -876,12 +920,13 @@ export class AdministratorClient {
     }
 }
 
-export class ContentClient {
+export class ContentClient extends ApiBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl ?? "http://localhost:50000";
     }
@@ -904,7 +949,9 @@ export class ContentClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processSetEmailReceived(_response);
         });
     }
@@ -932,12 +979,13 @@ export class ContentClient {
     }
 }
 
-export class JobClient {
+export class JobClient extends ApiBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl ?? "http://localhost:50000";
     }
@@ -957,7 +1005,9 @@ export class JobClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processGetAll(_response);
         });
     }
@@ -1001,7 +1051,9 @@ export class JobClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processRunPending(_response);
         });
     }
@@ -1022,12 +1074,13 @@ export class JobClient {
     }
 }
 
-export class StatusClient {
+export class StatusClient extends ApiBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl ?? "http://localhost:50000";
     }
@@ -1045,7 +1098,9 @@ export class StatusClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processError(_response);
         });
     }
@@ -1079,7 +1134,9 @@ export class StatusClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processPing(_response);
         });
     }
@@ -1116,7 +1173,9 @@ export class StatusClient {
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
             return this.processClearCache(_response);
         });
     }
@@ -1222,8 +1281,8 @@ export enum Role {
 }
 
 export class AccountAuthentication extends Base implements IAccountAuthentication {
-    emailAddress?: string;
-    password?: string;
+    emailAddress!: string;
+    password!: string;
 
     constructor(data?: IAccountAuthentication) {
         super(data);
@@ -1254,13 +1313,13 @@ export class AccountAuthentication extends Base implements IAccountAuthenticatio
 }
 
 export interface IAccountAuthentication extends IBase {
-    emailAddress?: string;
-    password?: string;
+    emailAddress: string;
+    password: string;
 }
 
 export class AccountAuthenticationRefresh extends Base implements IAccountAuthenticationRefresh {
-    emailAddress?: string;
-    refreshToken?: string;
+    emailAddress!: string;
+    refreshToken!: string;
 
     constructor(data?: IAccountAuthenticationRefresh) {
         super(data);
@@ -1291,13 +1350,13 @@ export class AccountAuthenticationRefresh extends Base implements IAccountAuthen
 }
 
 export interface IAccountAuthenticationRefresh extends IBase {
-    emailAddress?: string;
-    refreshToken?: string;
+    emailAddress: string;
+    refreshToken: string;
 }
 
 export class GoogleAccountAuthentication extends Base implements IGoogleAccountAuthentication {
-    emailAddress?: string;
-    googleJwt?: string;
+    emailAddress!: string;
+    googleJwt!: string;
 
     constructor(data?: IGoogleAccountAuthentication) {
         super(data);
@@ -1328,8 +1387,8 @@ export class GoogleAccountAuthentication extends Base implements IGoogleAccountA
 }
 
 export interface IGoogleAccountAuthentication extends IBase {
-    emailAddress?: string;
-    googleJwt?: string;
+    emailAddress: string;
+    googleJwt: string;
 }
 
 export class Account extends Base implements IAccount {
@@ -1337,11 +1396,11 @@ export class Account extends Base implements IAccount {
     role!: Role;
     identityProvider!: IdentityProvider;
     emailAddress!: string;
-    avatarUrl?: string | undefined;
-    authenticatedTimestamp?: Date | undefined;
-    sessionAuthenticatedTimestamp?: Date | undefined;
-    lastActiveTimestamp?: Date | undefined;
-    emailAddressConfirmedTimestamp?: Date | undefined;
+    avatarUrl!: string | undefined;
+    authenticatedTimestamp!: Date | undefined;
+    sessionAuthenticatedTimestamp!: Date | undefined;
+    lastActiveTimestamp!: Date | undefined;
+    emailAddressConfirmedTimestamp!: Date | undefined;
 
     constructor(data?: IAccount) {
         super(data);
@@ -1390,11 +1449,11 @@ export interface IAccount extends IBase {
     role: Role;
     identityProvider: IdentityProvider;
     emailAddress: string;
-    avatarUrl?: string | undefined;
-    authenticatedTimestamp?: Date | undefined;
-    sessionAuthenticatedTimestamp?: Date | undefined;
-    lastActiveTimestamp?: Date | undefined;
-    emailAddressConfirmedTimestamp?: Date | undefined;
+    avatarUrl: string | undefined;
+    authenticatedTimestamp: Date | undefined;
+    sessionAuthenticatedTimestamp: Date | undefined;
+    lastActiveTimestamp: Date | undefined;
+    emailAddressConfirmedTimestamp: Date | undefined;
 }
 
 export enum IdentityProvider {
@@ -1403,8 +1462,8 @@ export enum IdentityProvider {
 }
 
 export class AccountConfirmation extends Base implements IAccountConfirmation {
-    emailAddress?: string;
-    token?: string;
+    emailAddress!: string;
+    token!: string;
 
     constructor(data?: IAccountConfirmation) {
         super(data);
@@ -1435,12 +1494,12 @@ export class AccountConfirmation extends Base implements IAccountConfirmation {
 }
 
 export interface IAccountConfirmation extends IBase {
-    emailAddress?: string;
-    token?: string;
+    emailAddress: string;
+    token: string;
 }
 
 export class PasswordResetRequest implements IPasswordResetRequest {
-    emailAddress?: string;
+    emailAddress!: string;
 
     constructor(data?: IPasswordResetRequest) {
         if (data) {
@@ -1472,13 +1531,13 @@ export class PasswordResetRequest implements IPasswordResetRequest {
 }
 
 export interface IPasswordResetRequest {
-    emailAddress?: string;
+    emailAddress: string;
 }
 
 export class PasswordReset extends Base implements IPasswordReset {
-    emailAddress?: string;
-    newPassword?: string;
-    token?: string;
+    emailAddress!: string;
+    newPassword!: string;
+    token!: string;
 
     constructor(data?: IPasswordReset) {
         super(data);
@@ -1511,9 +1570,9 @@ export class PasswordReset extends Base implements IPasswordReset {
 }
 
 export interface IPasswordReset extends IBase {
-    emailAddress?: string;
-    newPassword?: string;
-    token?: string;
+    emailAddress: string;
+    newPassword: string;
+    token: string;
 }
 
 export class Claim implements IClaim {
@@ -1522,17 +1581,17 @@ export class Claim implements IClaim {
     status!: ClaimStatus;
     disposition!: ClaimDisposition;
     externalID!: string;
-    amountSubmitted?: number | undefined;
-    amountAdjusted?: number | undefined;
-    amountPaid?: number | undefined;
+    amountSubmitted!: number | undefined;
+    amountAdjusted!: number | undefined;
+    amountPaid!: number | undefined;
     eventDate!: Date;
-    eventTime?: string | undefined;
-    ingestedTimestamp?: Date | undefined;
-    adjudicatedTimestamp?: Date | undefined;
-    tombstonedTimestamp?: Date | undefined;
+    eventTime!: string | undefined;
+    ingestedTimestamp!: Date | undefined;
+    adjudicatedTimestamp!: Date | undefined;
+    tombstonedTimestamp!: Date | undefined;
     attachments!: ClaimAttachment[];
     policy!: Policy;
-    investigator?: Investigator | undefined;
+    investigator!: Investigator | undefined;
 
     constructor(data?: IClaim) {
         if (data) {
@@ -1540,6 +1599,15 @@ export class Claim implements IClaim {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
+            if (data.attachments) {
+                this.attachments = [];
+                for (let i = 0; i < data.attachments.length; i++) {
+                    let item = data.attachments[i];
+                    this.attachments[i] = item && !(<any>item).toJSON ? new ClaimAttachment(item) : <ClaimAttachment>item;
+                }
+            }
+            this.policy = data.policy && !(<any>data.policy).toJSON ? new Policy(data.policy) : <Policy>this.policy;
+            this.investigator = data.investigator && !(<any>data.investigator).toJSON ? new Investigator(data.investigator) : <Investigator>this.investigator;
         }
         if (!data) {
             this.attachments = [];
@@ -1611,17 +1679,17 @@ export interface IClaim {
     status: ClaimStatus;
     disposition: ClaimDisposition;
     externalID: string;
-    amountSubmitted?: number | undefined;
-    amountAdjusted?: number | undefined;
-    amountPaid?: number | undefined;
+    amountSubmitted: number | undefined;
+    amountAdjusted: number | undefined;
+    amountPaid: number | undefined;
     eventDate: Date;
-    eventTime?: string | undefined;
-    ingestedTimestamp?: Date | undefined;
-    adjudicatedTimestamp?: Date | undefined;
-    tombstonedTimestamp?: Date | undefined;
-    attachments: ClaimAttachment[];
-    policy: Policy;
-    investigator?: Investigator | undefined;
+    eventTime: string | undefined;
+    ingestedTimestamp: Date | undefined;
+    adjudicatedTimestamp: Date | undefined;
+    tombstonedTimestamp: Date | undefined;
+    attachments: IClaimAttachment[];
+    policy: IPolicy;
+    investigator: IInvestigator | undefined;
 }
 
 export enum ClaimType {
@@ -1654,11 +1722,11 @@ export class ClaimAttachment implements IClaimAttachment {
     type!: ClaimAttachmentType;
     path!: string;
     description!: string;
-    summary?: string | undefined;
-    originatedTimestamp?: Date | undefined;
+    summary!: string | undefined;
+    originatedTimestamp!: Date | undefined;
     uploadedTimestamp!: Date;
-    summarizedTimestamp?: Date | undefined;
-    tombstonedTimestamp?: Date | undefined;
+    summarizedTimestamp!: Date | undefined;
+    tombstonedTimestamp!: Date | undefined;
 
     constructor(data?: IClaimAttachment) {
         if (data) {
@@ -1710,11 +1778,11 @@ export interface IClaimAttachment {
     type: ClaimAttachmentType;
     path: string;
     description: string;
-    summary?: string | undefined;
-    originatedTimestamp?: Date | undefined;
+    summary: string | undefined;
+    originatedTimestamp: Date | undefined;
     uploadedTimestamp: Date;
-    summarizedTimestamp?: Date | undefined;
-    tombstonedTimestamp?: Date | undefined;
+    summarizedTimestamp: Date | undefined;
+    tombstonedTimestamp: Date | undefined;
 }
 
 export enum ClaimAttachmentType {
@@ -1729,28 +1797,28 @@ export enum ClaimAttachmentType {
 export class Policy implements IPolicy {
     uniqueID!: string;
     externalID!: string;
-    bindingDate?: Date | undefined;
-    startDate?: Date | undefined;
-    endDate?: Date | undefined;
-    deductible?: number | undefined;
-    annualPremium?: number | undefined;
-    claimsInLastYear?: number | undefined;
-    claimsInLast3Years?: number | undefined;
+    bindingDate!: Date | undefined;
+    startDate!: Date | undefined;
+    endDate!: Date | undefined;
+    deductible!: number | undefined;
+    annualPremium!: number | undefined;
+    claimsInLastYear!: number | undefined;
+    claimsInLast3Years!: number | undefined;
     firstName!: string;
     lastName!: string;
     address!: string;
-    address2?: string | undefined;
+    address2!: string | undefined;
     city!: string;
     state!: string;
     postalCode!: string;
     telephone!: string;
-    dateOfBirth?: Date | undefined;
+    dateOfBirth!: Date | undefined;
     bedrooms!: number;
-    bathrooms?: number | undefined;
-    ownershipType?: OwnershipType | undefined;
-    propertyType?: PropertyType | undefined;
-    roofType?: RoofType | undefined;
-    yearBuilt?: number | undefined;
+    bathrooms!: number | undefined;
+    ownershipType!: OwnershipType | undefined;
+    propertyType!: PropertyType | undefined;
+    roofType!: RoofType | undefined;
+    yearBuilt!: number | undefined;
     customer!: Customer;
 
     constructor(data?: IPolicy) {
@@ -1759,6 +1827,7 @@ export class Policy implements IPolicy {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
+            this.customer = data.customer && !(<any>data.customer).toJSON ? new Customer(data.customer) : <Customer>this.customer;
         }
         if (!data) {
             this.customer = new Customer();
@@ -1836,29 +1905,29 @@ export class Policy implements IPolicy {
 export interface IPolicy {
     uniqueID: string;
     externalID: string;
-    bindingDate?: Date | undefined;
-    startDate?: Date | undefined;
-    endDate?: Date | undefined;
-    deductible?: number | undefined;
-    annualPremium?: number | undefined;
-    claimsInLastYear?: number | undefined;
-    claimsInLast3Years?: number | undefined;
+    bindingDate: Date | undefined;
+    startDate: Date | undefined;
+    endDate: Date | undefined;
+    deductible: number | undefined;
+    annualPremium: number | undefined;
+    claimsInLastYear: number | undefined;
+    claimsInLast3Years: number | undefined;
     firstName: string;
     lastName: string;
     address: string;
-    address2?: string | undefined;
+    address2: string | undefined;
     city: string;
     state: string;
     postalCode: string;
     telephone: string;
-    dateOfBirth?: Date | undefined;
+    dateOfBirth: Date | undefined;
     bedrooms: number;
-    bathrooms?: number | undefined;
-    ownershipType?: OwnershipType | undefined;
-    propertyType?: PropertyType | undefined;
-    roofType?: RoofType | undefined;
-    yearBuilt?: number | undefined;
-    customer: Customer;
+    bathrooms: number | undefined;
+    ownershipType: OwnershipType | undefined;
+    propertyType: PropertyType | undefined;
+    roofType: RoofType | undefined;
+    yearBuilt: number | undefined;
+    customer: ICustomer;
 }
 
 export enum OwnershipType {
@@ -1890,13 +1959,13 @@ export class Customer implements ICustomer {
     name!: string;
     code!: string;
     address!: string;
-    address2?: string | undefined;
+    address2!: string | undefined;
     city!: string;
     state!: string;
     postalCode!: string;
     telephone!: string;
     emailAddress!: string;
-    avatarUrl?: string | undefined;
+    avatarUrl!: string | undefined;
 
     constructor(data?: ICustomer) {
         if (data) {
@@ -1952,13 +2021,13 @@ export interface ICustomer {
     name: string;
     code: string;
     address: string;
-    address2?: string | undefined;
+    address2: string | undefined;
     city: string;
     state: string;
     postalCode: string;
     telephone: string;
     emailAddress: string;
-    avatarUrl?: string | undefined;
+    avatarUrl: string | undefined;
 }
 
 export class Investigator implements IInvestigator {
@@ -1966,13 +2035,13 @@ export class Investigator implements IInvestigator {
     firstName!: string;
     lastName!: string;
     address!: string;
-    address2?: string | undefined;
+    address2!: string | undefined;
     city!: string;
     state!: string;
     postalCode!: string;
     telephone!: string;
     emailAddress!: string;
-    avatarUrl?: string;
+    avatarUrl!: string;
 
     constructor(data?: IInvestigator) {
         if (data) {
@@ -2028,25 +2097,25 @@ export interface IInvestigator {
     firstName: string;
     lastName: string;
     address: string;
-    address2?: string | undefined;
+    address2: string | undefined;
     city: string;
     state: string;
     postalCode: string;
     telephone: string;
     emailAddress: string;
-    avatarUrl?: string;
+    avatarUrl: string;
 }
 
 export class CustomerCreateOrUpdate extends Base implements ICustomerCreateOrUpdate {
-    name?: string;
-    code?: string;
-    address?: string;
-    address2?: string | undefined;
-    city?: string;
-    state?: string;
-    postalCode?: string;
-    emailAddress?: string;
-    telephone?: string;
+    name!: string;
+    code!: string;
+    address!: string;
+    address2!: string | undefined;
+    city!: string;
+    state!: string;
+    postalCode!: string;
+    emailAddress!: string;
+    telephone!: string;
 
     constructor(data?: ICustomerCreateOrUpdate) {
         super(data);
@@ -2091,27 +2160,27 @@ export class CustomerCreateOrUpdate extends Base implements ICustomerCreateOrUpd
 }
 
 export interface ICustomerCreateOrUpdate extends IBase {
-    name?: string;
-    code?: string;
-    address?: string;
-    address2?: string | undefined;
-    city?: string;
-    state?: string;
-    postalCode?: string;
-    emailAddress?: string;
-    telephone?: string;
+    name: string;
+    code: string;
+    address: string;
+    address2: string | undefined;
+    city: string;
+    state: string;
+    postalCode: string;
+    emailAddress: string;
+    telephone: string;
 }
 
 export class InvestigatorCreateOrUpdate extends Base implements IInvestigatorCreateOrUpdate {
-    firstName?: string;
-    lastName?: string;
-    address?: string;
-    address2?: string | undefined;
-    city?: string;
-    state?: string;
-    postalCode?: string;
-    telephone?: string;
-    emailAddress?: string;
+    firstName!: string;
+    lastName!: string;
+    address!: string;
+    address2!: string | undefined;
+    city!: string;
+    state!: string;
+    postalCode!: string;
+    telephone!: string;
+    emailAddress!: string;
 
     constructor(data?: IInvestigatorCreateOrUpdate) {
         super(data);
@@ -2156,15 +2225,15 @@ export class InvestigatorCreateOrUpdate extends Base implements IInvestigatorCre
 }
 
 export interface IInvestigatorCreateOrUpdate extends IBase {
-    firstName?: string;
-    lastName?: string;
-    address?: string;
-    address2?: string | undefined;
-    city?: string;
-    state?: string;
-    postalCode?: string;
-    telephone?: string;
-    emailAddress?: string;
+    firstName: string;
+    lastName: string;
+    address: string;
+    address2: string | undefined;
+    city: string;
+    state: string;
+    postalCode: string;
+    telephone: string;
+    emailAddress: string;
 }
 
 export class Job extends Base implements IJob {
@@ -2174,7 +2243,7 @@ export class Job extends Base implements IJob {
     name!: string;
     description!: string;
     interval!: number;
-    nextEvent?: Date | undefined;
+    nextEvent!: Date | undefined;
 
     constructor(data?: IJob) {
         super(data);
@@ -2221,7 +2290,7 @@ export interface IJob extends IBase {
     name: string;
     description: string;
     interval: number;
-    nextEvent?: Date | undefined;
+    nextEvent: Date | undefined;
 }
 
 export enum JobType {

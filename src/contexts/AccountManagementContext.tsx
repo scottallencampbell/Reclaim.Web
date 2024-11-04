@@ -38,13 +38,13 @@ export function AccountManagementProvider({ children }: { children: any }) {
   const requestPasswordReset = async (emailAddress: string): Promise<void> => {
     const request = new PasswordResetRequest({ emailAddress: emailAddress });
 
-    return apiClient.resetPassword(request);
+    return apiClient.requestResetPassword(request);
   }
 
   const updatePassword = async (emailAddress: string, newPassword: string, token: string): Promise<void> => {
     const request = new PasswordReset({ emailAddress: emailAddress, newPassword: newPassword, token: token });
     
-    return apiClient.requestResetPassword(request);
+    return apiClient.resetPassword(request);
   }
   
   const getMe = async (): Promise<Account> => {     
