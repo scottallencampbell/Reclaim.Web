@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import { useEffect, useState } from 'react'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
-import { ErrorCode } from 'helpers/errorcodes'
+import { ErrorCode } from 'api/schema'
 import { Link } from 'react-router-dom'
 import { AccountManagementContext } from 'contexts/AccountManagementContext'
 
@@ -55,7 +55,9 @@ const ConfirmAccount = () => {
         setIsConfirmed(true)
       })
       .catch((error) => {
-        switch (error?.response?.data?.errorCode) {
+        const apiError = JSON.parse(error.response)
+
+        switch (apiError?.errorCodeName) {
           case ErrorCode.AccountAlreadyConfirmed:
             setMessage(
               'Your account has already been confirmed.  Click the button below to sign in and get started!'

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { passwordRegex } from 'helpers/constants'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
 import { AccountManagementContext } from 'contexts/AccountManagementContext'
-import { ErrorCode } from 'helpers/errorcodes'
+import { ErrorCode } from 'api/schema'
 import { useNavigate } from 'react-router-dom'
 
 const SetPassword = () => {
@@ -95,7 +95,9 @@ const SetPassword = () => {
         }, 2000)
       })
       .catch((error) => {
-        switch (error?.response?.data?.errorCodeName) {
+        const apiError = JSON.parse(error.response)
+
+        switch (apiError?.errorCodeName) {
           case ErrorCode.AccountMagicUrlTokenExpired:
             setErrorMessage(
               "Your account confirmation link has expired.  Please <a href='/forgotpassword'>request a new password</a> to generate a new link."

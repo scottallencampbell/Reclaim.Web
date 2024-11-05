@@ -3,11 +3,11 @@ import TextInput from 'components/TextInput'
 import { useEffect, useState } from 'react'
 import { emailAddressRegex, passwordRegex, telephoneRegex } from 'helpers/constants'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
-import { ErrorCode } from 'helpers/errorcodes'
 import { v4 } from 'uuid'
 import { Link, useNavigate } from 'react-router-dom'
 import { InvestigatorContext } from 'contexts/InvestigatorContext'
 import { GoogleLogin } from '@react-oauth/google'
+import { ErrorCode } from 'api/schema'
 
 const Register = () => {
   const [isSubmitButtonEnabled, setIsSubmitButtonEnabled] = useState(false)
@@ -119,7 +119,16 @@ const Register = () => {
         navigate('/thankyou')
       })
       .catch((error) => {
-        switch (error?.response?.data?.errorCode) {
+        if (error instanceof TypeError && error.message === 'Failed to fetch') {
+          setErrorMessage(
+            'The request could not be completed, the backend API may not be configured correctly.'
+          )
+          return
+        }
+
+        const apiError = JSON.parse(error.response)
+
+        switch (apiError?.errorCodeName) {
           case ErrorCode.AccountEmailAddressInvalid:
             setErrorMessage('The email address you provided is not valid.')
             break
@@ -143,16 +152,7 @@ const Register = () => {
             break
 
           default:
-            if (error.message === 'Network Error') {
-              setErrorMessage(
-                'The request could not be completed, the backend API may not be configured correctly.'
-              )
-            } else if (error?.response?.data !== undefined) {
-              setErrorMessage(error.response.data.message)
-            } else {
-              setErrorMessage(error.toString())
-            }
-            break
+            setErrorMessage(error.toString())
         }
       })
   }

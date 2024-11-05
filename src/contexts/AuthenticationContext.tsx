@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
 import jwt from 'jwt-decode'
-import { ErrorCode } from 'helpers/errorcodes'
+import { ErrorCode } from 'api/schema'
 import { Identity } from 'models/Identity'
 import configSettings from 'settings/config.json'
 import {

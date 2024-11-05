@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
 import { emailAddressRegex } from 'helpers/constants'
 import { AuthenticationContext } from 'contexts/AuthenticationContext'
-import { ErrorCode } from 'helpers/errorcodes'
+import { ErrorCode } from 'api/schema'
 import { GoogleLogin } from '@react-oauth/google'
 import { v4 } from 'uuid'
 import { Link, useNavigate } from 'react-router-dom'
@@ -106,9 +106,16 @@ const SignIn = () => {
         navigate(`/${identity!.role.toLowerCase()}/dashboard`)
       }
     } catch (error: any) {
-      console.log(JSON.stringify(error))
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        setErrorMessage(
+          'The request could not be completed, the backend API may not be configured correctly.'
+        )
+        return
+      }
 
-      switch (error?.response?.data?.errorCode) {
+      const apiError = JSON.parse(error.response)
+
+      switch (apiError?.errorCodeName) {
         case ErrorCode.AccountCredentialsInvalid:
           setErrorMessage(
             'The credentials you provided are invalid.  Please check your email address and password and try again to sign in.'
@@ -171,15 +178,7 @@ const SignIn = () => {
           break
 
         default:
-          if (error.message === 'Network Error') {
-            setErrorMessage(
-              'The request could not be completed, the backend API may not be configured correctly.'
-            )
-          } else if (error?.response?.data !== undefined) {
-            setErrorMessage(error.response.data.message)
-          } else {
-            setErrorMessage(error.toString())
-          }
+          setErrorMessage(error.toString())
       }
     }
   }

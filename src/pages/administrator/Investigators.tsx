@@ -215,7 +215,7 @@ const Investigators = () => {
           onCancel={handleCancel}>
           <>
             <div className="caption">
-              {editInvestigator.uniqueID === undefined
+              {editInvestigator.uniqueID == undefined
                 ? 'New investigator'
                 : 'Edit investigator'}
             </div>

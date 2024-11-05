@@ -32,7 +32,13 @@ const PropertyBar = ({
       })
       .catch((error: any) => {
         if (error.response) {
-          setErrorMessage(error.response?.data?.message)
+          const apiError = JSON.parse(error.response)
+
+          if (apiError.message) {
+            setErrorMessage(apiError.message)
+          } else {
+            setErrorMessage(error.response)
+          }
         }
 
         return false

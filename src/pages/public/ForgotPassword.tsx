@@ -49,7 +49,13 @@ const ForgotPassword = () => {
         navigate('/thankyou')
       })
       .catch((error) => {
-        setErrorMessage(error?.response?.data?.message ?? JSON.stringify(error))
+        const apiError = JSON.parse(error.response)
+
+        if (apiError.message) {
+          setErrorMessage(apiError.message)
+        } else {
+          setErrorMessage(error)
+        }
       })
   }
 

@@ -15,11 +15,7 @@ const Dashboard = () => {
           setContent(JSON.stringify(result))
         })
         .catch((error) => {
-          if (error?.response?.data?.errorCodeName != null) {
-            setContent(JSON.stringify(error.response.data))
-          } else {
-            setContent(JSON.stringify(error))
-          }
+          setContent(JSON.stringify(error))
         })
     }
 
