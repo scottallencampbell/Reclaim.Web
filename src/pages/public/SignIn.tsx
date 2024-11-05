@@ -17,6 +17,8 @@ const SignIn = () => {
   const [isSubmitButtonEnabled, setIsSubmitButtonEnabled] = useState(false)
   const [isPasswordResetLinkVisible, setIsPasswordResetLinkVisible] = useState(false)
 
+  console.log('API url:', process.env.REACT_APP_API_URL)
+      
   const { getIdentity, authorize, authorizeGoogle, clearIdentity, getProvider } =
     AuthenticationContext()
 
@@ -106,6 +108,8 @@ const SignIn = () => {
         navigate(`/${identity!.role.toLowerCase()}/dashboard`)
       }
     } catch (error: any) {
+      console.log('error', error)
+      
       if (error instanceof TypeError && error.message === 'Failed to fetch') {
         setErrorMessage(
           'The request could not be completed, the backend API may not be configured correctly.'
