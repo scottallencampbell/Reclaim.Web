@@ -57,7 +57,7 @@ const Context = createContext({} as IAuthenticationContext)
 export function AuthenticationProvider({ children }: { children: any }) {
   const [jwtAccessTokenLifeRemaining, setJwtAccessTokenLifeRemaining] = useState(100)
 
-  const apiClient = new AccountClient()
+  const apiClient = new AccountClient(process.env.REACT_APP_API_URL)
   const navigate = useNavigate()
 
   const redirectUnauthenticated = (includeRedirectParam: boolean) => {
