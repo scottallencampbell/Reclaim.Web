@@ -1,12 +1,13 @@
 {
-  "name": "Reclaim.Web",
+  "name": "reclaim_web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "lint:fix": "eslint src/**/*.js --fix",
+    "lint": "eslint src/**/*.js",
+    "prettify": "prettier src/**/*.js --write"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -23,6 +24,7 @@
     "create-react-app": "^5.0.1",
     "dotnet": "^1.1.4",
     "env-cmd": "^10.1.0",
+    "eslint": "^8.57.1",
     "exceljs": "^4.3.0",
     "google-auth-library": "^9.0.0",
     "html-react-parser": "^3.0.8",
@@ -61,7 +63,11 @@
     "@types/request-ip": "^0.0.37",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
-    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
   },
@@ -76,5 +82,40 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "plugin:prettier/recommended"
+    ],
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto"
+        }
+      ],
+      "no-unused-vars": "warn",
+      "no-console": "off",
+      "no-debugger": "warn",
+      "no-restricted-globals": "off",
+      "curly": [2, "all"]
+    }
+  },
+  "prettier": {
+    "printWidth": 90,
+    "bracketSpacing": true,
+    "trailingComma": "es5",
+    "semi": false,
+    "singleQuote": true,
+    "bracketSameLine": true
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": "npm run lint:fix"
   }
 }

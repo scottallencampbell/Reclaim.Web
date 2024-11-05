@@ -28,7 +28,7 @@
       "generateClientClasses": true,
       "generateClientInterfaces": false,
       "generateOptionalParameters": true,
-      "generateNullableReferenceTypes": false, 
+      "generateNullableReferenceTypes": false,
       "exportTypes": true,
       "wrapDtoExceptions": false,
       "exceptionClass": "ApiException",

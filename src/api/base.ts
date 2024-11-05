@@ -1,32 +1,31 @@
 export abstract class ApiBase {
-    protected transformOptions(options: RequestInit) {
-       options.credentials = "include";
- 
-       return Promise.resolve(options);
-    }
- }
+  protected transformOptions(options: RequestInit) {
+    options.credentials = 'include'
 
+    return Promise.resolve(options)
+  }
+}
 
-var overlayTimer: ReturnType<typeof setTimeout>;
-const apiRootUrl = process.env.REACT_APP_API_URL;
+/*
+var overlayTimer: ReturnType<typeof setTimeout>
+const apiRootUrl = process.env.REACT_APP_API_URL
 
 const showOverlay = (isMakingRequest: boolean) => {
-    const overlay = document.getElementById("overlay");
-  
-    if (!overlay)
-      return;
-  
-    if (isMakingRequest) {
-      overlayTimer = setTimeout(() => {
-        overlay.classList.add("enabled");
-      }, 500);
-    } else {
-      clearTimeout(overlayTimer);
-      overlay.classList.remove("enabled");
-    }
+  const overlay = document.getElementById('overlay')
+
+  if (!overlay) return
+
+  if (isMakingRequest) {
+    overlayTimer = setTimeout(() => {
+      overlay.classList.add('enabled')
+    }, 500)
+  } else {
+    clearTimeout(overlayTimer)
+    overlay.classList.remove('enabled')
   }
-  
-  /*
+}
+*/
+/*
   axiosRequest.interceptors.request.use((config) => {
     let isShowOverlay = true;
     

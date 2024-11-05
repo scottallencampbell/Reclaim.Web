@@ -1,10 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable"
-    ],
+    "lib": ["dom", "dom.iterable"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -24,7 +21,5 @@
       "@/*": ["*"]
     }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

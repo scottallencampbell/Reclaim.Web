@@ -65,5 +65,5 @@ export enum ErrorCode {
   ChatOpenAiResponseInvalid = 5003,
   ChatOpenAiCitationInvalid = 5004,
   ChatOpenAiCitationListInvalid = 5005,
-  ChatOpenAiCitationNotFound = 5006
+  ChatOpenAiCitationNotFound = 5006,
 }

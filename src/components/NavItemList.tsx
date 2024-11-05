@@ -1,4 +1,4 @@
-import NavItem from "./NavItem";
+import NavItem from './NavItem'
 
 interface INavItemList {
   role: string
@@ -6,34 +6,50 @@ interface INavItemList {
 
 const NavItemList = ({ role }: INavItemList) => {
   switch (role) {
-    case "Administrator":
+    case 'Administrator':
       return (
         <ul className="nav flex-column">
-          <NavItem label="Dashboard" icon="Home" href="/administrator/dashboard"></NavItem>
-          <NavItem label="Claims" icon="FolderOpen" iconStyle="regular" href="/administrator/claims"></NavItem>
-          <NavItem label="Investigators" icon="MagnifyingGlass" href="/administrator/investigators"></NavItem>
-          <NavItem label="Customers" icon="University" href="/administrator/customers"></NavItem>
-          <NavItem label="Current sign-ins" icon="NetworkWired" href="/administrator/signins"></NavItem>  
-          <NavItem label="Jobs" icon="PersonDigging" href="/administrator/jobs"></NavItem>          
-        </ul>
-      )
-      
-    case "Investigator":
-      return (
-        <ul className="nav flex-column">
-          <NavItem label="Dashboard" icon="home" href="/investigator/dashboard"></NavItem>        
+          <NavItem
+            label="Dashboard"
+            icon="Home"
+            href="/administrator/dashboard"></NavItem>
+          <NavItem
+            label="Claims"
+            icon="FolderOpen"
+            iconStyle="regular"
+            href="/administrator/claims"></NavItem>
+          <NavItem
+            label="Investigators"
+            icon="MagnifyingGlass"
+            href="/administrator/investigators"></NavItem>
+          <NavItem
+            label="Customers"
+            icon="University"
+            href="/administrator/customers"></NavItem>
+          <NavItem
+            label="Current sign-ins"
+            icon="NetworkWired"
+            href="/administrator/signins"></NavItem>
+          <NavItem label="Jobs" icon="PersonDigging" href="/administrator/jobs"></NavItem>
         </ul>
       )
 
-    case "Customer":
+    case 'Investigator':
       return (
         <ul className="nav flex-column">
-          <NavItem label="Dashboard" icon="home" href="/customer/dashboard"></NavItem>        
+          <NavItem label="Dashboard" icon="home" href="/investigator/dashboard"></NavItem>
         </ul>
       )
-    
-    default: 
-        return <></>
+
+    case 'Customer':
+      return (
+        <ul className="nav flex-column">
+          <NavItem label="Dashboard" icon="home" href="/customer/dashboard"></NavItem>
+        </ul>
+      )
+
+    default:
+      return <></>
   }
 }
 

@@ -1,63 +1,75 @@
-import { Account, AccountClient, AccountConfirmation, PasswordReset, PasswordResetRequest } from "api/schema";
-import { createContext, useContext, useState } from "react"
+import {
+  Account,
+  AccountClient,
+  AccountConfirmation,
+  PasswordReset,
+  PasswordResetRequest,
+} from 'api/schema'
+import { createContext, useContext } from 'react'
 
 interface IAccountManagementContext {
-  confirmAccount: (emailAddress: string, token: string) => Promise<void>,
-  requestPasswordReset: (emailAddress: string) => Promise<void>,
-  updatePassword: (emailAddress: string, password: string, token: string) => Promise<void>,
+  confirmAccount: (emailAddress: string, token: string) => Promise<void>
+  requestPasswordReset: (emailAddress: string) => Promise<void>
+  updatePassword: (emailAddress: string, password: string, token: string) => Promise<void>
   getMe: () => Promise<Account>
 }
 
 export const AccountManagementContext = (): IAccountManagementContext => {
-  const {
-    confirmAccount,
-    requestPasswordReset,
-    updatePassword,
-    getMe    
-  } = useContext(Context);
+  const { confirmAccount, requestPasswordReset, updatePassword, getMe } =
+    useContext(Context)
 
-  return {    
+  return {
     confirmAccount,
     requestPasswordReset,
     updatePassword,
-    getMe
-  };
+    getMe,
+  }
 }
-    
-const Context = createContext({} as IAccountManagementContext);
+
+const Context = createContext({} as IAccountManagementContext)
 
 export function AccountManagementProvider({ children }: { children: any }) {
-  const apiClient = new AccountClient(process.env.REACT_APP_API_URL);
-  
-  const confirmAccount = async (emailAddress: string, token: string): Promise<void> => {  
-    const request = new AccountConfirmation({ emailAddress: emailAddress, token: token }); 
+  const apiClient = new AccountClient(process.env.REACT_APP_API_URL)
 
-    return apiClient.confirm(request);
+  const confirmAccount = async (emailAddress: string, token: string): Promise<void> => {
+    const request = new AccountConfirmation({ emailAddress: emailAddress, token: token })
+
+    return apiClient.confirm(request)
   }
 
   const requestPasswordReset = async (emailAddress: string): Promise<void> => {
-    const request = new PasswordResetRequest({ emailAddress: emailAddress });
+    const request = new PasswordResetRequest({ emailAddress: emailAddress })
 
-    return apiClient.requestResetPassword(request);
+    return apiClient.requestResetPassword(request)
   }
 
-  const updatePassword = async (emailAddress: string, newPassword: string, token: string): Promise<void> => {
-    const request = new PasswordReset({ emailAddress: emailAddress, newPassword: newPassword, token: token });
-    
-    return apiClient.resetPassword(request);
+  const updatePassword = async (
+    emailAddress: string,
+    newPassword: string,
+    token: string
+  ): Promise<void> => {
+    const request = new PasswordReset({
+      emailAddress: emailAddress,
+      newPassword: newPassword,
+      token: token,
+    })
+
+    return apiClient.resetPassword(request)
   }
-  
-  const getMe = async (): Promise<Account> => {     
-    return apiClient.me();
+
+  const getMe = async (): Promise<Account> => {
+    return apiClient.me()
   }
-  
+
   return (
-    <Context.Provider value={{
-      confirmAccount,
-      requestPasswordReset,
-      updatePassword,
-      getMe,      
-    }}>{children}
+    <Context.Provider
+      value={{
+        confirmAccount,
+        requestPasswordReset,
+        updatePassword,
+        getMe,
+      }}>
+      {children}
     </Context.Provider>
   )
 }

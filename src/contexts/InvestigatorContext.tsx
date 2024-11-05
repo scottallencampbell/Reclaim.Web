@@ -1,40 +1,44 @@
-import { createContext, useContext, useState } from "react"
-import jwt from "jwt-decode"
-import { ErrorCode } from "helpers/errorcodes"
-import { Investigator } from "api/schema";
+import { createContext, useContext } from 'react'
+import jwt from 'jwt-decode'
+import { Investigator } from 'api/schema'
 
 interface IInvestigatorContext {
-  register: (firstName: string, lastName: string, emailAddress: string, password: string, telephone: string) => Promise<Investigator>,
-  registerGoogle: (credential: string, nonce: string) => Promise<string>,
-  getMe: () => Promise<Investigator>,
-  update: (investigator: Investigator) => Promise<Investigator>,
+  register: (
+    firstName: string,
+    lastName: string,
+    emailAddress: string,
+    password: string,
+    telephone: string
+  ) => Promise<Investigator>
+  registerGoogle: (credential: string, nonce: string) => Promise<string>
+  getMe: () => Promise<Investigator>
+  update: (investigator: Investigator) => Promise<Investigator>
 }
 
 export const InvestigatorContext = (): IInvestigatorContext => {
-  const {
-    register,
-    registerGoogle,
-    getMe,
-    update
-  } = useContext(Context);
+  const { register, registerGoogle, getMe, update } = useContext(Context)
 
   return {
     register,
     registerGoogle,
     getMe,
-    update
-  };
+    update,
+  }
 }
-    
-const Context = createContext({} as IInvestigatorContext);
+
+const Context = createContext({} as IInvestigatorContext)
 // const apiClient = new InvestigatorClient(process.env.REACT_APP_API_URL);
 
 export function InvestigatorProvider({ children }: { children: any }) {
-  
-  const register = async (firstName: string, lastName: string, emailAddress: string, telephone: string, password: string): Promise<Investigator> => {
-      
-    if (password.length == 0) {
-      return new Investigator();
+  const register = async (
+    firstName: string,
+    lastName: string,
+    emailAddress: string,
+    telephone: string,
+    password: string
+  ): Promise<Investigator> => {
+    if (password.length === 0) {
+      return new Investigator()
       /*  await axiosRequest.post("/investigator/me",
         JSON.stringify({ 
           firstName,
@@ -43,9 +47,8 @@ export function InvestigatorProvider({ children }: { children: any }) {
           telephone
         }));  
       */
-    }
-    else {
-      return new Investigator();
+    } else {
+      return new Investigator()
       /* await axiosRequest.post("/investigator/me",
         JSON.stringify({ 
           firstName,
@@ -59,8 +62,8 @@ export function InvestigatorProvider({ children }: { children: any }) {
   }
 
   const registerGoogle = async (credential: string, nonce: string): Promise<string> => {
-    const item = jwt<any>(credential);
-    return "";
+    const item = jwt<any>(credential)
+    return ''
     /*
     await axiosRequest.post("/investigator/me",
       JSON.stringify({ 
@@ -82,23 +85,26 @@ export function InvestigatorProvider({ children }: { children: any }) {
   }
 
   const getMe = async (): Promise<Investigator> => {
-    return new Investigator(); // await axiosRequest.get("/investigator/me"); 
+    return new Investigator() // await axiosRequest.get("/investigator/me");
   }
 
-  const update = async (investigator: Investigator): Promise<Investigator> => {    
-    if (investigator.uniqueID != undefined)
-      return new Investigator(); // await axiosRequest.put("/investigator/me");   
-    else
-      return new Investigator(); // await axiosRequest.post("/investigator/me", investigator);         
+  const update = async (investigator: Investigator): Promise<Investigator> => {
+    if (investigator.uniqueID !== undefined) {
+      return new Investigator() // await axiosRequest.put("/investigator/me");
+    } else {
+      return new Investigator() // await axiosRequest.post("/investigator/me", investigator);
+    }
   }
-  
+
   return (
-    <Context.Provider value={{
-      register,
-      registerGoogle,
-      getMe,
-      update      
-    }}>{children}
+    <Context.Provider
+      value={{
+        register,
+        registerGoogle,
+        getMe,
+        update,
+      }}>
+      {children}
     </Context.Provider>
   )
 }

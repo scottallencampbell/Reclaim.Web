@@ -1,81 +1,85 @@
-import { createContext, useContext, useState } from "react"
-import { Account, Customer, Investigator, Claim, AdministratorClient } from "api/schema";
+import { createContext, useContext } from 'react'
+import { Account, Customer, Investigator, Claim, AdministratorClient } from 'api/schema'
 
 interface IAdministratorContext {
-    getAuthenticatedAccounts: () => Promise<Account[]>,
-    getAllCustomers: () => Promise<Customer[]>,
-    getAllInvestigators: () => Promise<Investigator[]>,
-    getAllClaims: () => Promise<Claim[]>,
-    updateCustomer: (customer: Customer) => Promise<Customer>,
-    updateInvestigator: (investigator: Investigator) => Promise<Investigator>
+  getAuthenticatedAccounts: () => Promise<Account[]>
+  getAllCustomers: () => Promise<Customer[]>
+  getAllInvestigators: () => Promise<Investigator[]>
+  getAllClaims: () => Promise<Claim[]>
+  updateCustomer: (customer: Customer) => Promise<Customer>
+  updateInvestigator: (investigator: Investigator) => Promise<Investigator>
 }
 
 export const AdministratorContext = (): IAdministratorContext => {
-  
   const {
     getAuthenticatedAccounts,
     getAllCustomers,
     getAllInvestigators,
     getAllClaims,
     updateCustomer,
-    updateInvestigator
-  } = useContext(Context);
+    updateInvestigator,
+  } = useContext(Context)
 
-  return {    
+  return {
     getAuthenticatedAccounts,
     getAllCustomers,
     getAllInvestigators,
     getAllClaims,
     updateCustomer,
-    updateInvestigator
-  };
+    updateInvestigator,
+  }
 }
 
-const Context = createContext({} as IAdministratorContext);
+const Context = createContext({} as IAdministratorContext)
 
-export function AdministratorProvider({ children }: { children: any }) {  
-  const apiClient = new AdministratorClient(process.env.REACT_APP_API_URL);
-  
+export function AdministratorProvider({ children }: { children: any }) {
+  const apiClient = new AdministratorClient(process.env.REACT_APP_API_URL)
+
   const getAuthenticatedAccounts = async (): Promise<Account[]> => {
-    return await apiClient.authenticated();
+    return await apiClient.authenticated()
   }
 
-
   const getAllCustomers = async (): Promise<Customer[]> => {
-    return await apiClient.getCustomers(); 
+    return await apiClient.getCustomers()
   }
 
   const getAllInvestigators = async (): Promise<Investigator[]> => {
-    return await apiClient.getInvestigators();
+    return await apiClient.getInvestigators()
   }
 
   const getAllClaims = async (): Promise<Claim[]> => {
-    return await apiClient.getClaims();
+    return await apiClient.getClaims()
   }
 
-  const updateCustomer = async (customer: Customer): Promise<Customer> => {    
-    if (customer.uniqueID != undefined)
-      return await apiClient.updateCustomer(customer.uniqueID, customer);   
-    else
-      return await apiClient.createCustomer(customer);         
+  const updateCustomer = async (customer: Customer): Promise<Customer> => {
+    if (customer.uniqueID !== undefined) {
+      return await apiClient.updateCustomer(customer.uniqueID, customer)
+    } else {
+      return await apiClient.createCustomer(customer)
+    }
   }
 
-  const updateInvestigator = async (investigator: Investigator): Promise<Investigator> => {    
-    if (investigator.uniqueID != undefined)
-      return await apiClient.updateInvestigator(investigator.uniqueID, investigator);   
-    else
-      return await apiClient.createInvestigator(investigator);         
+  const updateInvestigator = async (
+    investigator: Investigator
+  ): Promise<Investigator> => {
+    if (investigator.uniqueID !== undefined) {
+      return await apiClient.updateInvestigator(investigator.uniqueID, investigator)
+    } else {
+      return await apiClient.createInvestigator(investigator)
+    }
   }
 
   return (
-    <Context.Provider value={{
-      getAuthenticatedAccounts,
-      getAllCustomers,
-      getAllInvestigators,
-      getAllClaims,
-      updateCustomer,
-      updateInvestigator
-    }}>{children}
+    <Context.Provider
+      value={{
+        getAuthenticatedAccounts,
+        getAllCustomers,
+        getAllInvestigators,
+        getAllClaims,
+        updateCustomer,
+        updateInvestigator,
+      }}>
+      {children}
     </Context.Provider>
   )
 }
