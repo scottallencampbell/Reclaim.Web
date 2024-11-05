@@ -9,7 +9,7 @@
   },
   "codeGenerators": {
     "openApiToTypeScriptClient": {
-      "extensionCode": "./src/api/base.ts",
+      "extensionCode": null,
       "clientBaseClass": "ApiBase",
       "useTransformOptionsMethod": true,
       "className": "{controller}Client",

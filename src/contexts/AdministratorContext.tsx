@@ -10,12 +10,15 @@ interface IAdministratorContext {
     updateInvestigator: (investigator: Investigator) => Promise<Investigator>
 }
 
-const apiClient = new AdministratorClient();
-
 export const AdministratorContext = (): IAdministratorContext => {
   
   const {
-    getAuthenticatedAccounts
+    getAuthenticatedAccounts,
+    getAllCustomers,
+    getAllInvestigators,
+    getAllClaims,
+    updateCustomer,
+    updateInvestigator
   } = useContext(Context);
 
   return {    
@@ -28,37 +31,40 @@ export const AdministratorContext = (): IAdministratorContext => {
   };
 }
 
-const getAllCustomers = async (): Promise<Customer[]> => {
-  return await apiClient.getCustomers(); 
-}
-
-const getAllInvestigators = async (): Promise<Investigator[]> => {
-  return await apiClient.getInvestigators();
-}
-
-const getAllClaims = async (): Promise<Claim[]> => {
-  return await apiClient.getClaims();
-}
-
-const updateCustomer = async (customer: Customer): Promise<Customer> => {    
-  if (customer.uniqueID != undefined)
-    return await apiClient.updateCustomer(customer.uniqueID, customer);   
-  else
-    return await apiClient.createCustomer(customer);         
-}
-
-const updateInvestigator = async (investigator: Investigator): Promise<Investigator> => {    
-  if (investigator.uniqueID != undefined)
-    return await apiClient.updateInvestigator(investigator.uniqueID, investigator);   
-  else
-    return await apiClient.createInvestigator(investigator);         
-}
-
 const Context = createContext({} as IAdministratorContext);
 
 export function AdministratorProvider({ children }: { children: any }) {  
+  const apiClient = new AdministratorClient(process.env.REACT_APP_API_URL);
+  
   const getAuthenticatedAccounts = async (): Promise<Account[]> => {
     return await apiClient.authenticated();
+  }
+
+
+  const getAllCustomers = async (): Promise<Customer[]> => {
+    return await apiClient.getCustomers(); 
+  }
+
+  const getAllInvestigators = async (): Promise<Investigator[]> => {
+    return await apiClient.getInvestigators();
+  }
+
+  const getAllClaims = async (): Promise<Claim[]> => {
+    return await apiClient.getClaims();
+  }
+
+  const updateCustomer = async (customer: Customer): Promise<Customer> => {    
+    if (customer.uniqueID != undefined)
+      return await apiClient.updateCustomer(customer.uniqueID, customer);   
+    else
+      return await apiClient.createCustomer(customer);         
+  }
+
+  const updateInvestigator = async (investigator: Investigator): Promise<Investigator> => {    
+    if (investigator.uniqueID != undefined)
+      return await apiClient.updateInvestigator(investigator.uniqueID, investigator);   
+    else
+      return await apiClient.createInvestigator(investigator);         
   }
 
   return (

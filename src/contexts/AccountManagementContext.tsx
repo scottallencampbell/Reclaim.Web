@@ -27,7 +27,7 @@ export const AccountManagementContext = (): IAccountManagementContext => {
 const Context = createContext({} as IAccountManagementContext);
 
 export function AccountManagementProvider({ children }: { children: any }) {
-  const apiClient = new AccountClient();
+  const apiClient = new AccountClient(process.env.REACT_APP_API_URL);
   
   const confirmAccount = async (emailAddress: string, token: string): Promise<void> => {  
     const request = new AccountConfirmation({ emailAddress: emailAddress, token: token }); 

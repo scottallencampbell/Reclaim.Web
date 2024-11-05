@@ -16,9 +16,9 @@ export const JobContext = (): IJobContext => {
 }
     
 const Context = createContext({} as IJobContext);
-const apiClient = new JobClient();
 
 export function JobProvider({ children }: { children: any }) {
+  const apiClient = new JobClient(process.env.REACT_APP_API_URL);
 
   const getAll = async (): Promise<Job[]> => {
     return apiClient.getAll();             

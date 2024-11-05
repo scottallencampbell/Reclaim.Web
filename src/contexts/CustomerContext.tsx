@@ -17,7 +17,7 @@ export const CustomerContext = (): ICustomerContext => {
 }
     
 const Context = createContext({} as ICustomerContext);
-// const apiClient = new CustomerClient();
+// const apiClient = new CustomerClient(process.env.REACT_APP_API_URL);
 
 export function CustomerProvider({ children }: { children: any }) {
 

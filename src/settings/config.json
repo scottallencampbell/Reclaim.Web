@@ -1,6 +1,4 @@
 {
-    "ApiRootUrl": "http://localhost:50000",    
-    "ApiSignalRUrl": "http://localhost:50000", 
     "AccessTokenTimeout": 600,
     "AccessTokenMinimumRefreshMargin": 30,
     "AccessTokenRefreshMarginPercent": 10,

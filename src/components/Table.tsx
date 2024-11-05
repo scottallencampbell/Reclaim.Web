@@ -277,7 +277,7 @@ const Table = ({ children, id, type, keyField, columns, sourceData, isPropertyBa
                       if (value) {
                         switch (type) {
                           case "avatar":                          
-                            tag = <Avatar url={`${configSettings.ApiRootUrl}/content${value}`} initials="" />;
+                            tag = <Avatar url={`${process.env.REACT_APP_API_URL}/content${value}`} initials="" />;
                             break;
 
                           case "cityStatePostalCode":

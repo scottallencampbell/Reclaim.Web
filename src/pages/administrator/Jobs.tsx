@@ -42,10 +42,8 @@ const Jobs = () => {
   const handleRowClick = (clickedJob: Job) => {
   }
 
-  const apiRootUrl = process.env.REACT_APP_API_SIGNALR_URL ? process.env.REACT_APP_API_SIGNALR_URL : configSettings.ApiSignalRUrl;
-
   const hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl(apiRootUrl + "/hub/job",
+    .withUrl(process.env.REACT_APP_API_SIGNALR_URL + "/hub/job",
     {
         transport: signalR.HttpTransportType.WebSockets,
         skipNegotiation: true
