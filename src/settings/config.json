@@ -4,6 +4,6 @@
   "AccessTokenRefreshMarginPercent": 10,
   "IdleTimeout": 600,
   "IdlePopupDuration": 15,
-  "GoogleOAuthClientID": "697557080680-s1rg0g7ce1knv0sjq6e2gjvgfcik9lls.apps.googleusercontent.com",
+  "GoogleOAuthClientID": "1059879458178-sebjl0sc9ui8vq55irpr7fnc2bhg95f1.apps.googleusercontent.com",
   "GoogleOAuthCallbackUrl": "https://reclaim.com/oauth/redirect/google"
 }
