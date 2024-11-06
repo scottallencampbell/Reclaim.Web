@@ -41,11 +41,11 @@ const Jobs = () => {
   const handleRowClick = (clickedJob: Job) => {}
 
   const hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl(process.env.REACT_APP_API_SIGNALR_URL + '/hub/job', {
+    .withUrl(process.env.REACT_APP_SIGNALR_URL + '/hub/job', {
       transport: signalR.HttpTransportType.WebSockets,
       skipNegotiation: true,
     })
-    .configureLogging(signalR.LogLevel.Trace)
+    .configureLogging(signalR.LogLevel.Error)
     .withAutomaticReconnect()
     .build()
 
