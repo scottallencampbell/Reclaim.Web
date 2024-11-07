@@ -6,6 +6,7 @@ $secondaryColor: #844c85;
 $errorColor: #aa0000;
 $errorBackgroundColor: #ffeeee;
 $mutedColor: #6c757d;
+$grayColor: #aaaaaa;
 $disabledButtonColor: #aaaaaa;
 $flashCellColor: #ffffff;
 $flashCellEvenColor: #f3f3f3;
@@ -16,6 +17,8 @@ $navbarColor: #ffffff;
 $backgroundColor: #f2f2f2;
 $highlightColor: #eaf2ff;
 $disabledBackgroundColor: #f8f8f8;
+$redColor: #dd1111;
+$greenColor: #11aa11;
 
 * {
   font-family: 'Lato';
@@ -1445,5 +1448,57 @@ form.form-error .input-container {
     width: 100%;
     height: 100%;
     border-radius: 41px;
+  }
+}
+
+.aggregate {
+  height: 130px;
+  min-height: 130px;
+  max-height: 130px;
+
+  div {
+    border: solid 1px $blackColor;
+    padding: 0 15px 0 15px;
+    border-radius: 4px;
+    height: 100%;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  p:nth-child(1) {
+    color: $mutedColor;
+    font-size: 18px;
+    xfont-weight: 600;
+    padding-top: 10px;
+  }
+
+  p:nth-child(2) {
+    font-size: 32px;
+    font-weight: 400;
+    padding-top: 5px;
+  }
+
+  p:nth-child(3) {
+    color: $mutedColor;
+    padding-top: 8px;
+    font-size: 14px;
+  }
+
+  .icon {
+    margin-right: 8px;
+  }
+
+  .icon-ArrowTrendUp,
+  span.trendUp
+  {
+    color: $greenColor;
+  }
+
+  .icon-ArrowTrendDown,
+  span.trendDown
+  {
+    color: $redColor;
   }
 }

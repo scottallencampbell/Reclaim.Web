@@ -328,6 +328,45 @@ export class AdministratorClient extends ApiBase {
     }
 
     /**
+     * @return Administrator dashboard DTO
+     */
+    getDashboard(): Promise<AdministratorDashboard> {
+        let url_ = this.baseUrl + "/administrator/dashboard";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetDashboard(_response);
+        });
+    }
+
+    protected processGetDashboard(response: Response): Promise<AdministratorDashboard> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AdministratorDashboard.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AdministratorDashboard>(null as any);
+    }
+
+    /**
      * @return Array of Claim DTOs
      */
     getClaims(): Promise<Claim[]> {
@@ -1669,6 +1708,141 @@ export interface IPasswordReset extends IBase {
     emailAddress: string;
     newPassword: string;
     token: string;
+}
+
+export class AdministratorDashboard extends Base implements IAdministratorDashboard {
+    uniqueLogins!: DashboardAggregate;
+    claimsValueUnderInvestigation!: DashboardAggregate;
+    newOrders!: DashboardAggregate;
+    monthlyRevenue!: DashboardAggregate;
+    claimsByState!: { [key: string]: number; };
+
+    constructor(data?: IAdministratorDashboard) {
+        super(data);
+        if (data) {
+            this.uniqueLogins = data.uniqueLogins && !(<any>data.uniqueLogins).toJSON ? new DashboardAggregate(data.uniqueLogins) : <DashboardAggregate>this.uniqueLogins;
+            this.claimsValueUnderInvestigation = data.claimsValueUnderInvestigation && !(<any>data.claimsValueUnderInvestigation).toJSON ? new DashboardAggregate(data.claimsValueUnderInvestigation) : <DashboardAggregate>this.claimsValueUnderInvestigation;
+            this.newOrders = data.newOrders && !(<any>data.newOrders).toJSON ? new DashboardAggregate(data.newOrders) : <DashboardAggregate>this.newOrders;
+            this.monthlyRevenue = data.monthlyRevenue && !(<any>data.monthlyRevenue).toJSON ? new DashboardAggregate(data.monthlyRevenue) : <DashboardAggregate>this.monthlyRevenue;
+        }
+        if (!data) {
+            this.uniqueLogins = new DashboardAggregate();
+            this.claimsValueUnderInvestigation = new DashboardAggregate();
+            this.newOrders = new DashboardAggregate();
+            this.monthlyRevenue = new DashboardAggregate();
+        }
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.uniqueLogins = _data["uniqueLogins"] ? DashboardAggregate.fromJS(_data["uniqueLogins"]) : new DashboardAggregate();
+            this.claimsValueUnderInvestigation = _data["claimsValueUnderInvestigation"] ? DashboardAggregate.fromJS(_data["claimsValueUnderInvestigation"]) : new DashboardAggregate();
+            this.newOrders = _data["newOrders"] ? DashboardAggregate.fromJS(_data["newOrders"]) : new DashboardAggregate();
+            this.monthlyRevenue = _data["monthlyRevenue"] ? DashboardAggregate.fromJS(_data["monthlyRevenue"]) : new DashboardAggregate();
+            if (_data["claimsByState"]) {
+                this.claimsByState = {} as any;
+                for (let key in _data["claimsByState"]) {
+                    if (_data["claimsByState"].hasOwnProperty(key))
+                        (<any>this.claimsByState)![key] = _data["claimsByState"][key];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): AdministratorDashboard {
+        data = typeof data === 'object' ? data : {};
+        let result = new AdministratorDashboard();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uniqueLogins"] = this.uniqueLogins ? this.uniqueLogins.toJSON() : <any>undefined;
+        data["claimsValueUnderInvestigation"] = this.claimsValueUnderInvestigation ? this.claimsValueUnderInvestigation.toJSON() : <any>undefined;
+        data["newOrders"] = this.newOrders ? this.newOrders.toJSON() : <any>undefined;
+        data["monthlyRevenue"] = this.monthlyRevenue ? this.monthlyRevenue.toJSON() : <any>undefined;
+        if (this.claimsByState) {
+            data["claimsByState"] = {};
+            for (let key in this.claimsByState) {
+                if (this.claimsByState.hasOwnProperty(key))
+                    (<any>data["claimsByState"])[key] = (<any>this.claimsByState)[key];
+            }
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IAdministratorDashboard extends IBase {
+    uniqueLogins: IDashboardAggregate;
+    claimsValueUnderInvestigation: IDashboardAggregate;
+    newOrders: IDashboardAggregate;
+    monthlyRevenue: IDashboardAggregate;
+    claimsByState: { [key: string]: number; };
+}
+
+export class DashboardAggregate extends Base implements IDashboardAggregate {
+    currentValue!: number;
+    previousValue!: number;
+    valueType!: Type;
+    comparisonPeriod!: Period;
+    percentChange!: number;
+
+    constructor(data?: IDashboardAggregate) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.currentValue = _data["currentValue"];
+            this.previousValue = _data["previousValue"];
+            this.valueType = _data["valueType"];
+            this.comparisonPeriod = _data["comparisonPeriod"];
+            this.percentChange = _data["percentChange"];
+        }
+    }
+
+    static fromJS(data: any): DashboardAggregate {
+        data = typeof data === 'object' ? data : {};
+        let result = new DashboardAggregate();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["currentValue"] = this.currentValue;
+        data["previousValue"] = this.previousValue;
+        data["valueType"] = this.valueType;
+        data["comparisonPeriod"] = this.comparisonPeriod;
+        data["percentChange"] = this.percentChange;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IDashboardAggregate extends IBase {
+    currentValue: number;
+    previousValue: number;
+    valueType: Type;
+    comparisonPeriod: Period;
+    percentChange: number;
+}
+
+export enum Type {
+    Integer = "Integer",
+    Money = "Money",
+}
+
+export enum Period {
+    Hour = "Hour",
+    Day = "Day",
+    Week = "Week",
+    Month = "Month",
+    Year = "Year",
 }
 
 export class Claim implements IClaim {

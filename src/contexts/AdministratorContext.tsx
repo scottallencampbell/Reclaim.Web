@@ -1,7 +1,15 @@
 import { createContext, useContext } from 'react'
-import { Account, Customer, Investigator, Claim, AdministratorClient } from 'api/schema'
+import {
+  Account,
+  Customer,
+  Investigator,
+  Claim,
+  AdministratorClient,
+  AdministratorDashboard,
+} from 'api/schema'
 
 interface IAdministratorContext {
+  getDashboard: () => Promise<AdministratorDashboard>
   getAuthenticatedAccounts: () => Promise<Account[]>
   getAllCustomers: () => Promise<Customer[]>
   getAllInvestigators: () => Promise<Investigator[]>
@@ -12,6 +20,7 @@ interface IAdministratorContext {
 
 export const AdministratorContext = (): IAdministratorContext => {
   const {
+    getDashboard,
     getAuthenticatedAccounts,
     getAllCustomers,
     getAllInvestigators,
@@ -21,6 +30,7 @@ export const AdministratorContext = (): IAdministratorContext => {
   } = useContext(Context)
 
   return {
+    getDashboard,
     getAuthenticatedAccounts,
     getAllCustomers,
     getAllInvestigators,
@@ -34,6 +44,10 @@ const Context = createContext({} as IAdministratorContext)
 
 export function AdministratorProvider({ children }: { children: any }) {
   const apiClient = new AdministratorClient(process.env.REACT_APP_API_URL)
+
+  const getDashboard = async (): Promise<AdministratorDashboard> => {
+    return await apiClient.getDashboard()
+  }
 
   const getAuthenticatedAccounts = async (): Promise<Account[]> => {
     return await apiClient.authenticated()
@@ -72,6 +86,7 @@ export function AdministratorProvider({ children }: { children: any }) {
   return (
     <Context.Provider
       value={{
+        getDashboard,
         getAuthenticatedAccounts,
         getAllCustomers,
         getAllInvestigators,
