@@ -1,5 +1,4 @@
 import HTMLReactParser from 'html-react-parser'
-import { AuthenticationContext } from 'contexts/AuthenticationContext'
 import { HelmetProvider } from 'react-helmet-async'
 import { useEffect, useState } from 'react'
 
@@ -62,8 +61,8 @@ export const UnauthenticatedLayout = ({
                 <div className="container">
                   <div className="row">
                     <div className="col-lg-10 col-xl-7 mx-auto">
-                      <h3 className="display-4">{title}</h3>
-                      <p className={'muted mb-4'}>{message}</p>
+                      <h3 className="display-4">{HTMLReactParser(title)}</h3>
+                      <p className={'muted mb-4'}>{HTMLReactParser(message)}</p>
                       <div className="error-message">{HTMLReactParser(errorMessage)}</div>
                       <main>{children}</main>
                     </div>

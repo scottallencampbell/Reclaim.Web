@@ -722,7 +722,6 @@ export class AdministratorClient extends ApiBase {
 
     protected processUpdateInvestigator(response: Response): Promise<Investigator> {
         const status = response.status;
-        console.log("status: " + status)
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
@@ -976,6 +975,63 @@ export class ContentClient extends ApiBase {
             });
         }
         return Promise.resolve<FileResponse>(null as any);
+    }
+}
+
+export class CustomerClient extends ApiBase {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl ?? "http://localhost:50000";
+    }
+
+    /**
+     * Create a new customer, via the self-service registration workflow
+     * @param dto A CustomerRegistration DTO
+     * @return Account retrieved
+     */
+    register(dto: CustomerRegistration): Promise<Customer> {
+        let url_ = this.baseUrl + "/customer/register";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(dto);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processRegister(_response);
+        });
+    }
+
+    protected processRegister(response: Response): Promise<Customer> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Customer.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Customer>(null as any);
     }
 }
 
@@ -1997,6 +2053,8 @@ export enum RoofType {
 export class Customer implements ICustomer {
     uniqueID!: string;
     name!: string;
+    firstName!: string;
+    lastName!: string;
     code!: string;
     address!: string;
     address2!: string | undefined;
@@ -2020,6 +2078,8 @@ export class Customer implements ICustomer {
         if (_data) {
             this.uniqueID = _data["uniqueID"];
             this.name = _data["name"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
             this.code = _data["code"];
             this.address = _data["address"];
             this.address2 = _data["address2"];
@@ -2043,6 +2103,8 @@ export class Customer implements ICustomer {
         data = typeof data === 'object' ? data : {};
         data["uniqueID"] = this.uniqueID;
         data["name"] = this.name;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
         data["code"] = this.code;
         data["address"] = this.address;
         data["address2"] = this.address2;
@@ -2059,6 +2121,8 @@ export class Customer implements ICustomer {
 export interface ICustomer {
     uniqueID: string;
     name: string;
+    firstName: string;
+    lastName: string;
     code: string;
     address: string;
     address2: string | undefined;
@@ -2149,6 +2213,8 @@ export interface IInvestigator {
 export class CustomerCreateOrUpdate extends Base implements ICustomerCreateOrUpdate {
     name!: string;
     code!: string;
+    firstName!: string;
+    lastName!: string;
     address!: string;
     address2!: string | undefined;
     city!: string;
@@ -2166,6 +2232,8 @@ export class CustomerCreateOrUpdate extends Base implements ICustomerCreateOrUpd
         if (_data) {
             this.name = _data["name"];
             this.code = _data["code"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
             this.address = _data["address"];
             this.address2 = _data["address2"];
             this.city = _data["city"];
@@ -2187,6 +2255,8 @@ export class CustomerCreateOrUpdate extends Base implements ICustomerCreateOrUpd
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
         data["code"] = this.code;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
         data["address"] = this.address;
         data["address2"] = this.address2;
         data["city"] = this.city;
@@ -2202,6 +2272,8 @@ export class CustomerCreateOrUpdate extends Base implements ICustomerCreateOrUpd
 export interface ICustomerCreateOrUpdate extends IBase {
     name: string;
     code: string;
+    firstName: string;
+    lastName: string;
     address: string;
     address2: string | undefined;
     city: string;
@@ -2274,6 +2346,83 @@ export interface IInvestigatorCreateOrUpdate extends IBase {
     postalCode: string;
     telephone: string;
     emailAddress: string;
+}
+
+export class CustomerRegistration extends Base implements ICustomerRegistration {
+    name!: string;
+    firstName!: string;
+    lastName!: string;
+    address!: string;
+    address2!: string | undefined;
+    city!: string;
+    state!: string;
+    postalCode!: string;
+    emailAddress!: string;
+    telephone!: string;
+    password!: string | undefined;
+    googleCredential!: string | undefined;
+
+    constructor(data?: ICustomerRegistration) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.name = _data["name"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.address = _data["address"];
+            this.address2 = _data["address2"];
+            this.city = _data["city"];
+            this.state = _data["state"];
+            this.postalCode = _data["postalCode"];
+            this.emailAddress = _data["emailAddress"];
+            this.telephone = _data["telephone"];
+            this.password = _data["password"];
+            this.googleCredential = _data["googleCredential"];
+        }
+    }
+
+    static fromJS(data: any): CustomerRegistration {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerRegistration();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["address"] = this.address;
+        data["address2"] = this.address2;
+        data["city"] = this.city;
+        data["state"] = this.state;
+        data["postalCode"] = this.postalCode;
+        data["emailAddress"] = this.emailAddress;
+        data["telephone"] = this.telephone;
+        data["password"] = this.password;
+        data["googleCredential"] = this.googleCredential;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ICustomerRegistration extends IBase {
+    name: string;
+    firstName: string;
+    lastName: string;
+    address: string;
+    address2: string | undefined;
+    city: string;
+    state: string;
+    postalCode: string;
+    emailAddress: string;
+    telephone: string;
+    password: string | undefined;
+    googleCredential: string | undefined;
 }
 
 export class Job extends Base implements IJob {
@@ -2368,6 +2517,7 @@ export enum ErrorCode {
     MasterDataValueDoesNotExist = "MasterDataValueDoesNotExist",
     ApplicationSettingsInvalid = "ApplicationSettingsInvalid",
     ModelValidationFailed = "ModelValidationFailed",
+    EmailDeliveryFailed = "EmailDeliveryFailed",
     AccountCredentialsInvalid = "AccountCredentialsInvalid",
     AccountExternalCredentialsInvalid = "AccountExternalCredentialsInvalid",
     AccountDoesNotExist = "AccountDoesNotExist",
@@ -2405,8 +2555,8 @@ export enum ErrorCode {
     CustomerDoesNotExist = "CustomerDoesNotExist",
     CustomerInvalid = "CustomerInvalid",
     CustomerCodeAlreadyExists = "CustomerCodeAlreadyExists",
+    CustomerCodeGenerationFailed = "CustomerCodeGenerationFailed",
     InvestigatorDoesNotExist = "InvestigatorDoesNotExist",
-    EmailDeliveryFailed = "EmailDeliveryFailed",
 }
 
 function formatDate(d: Date) {

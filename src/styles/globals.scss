@@ -186,7 +186,7 @@ select {
     width: 100%;
 
     &:read-only {
-      background-color: $disabledBackgroundColor;
+      xbackground-color: $disabledBackgroundColor;
     }
   }
 
@@ -248,7 +248,7 @@ form.form-error .input-container {
   }
 
   .not-registered {
-    margin-top: 60px;
+    margin-top: 20px;
   }
 
   .bg-light-ex {
@@ -721,6 +721,7 @@ form.form-error .input-container {
   width: 100%;
   height: 40px;
   background-color: $whiteColor;
+  margin-bottom: 60px;
 }
 
 #social-login-buttons #google-login-button {
@@ -1048,10 +1049,11 @@ form.form-error .input-container {
 
   .input-container {
     margin: 0 0 10px 0;
+    overflow: hidden;
 
     label {
       font-size: 20px;
-      width: 100%;
+      width: 200%;
     }
 
     &:focus-within label {

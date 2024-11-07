@@ -1,19 +1,30 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import TextInput from 'components/TextInput'
 import { useEffect, useState } from 'react'
-import { emailAddressRegex, passwordRegex, telephoneRegex } from 'helpers/constants'
+import {
+  emailAddressRegex,
+  passwordRegex,
+  postalCodeRegex,
+  telephoneRegex,
+} from 'helpers/constants'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
 import { v4 } from 'uuid'
 import { Link, useNavigate } from 'react-router-dom'
-import { InvestigatorContext } from 'contexts/InvestigatorContext'
 import { GoogleLogin } from '@react-oauth/google'
-import { ErrorCode } from 'api/schema'
+import { CustomerRegistration, ErrorCode } from 'api/schema'
+import { CustomerContext } from 'contexts/CustomerContext'
 
 const Register = () => {
   const [isSubmitButtonEnabled, setIsSubmitButtonEnabled] = useState(false)
   const [isPasswordAllowed] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
+  const [companyName, setCompanyName] = useState('')
+  const [address, setAddress] = useState('')
+  const [address2, setAddress2] = useState('')
+  const [city, setCity] = useState('')
+  const [state, setState] = useState('')
+  const [postalCode, setPostalCode] = useState('')
   const [emailAddress, setEmailAddress] = useState('')
   const [password, setPassword] = useState('')
   const [password2, setPassword2] = useState('')
@@ -21,7 +32,7 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const [nonce] = useState(v4())
 
-  const { register, registerGoogle } = InvestigatorContext()
+  const { register, registerGoogle } = CustomerContext()
 
   const navigate = useNavigate()
 
@@ -45,8 +56,14 @@ const Register = () => {
     isPasswordAllowed,
     firstName,
     lastName,
-    emailAddress,
+    companyName,
+    address,
+    address2,
+    city,
+    state,
+    postalCode,
     telephone,
+    emailAddress,
     password,
     password2,
   ])
@@ -59,7 +76,20 @@ const Register = () => {
     }
 
     await attemptRegister(async () => {
-      await register(firstName, lastName, emailAddress, telephone, password)
+      const dto = new CustomerRegistration()
+      dto.name = companyName
+      dto.firstName = firstName
+      dto.lastName = lastName
+      dto.address = address
+      dto.address2 = address2
+      dto.city = city
+      dto.state = state
+      dto.postalCode = postalCode
+      dto.telephone = telephone
+      dto.emailAddress = emailAddress
+      dto.password = password
+
+      await register(dto)
     })
   }
 
@@ -81,7 +111,17 @@ const Register = () => {
   }
 
   const validate = () => {
-    if (firstName.length === 0 || lastName.length === 0 || emailAddress.length === 0) {
+    if (
+      firstName.length === 0 ||
+      lastName.length === 0 ||
+      companyName.length === 0 ||
+      address.length === 0 ||
+      city.length === 0 ||
+      state.length === 0 ||
+      postalCode.length === 0 ||
+      telephone.length === 0 ||
+      emailAddress.length === 0
+    ) {
       setErrorMessage(' ')
       return false
     }
@@ -160,8 +200,8 @@ const Register = () => {
   return (
     <UnauthenticatedLayout
       id="register"
-      title="Register"
-      message="Please enter your contact information below.  We'll send you an email confirming your account creation!"
+      title="Learn More"
+      message="Please enter your company contact information below."
       errorMessage={errorMessage}
       reversed={true}>
       <form
@@ -185,6 +225,65 @@ const Register = () => {
               value={lastName}
               required={true}
               onChange={(value: string) => setLastName(value)}></TextInput>
+          </div>
+        </div>
+        <div className="mb-3">
+          <TextInput
+            type="text"
+            label="Company name"
+            name="company-name"
+            value={companyName}
+            required={true}
+            onChange={(value: string) => setCompanyName(value)}></TextInput>
+        </div>
+        <div className="row">
+          <div className="col-lg-6">
+            <TextInput
+              type="text"
+              label="Address"
+              name="address"
+              value={address}
+              required={true}
+              onChange={(value: string) => setAddress(value)}></TextInput>
+          </div>
+          <div className="col-lg-6">
+            <TextInput
+              type="text"
+              label="Suite"
+              name="address2"
+              value={address2}
+              required={false}
+              onChange={(value: string) => setAddress2(value)}></TextInput>
+          </div>
+        </div>
+        <div className="mb-3">
+          <TextInput
+            type="text"
+            label="City"
+            name="city"
+            value={city}
+            required={true}
+            onChange={(value: string) => setCity(value)}></TextInput>
+        </div>
+        <div className="row">
+          <div className="col-lg-6">
+            <TextInput
+              type="state"
+              label="State"
+              name="state"
+              value={state}
+              required={true}
+              onChange={(value: string) => setState(value)}></TextInput>
+          </div>
+          <div className="col-lg-6">
+            <TextInput
+              type="text"
+              label="Postal Code"
+              name="postalCode"
+              regex={postalCodeRegex}
+              value={postalCode}
+              required={true}
+              onChange={(value: string) => setPostalCode(value)}></TextInput>
           </div>
         </div>
         <div className="mb-3">
@@ -234,13 +333,13 @@ const Register = () => {
             disabled={!isSubmitButtonEnabled}
             type="submit"
             className="styled-button">
-            Register
+            Submit
           </button>
         </div>
-        <div className="or-block">
+        <div className="or-block" style={{ display: 'none' }}>
           <span>OR</span>
         </div>
-        <div id="social-login-buttons">
+        <div id="social-login-buttons" style={{ display: 'none' }}>
           <div id="google-login-button">
             <GoogleLogin
               nonce={nonce}

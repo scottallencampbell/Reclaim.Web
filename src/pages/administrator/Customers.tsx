@@ -1,6 +1,5 @@
-import { SetStateAction, useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
-import { debounce } from 'lodash'
 import PropertyBar from 'components/PropertyBar'
 import TextInput from 'components/TextInput'
 import { Customer } from 'api/schema'
@@ -32,12 +31,9 @@ const Customers = () => {
         accessor: 'code',
       },
       {
-        label: 'Email address',
-        accessor: 'emailAddress',
-      },
-      {
-        label: 'Telephone',
-        accessor: 'telephone',
+        label: 'Contact',
+        accessor: 'firstName',
+        type: 'fullName',
       },
       {
         label: 'Address',
@@ -71,6 +67,20 @@ const Customers = () => {
         accessor: 'code',
         type: 'text',
         required: true,
+      },
+      {
+        label: 'Contact first name',
+        accessor: 'firstName',
+        type: 'text',
+        required: true,
+        columnSpec: '2',
+      },
+      {
+        label: 'Contact last name',
+        accessor: 'lastName',
+        type: 'text',
+        required: true,
+        columnSpec: '2-last',
       },
       {
         label: 'Email address',
@@ -196,7 +206,7 @@ const Customers = () => {
     }
 
     asyncGetAllCustomers()
-  }, [])
+  }, [getAllCustomers])
 
   return (
     <main>
@@ -231,7 +241,7 @@ const Customers = () => {
           onCancel={handleCancel}>
           <>
             <div className="caption">
-              {editCustomer.uniqueID == undefined ? 'New customer' : 'Edit customer'}
+              {editCustomer.uniqueID === undefined ? 'New customer' : 'Edit customer'}
             </div>
             {fields.map((o, i) => {
               return (

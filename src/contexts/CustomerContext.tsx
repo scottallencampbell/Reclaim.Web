@@ -1,20 +1,25 @@
 import { createContext, useContext } from 'react'
-import { Customer } from 'api/schema'
+import { Customer, CustomerClient, CustomerRegistration } from 'api/schema'
+import jwt from 'jwt-decode'
 
 interface ICustomerContext {
   update: (customer: Customer) => Promise<Customer>
+  register: (dto: CustomerRegistration) => Promise<Customer>
+  registerGoogle: (credential: string, nonce: string) => Promise<Customer>
 }
 
 export const CustomerContext = (): ICustomerContext => {
-  const { update } = useContext(Context)
+  const { update, register, registerGoogle } = useContext(Context)
 
   return {
     update,
+    register,
+    registerGoogle,
   }
 }
 
 const Context = createContext({} as ICustomerContext)
-// const apiClient = new CustomerClient(process.env.REACT_APP_API_URL);
+const apiClient = new CustomerClient(process.env.REACT_APP_API_URL)
 
 export function CustomerProvider({ children }: { children: any }) {
   const update = async (customer: Customer): Promise<Customer> => {
@@ -25,10 +30,35 @@ export function CustomerProvider({ children }: { children: any }) {
     }
   }
 
+  const register = async (dto: CustomerRegistration): Promise<Customer> => {
+    return apiClient.register(dto)
+  }
+
+  const registerGoogle = async (credential: string, nonce: string): Promise<Customer> => {
+    const item = jwt<any>(credential)
+    const dto = new CustomerRegistration()
+
+    dto.name = item.given_name // hmm
+    dto.firstName = item.given_name
+    dto.lastName = item.family_name
+    dto.address = 'UNKNOWN'
+    dto.address2 = undefined
+    dto.city = 'UNKNOWN'
+    dto.state = 'IL'
+    dto.postalCode = '00000'
+    dto.telephone = item.telephone
+    dto.googleCredential = credential
+    dto.emailAddress = item.email
+
+    return apiClient.register(dto)
+  }
+
   return (
     <Context.Provider
       value={{
         update,
+        register,
+        registerGoogle,
       }}>
       {children}
     </Context.Provider>

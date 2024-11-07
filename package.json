@@ -99,7 +99,10 @@
       "no-console": "off",
       "no-debugger": "warn",
       "no-restricted-globals": "off",
-      "curly": [2, "all"]
+      "curly": [
+        2,
+        "all"
+      ]
     }
   },
   "prettier": {

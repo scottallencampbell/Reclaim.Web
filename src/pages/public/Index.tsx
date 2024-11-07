@@ -22,7 +22,7 @@ const Index = () => {
           </div>
           <div className="button-row">
             <Link className="styled-button" to={'/register'}>
-              Register Now
+              Learn More
             </Link>
           </div>
         </div>

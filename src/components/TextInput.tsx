@@ -64,7 +64,7 @@ const TextInput = ({
         setIsValid(true)
         break
     }
-  }, [entityID])
+  }, [entityID, type, value])
 
   useEffect(() => {
     if (group != null && groupError === group && text.length === 0) {

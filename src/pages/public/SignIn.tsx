@@ -253,7 +253,7 @@ const SignIn = () => {
           </div>
         </div>
         <div className="not-registered text-muted">
-          Not registered yet?{' '}
+          Interested in learning more?{' '}
           <Link className="simple-link" to="/register">
             Click here to get started!
           </Link>
