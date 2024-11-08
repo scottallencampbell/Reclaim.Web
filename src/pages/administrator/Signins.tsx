@@ -4,14 +4,11 @@ import Table from 'components/Table'
 import { Account } from 'api/schema'
 import { AdministratorContext } from 'contexts/AdministratorContext'
 import CommandBar from 'components/CommandBar'
-import { useOutletContext } from 'react-router'
 import { exportSignins } from 'helpers/exporter'
 
 const SignIns = () => {
   const [accounts, setAccounts] = useState<Account[]>()
   const { getAuthenticatedAccounts } = AdministratorContext()
-
-  const logout = useOutletContext()
 
   const columns = useMemo(
     () => [
@@ -43,24 +40,19 @@ const SignIns = () => {
   )
 
   useEffect(() => {
-    const asyncGetAuthenticatedAccounts = async () => {
-      await getAuthenticatedAccounts()
-        .then((result) => {
-          setAccounts(result)
-        })
-        .catch((error) => {
-          console.log(JSON.stringify(error))
-        })
-    }
-
-    asyncGetAuthenticatedAccounts()
+    ;(async () => {
+      try {
+        const result = await getAuthenticatedAccounts()
+        setAccounts(result)
+      } catch (error) {
+        console.log(JSON.stringify(error))
+      }
+    })()
   }, [getAuthenticatedAccounts])
 
   return (
     <main>
-      <CommandBar
-        onExport={() => exportSignins(accounts!)}
-        onLogout={logout}></CommandBar>
+      <CommandBar onExport={() => exportSignins(accounts!)} onLogout={null}></CommandBar>
       <div id="overlay" className="wrapper">
         <div className="header">Sign-ins</div>
         <div className="inner">

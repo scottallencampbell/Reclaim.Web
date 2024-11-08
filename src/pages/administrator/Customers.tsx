@@ -7,7 +7,6 @@ import { postalCodeRegex } from 'helpers/constants'
 import moment from 'moment'
 import Icon from 'components/Icon'
 import CommandBar from 'components/CommandBar'
-import { useOutletContext } from 'react-router'
 import { exportCustomers } from 'helpers/exporter'
 import { AdministratorContext } from 'contexts/AdministratorContext'
 
@@ -17,8 +16,6 @@ const Customers = () => {
   const [isPropertyBarVisible, setIsPropertyBarVisible] = useState(false)
 
   const { getAllCustomers, updateCustomer } = AdministratorContext()
-
-  const logout = useOutletContext()
 
   const columns = useMemo(
     () => [
@@ -195,24 +192,21 @@ const Customers = () => {
   */
 
   useEffect(() => {
-    const asyncGetAllCustomers = async () => {
-      await getAllCustomers()
-        .then((result: Customer[]) => {
-          setCustomers(result)
-        })
-        .catch((error: any) => {
-          console.log(JSON.stringify(error))
-        })
-    }
-
-    asyncGetAllCustomers()
+    ;(async () => {
+      try {
+        const result = await getAllCustomers()
+        setCustomers(result)
+      } catch (error) {
+        console.log(JSON.stringify(error))
+      }
+    })()
   }, [getAllCustomers])
 
   return (
     <main>
       <CommandBar
         onExport={() => exportCustomers(customers!)}
-        onLogout={logout}></CommandBar>
+        onLogout={null}></CommandBar>
       <div id="overlay" className="wrapper">
         <div className="header">Customers</div>
         <div className="inner">

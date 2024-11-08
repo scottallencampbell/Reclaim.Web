@@ -6,7 +6,6 @@ import { Investigator } from 'api/schema'
 import moment from 'moment'
 import Icon from 'components/Icon'
 import CommandBar from 'components/CommandBar'
-import { useOutletContext } from 'react-router'
 import { exportInvestigators } from 'helpers/exporter'
 import { AdministratorContext } from 'contexts/AdministratorContext'
 import { postalCodeRegex } from 'helpers/constants'
@@ -20,8 +19,6 @@ const Investigators = () => {
   const [groupError, setGroupError] = useState('')
 
   const { updateInvestigator, getAllInvestigators } = AdministratorContext()
-
-  const logout = useOutletContext()
 
   const columns = useMemo(
     () => [
@@ -168,24 +165,21 @@ const Investigators = () => {
   }
 
   useEffect(() => {
-    const asyncGetAllInvestigators = async () => {
-      await getAllInvestigators()
-        .then((result: Investigator[]) => {
-          setInvestigators(result)
-        })
-        .catch((error: any) => {
-          console.log(JSON.stringify(error))
-        })
-    }
-
-    asyncGetAllInvestigators()
+    ;(async () => {
+      try {
+        const result = await getAllInvestigators()
+        setInvestigators(result)
+      } catch (error) {
+        console.log(JSON.stringify(error))
+      }
+    })()
   }, [getAllInvestigators])
 
   return (
     <main>
       <CommandBar
         onExport={() => exportInvestigators(investigators!)}
-        onLogout={logout}></CommandBar>
+        onLogout={null}></CommandBar>
       <div id="overlay" className="wrapper">
         <div className="header">Investigators</div>
         <div className="inner">

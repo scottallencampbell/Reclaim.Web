@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
 import { Claim } from 'api/schema'
 import CommandBar from 'components/CommandBar'
-import { useOutletContext } from 'react-router'
 import { exportClaims } from 'helpers/exporter'
 import { AdministratorContext } from 'contexts/AdministratorContext'
 
@@ -11,8 +10,6 @@ const Claims = () => {
   const [isPropertyBarVisible] = useState(false)
 
   const { getAllClaims } = AdministratorContext()
-
-  const logout = useOutletContext()
 
   const columns = useMemo(
     () => [
@@ -85,22 +82,19 @@ const Claims = () => {
   */
 
   useEffect(() => {
-    const asyncGetAllClaims = async () => {
-      await getAllClaims()
-        .then((result: Claim[]) => {
-          setClaims(result)
-        })
-        .catch((error: any) => {
-          console.log(JSON.stringify(error))
-        })
-    }
-
-    asyncGetAllClaims()
+    ;(async () => {
+      try {
+        const result = await getAllClaims()
+        setClaims(result)
+      } catch (error) {
+        console.log(JSON.stringify(error))
+      }
+    })()
   }, [getAllClaims])
 
   return (
     <main>
-      <CommandBar onExport={() => exportClaims(claims!)} onLogout={logout}></CommandBar>
+      <CommandBar onExport={() => exportClaims(claims!)} onLogout={null}></CommandBar>
       <div id="overlay" className="wrapper">
         <div className="header">Claims</div>
         <div className="inner">

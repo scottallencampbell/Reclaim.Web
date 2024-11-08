@@ -10,7 +10,6 @@ const numberTriplets = /\B(?=(\d{3})+(?!\d))/g
 
 const DashboardAggregateBox = ({ title, data }: IDashboardAggregateBox) => {
   const formatNumber = (value: number, type: string) => {
-    console.log(type)
     if (type === 'Money') {
       return `$${value.toFixed(2).replace(numberTriplets, ',')}`
     } else if (type === 'integer') {

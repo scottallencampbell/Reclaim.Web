@@ -19,6 +19,7 @@ $highlightColor: #eaf2ff;
 $disabledBackgroundColor: #f8f8f8;
 $redColor: #dd1111;
 $greenColor: #11aa11;
+$lightGrayColor: #aaaaaa;
 
 * {
   font-family: 'Lato';
@@ -1468,9 +1469,10 @@ form.form-error .input-container {
   }
 
   p:nth-child(1) {
-    color: $mutedColor;
-    font-size: 18px;
-    xfont-weight: 600;
+    color: $lightGrayColor;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 600;
     padding-top: 10px;
   }
 
@@ -1501,4 +1503,74 @@ form.form-error .input-container {
   {
     color: $redColor;
   }
+}
+
+.dashboard-map {
+  border: solid 1px $blackColor;
+  border-radius: 4px;
+  padding: 10px;
+  height: 375px;
+  min-height: 375px;
+
+  span {
+    color: $lightGrayColor;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 600;
+    padding-top: 10px;
+    padding-left: 10px;
+  }
+
+  .us-state-map {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.dashboard-news {
+  border: solid 1px $blackColor;
+  border-radius: 4px;
+  padding: 10px 10px 15px 10px;
+  height: 375px;
+  min-height: 375px;
+  overflow: hidden;
+    
+  span {
+    color: $lightGrayColor;
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 600;
+    padding-top: 10px;
+    padding-left: 10px;    
+  }
+
+  .items {
+    column-count: 2;
+    column-gap: 5px;
+    height: 335px;
+    overflow: hidden;
+
+    .item {
+      padding-left: 10px;
+      
+      p:nth-child(1) {
+        font-weight: 600;
+        margin: 0;
+        font-size: 14px;
+        padding-top: 10px;
+      }
+
+      p:nth-child(2) {
+        font-weight: 400;
+        padding-top: 5px; 
+        padding-bottom: 10px;
+        font-size: 14px;      
+      }
+    }
+  }
+}
+
+.dashboard-spacer {
+  height: 30px;
+  min-height: 30px;
 }

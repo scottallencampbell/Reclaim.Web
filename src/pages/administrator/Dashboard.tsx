@@ -1,33 +1,30 @@
 import { AdministratorContext } from 'contexts/AdministratorContext'
-import CommandBar from 'components/CommandBar'
-import { useOutletContext } from 'react-router'
 import { useEffect, useState } from 'react'
 import { AdministratorDashboard } from 'api/schema'
 import DashboardAggregateBox from 'components/DashboardAggregateBox'
+import Map from 'components/Map'
+import News from 'components/News'
 
 const Dashboard = () => {
   const [dashboard, setDashboard] = useState<AdministratorDashboard>()
 
-  const logout = useOutletContext()
   const { getDashboard } = AdministratorContext()
 
-  useEffect(() => {
-    const asyncGetAllCustomers = async () => {
-      await getDashboard()
-        .then((result: AdministratorDashboard) => {
-          setDashboard(result)
-        })
-        .catch((error: any) => {
-          console.log(JSON.stringify(error))
-        })
-    }
+  // todo apply this elsewhere
 
-    asyncGetAllCustomers()
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const result = await getDashboard()
+        setDashboard(result)
+      } catch (error) {
+        console.log(JSON.stringify(error))
+      }
+    })()
   }, [getDashboard])
 
   return (
     <main>
-      <CommandBar onLogout={logout}></CommandBar>
       <div id="overlay" className="wrapper">
         <div className="header">Dashboard</div>
         <div className="row no-gutter">
@@ -44,6 +41,21 @@ const Dashboard = () => {
             title={'Unique signins'}
             data={dashboard?.uniqueLogins}
           />
+        </div>
+        <div className="row dashboard-spacer"></div>
+        <div className="row no-gutter">
+          <div className="col-lg-6">
+            <div className="dashboard-news">
+              <span>News</span>
+              <News />
+            </div>
+          </div>
+          <div className="col-lg-6">
+            <div className="dashboard-map">
+              <span>Claims by state</span>
+              <Map data={dashboard?.claimsByState} />
+            </div>
+          </div>
         </div>
       </div>
     </main>

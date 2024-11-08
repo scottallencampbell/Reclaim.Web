@@ -1,4 +1,3 @@
-import configSettings from 'settings/config.json'
 import Icon from './Icon'
 
 interface ICommandBar {

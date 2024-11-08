@@ -4,14 +4,11 @@ import { Job, JobStatus } from 'api/schema'
 import { JobContext } from 'contexts/JobContext'
 import * as signalR from '@microsoft/signalr'
 import CommandBar from 'components/CommandBar'
-import { useOutletContext } from 'react-router'
 import { exportJobs } from 'helpers/exporter'
 
 const Jobs = () => {
   const [jobs, setJobs] = useState<Job[]>()
   const { getAll } = JobContext()
-
-  const logout = useOutletContext()
 
   const columns = useMemo(
     () => [
@@ -84,22 +81,19 @@ const Jobs = () => {
   })
 
   useEffect(() => {
-    const asyncGetJobs = async () => {
-      await getAll()
-        .then((result) => {
-          setJobs(result)
-        })
-        .catch((error) => {
-          console.log(JSON.stringify(error))
-        })
-    }
-
-    asyncGetJobs()
+    ;(async () => {
+      try {
+        const result = await getAll()
+        setJobs(result)
+      } catch (error) {
+        console.log(JSON.stringify(error))
+      }
+    })()
   }, [getAll])
 
   return (
     <main>
-      <CommandBar onExport={() => exportJobs(jobs!)} onLogout={logout}></CommandBar>
+      <CommandBar onExport={() => exportJobs(jobs!)} onLogout={null}></CommandBar>
       <div id="overlay" className="wrapper">
         <div className="header">Scheduled Jobs</div>
         <div className="inner">

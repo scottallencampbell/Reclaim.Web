@@ -17,68 +17,63 @@ const ConfirmAccount = () => {
   const { confirmAccount } = AccountManagementContext()
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const paramToken = params.get('token')
-    const paramEmailAddress = params.get('emailAddress')
+    const apiConfirmAccount = async (
+      emailAddress: string,
+      token: string
+    ): Promise<void> => {
+      await confirmAccount(emailAddress, token)
+        .then(() => {
+          // note, even if the email or token are wrong, this will display.
+          // I don't want to have an un-authenticated method that allows bots
+          // to browse for valid accounts
+          setTitle('Account Confirmed!')
+          setMessage('Please click the button below to sign in and get started.')
+          setIsConfirmed(true)
+        })
+        .catch((error) => {
+          const apiError = JSON.parse(error.response)
 
-    if (paramToken === null || paramEmailAddress === null) {
-      setErrorMessage(
-        'The link does not contain the required information in order to confirm your account.  Please try copying and pasting the link directly from the email you received.'
-      )
-      return
+          switch (apiError?.errorCodeName) {
+            case ErrorCode.AccountAlreadyConfirmed:
+              setMessage(
+                'Your account has already been confirmed.  Click the button below to sign in and get started!'
+              )
+              setIsConfirmed(true)
+              return
+
+            case ErrorCode.AccountMagicUrlTokenExpired:
+              setErrorMessage(
+                "Your account confirmation link has expired.  Please <a href='/forgotpassword'>request a new password</a> to generate a new link."
+              )
+              break
+
+            default:
+              setErrorMessage(error?.response?.data?.message ?? JSON.stringify(error))
+              break
+          }
+
+          setTitle('Account Confirmation Failed')
+        })
     }
 
-    setEmailAddress(paramEmailAddress!)
-    setToken(paramToken!)
+    ;(async () => {
+      const params = new URLSearchParams(window.location.search)
+      const paramToken = params.get('token')
+      const paramEmailAddress = params.get('emailAddress')
 
-    const asyncApiConfirmAccount = async (
-      paramEmailAddress: string,
-      paramToken: string
-    ) => {
-      await apiConfirmAccount(paramEmailAddress, paramToken)
-    }
+      if (paramToken === null || paramEmailAddress === null) {
+        setErrorMessage(
+          'The link does not contain the required information in order to confirm your account.  Please try copying and pasting the link directly from the email you received.'
+        )
+        return
+      }
 
-    asyncApiConfirmAccount(paramEmailAddress!, paramToken!)
-  }, [])
+      setEmailAddress(paramEmailAddress!)
+      setToken(paramToken!)
 
-  const apiConfirmAccount = async (
-    emailAddress: string,
-    token: string
-  ): Promise<void> => {
-    await confirmAccount(emailAddress, token)
-      .then((result) => {
-        // note, even if the email or token are wrong, this will display.
-        // I don't want to have an un-authenticated method that allows bots
-        // to browse for valid accounts
-        setTitle('Account Confirmed!')
-        setMessage('Please click the button below to sign in and get started.')
-        setIsConfirmed(true)
-      })
-      .catch((error) => {
-        const apiError = JSON.parse(error.response)
-
-        switch (apiError?.errorCodeName) {
-          case ErrorCode.AccountAlreadyConfirmed:
-            setMessage(
-              'Your account has already been confirmed.  Click the button below to sign in and get started!'
-            )
-            setIsConfirmed(true)
-            return
-
-          case ErrorCode.AccountMagicUrlTokenExpired:
-            setErrorMessage(
-              "Your account confirmation link has expired.  Please <a href='/forgotpassword'>request a new password</a> to generate a new link."
-            )
-            break
-
-          default:
-            setErrorMessage(error?.response?.data?.message ?? JSON.stringify(error))
-            break
-        }
-
-        setTitle('Account Confirmation Failed')
-      })
-  }
+      await apiConfirmAccount(paramEmailAddress!, paramToken!)
+    })()
+  }, [confirmAccount])
 
   return (
     <UnauthenticatedLayout
