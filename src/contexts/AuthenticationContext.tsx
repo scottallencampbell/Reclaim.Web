@@ -152,6 +152,7 @@ export function AuthenticationProvider({ children }: { children: any }) {
       .then(async (result) => {
         if (nonce !== item.nonce) {
           clearIdentity()
+          // eslint-disable-next-line no-throw-literal
           throw {
             response: {
               data: { errorCode: 2201, errorCodeName: ErrorCode.GoogleJwtNonceInvalid },

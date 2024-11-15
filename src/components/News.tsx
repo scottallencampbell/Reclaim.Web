@@ -1,8 +1,6 @@
 import { LoremIpsum } from 'react-lorem-ipsum'
 
-interface INews {}
-
-const News = ({}: INews) => {
+const News = () => {
   return (
     <div className="news">
       <div className="items">

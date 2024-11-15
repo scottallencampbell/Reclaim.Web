@@ -28,7 +28,7 @@ const IdlePopup = ({ isOpen, onClose }: IIdlePopup) => {
         window.clearTimeout(mounted.current)
       }
     }
-  }, [isOpen, time])
+  }, [isOpen, onClose, time])
 
   return (
     <div className={`top-modal${isOpen ? ' is-open' : ''}`}>

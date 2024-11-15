@@ -15,12 +15,12 @@ const NavItem = ({ label, icon, iconStyle = '', href = '' }: INavItem) => {
   const { pathname } = useLocation()
   useEffect(() => {
     setIsActive(location.pathname === href)
-  }, [pathname])
+  }, [href, pathname])
 
   return (
     <li className="nav-item">
       <Link
-        className={`nav-item-link${isActive ? ' active' : ''}${href == '' ? ' disabled-links' : ''}`}
+        className={`nav-item-link${isActive ? ' active' : ''}${href === '' ? ' disabled-links' : ''}`}
         to={href}>
         <Icon name={icon} style={iconStyle} />
         <span>{label}</span>

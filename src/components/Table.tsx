@@ -51,7 +51,7 @@ const Table = ({
     if (sortOrder === null || sortOrder === '') {
       setSortOrder('asc')
     }
-  }, [sourceData])
+  }, [columns, sortColumn, sortOrder, sourceData])
 
   const unselectAllRows = () => {
     var elements = document.getElementById(id)!.getElementsByClassName('selected')

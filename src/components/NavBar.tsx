@@ -1,6 +1,4 @@
 import NavItemList from './NavItemList'
-import StatusDonut from './StatusDonut'
-import configSettings from 'settings/config.json'
 
 interface INavBar {
   role: string
