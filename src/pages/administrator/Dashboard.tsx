@@ -4,13 +4,12 @@ import { AdministratorDashboard } from 'api/schema'
 import DashboardAggregateBox from 'components/DashboardAggregateBox'
 import Map from 'components/Map'
 import News from 'components/News'
+import StackedBarChart from 'components/StackedBarChart'
 
 const Dashboard = () => {
   const [dashboard, setDashboard] = useState<AdministratorDashboard>()
 
   const { getDashboard } = AdministratorContext()
-
-  // todo apply this elsewhere
 
   useEffect(() => {
     ;(async () => {
@@ -25,9 +24,9 @@ const Dashboard = () => {
 
   return (
     <main>
-      <div id="overlay" className="wrapper">
+      <div id="overlay" className="wrapper dashboard">
         <div className="header">Dashboard</div>
-        <div className="row no-gutter">
+        <div className="row no-gutter aggregates">
           <DashboardAggregateBox
             title={'Claims under investigation'}
             data={dashboard?.claimsValueUnderInvestigation}
@@ -43,6 +42,11 @@ const Dashboard = () => {
           />
         </div>
         <div className="row dashboard-spacer"></div>
+        <div className="dashboard-chart">
+          <span>Monthly Investigations</span>
+          <StackedBarChart data={dashboard?.claimsByMonth} />
+        </div>
+        <div className="row dashboard-spacer"></div>
         <div className="row no-gutter">
           <div className="col-lg-6">
             <div className="dashboard-news">
@@ -52,7 +56,7 @@ const Dashboard = () => {
           </div>
           <div className="col-lg-6">
             <div className="dashboard-map">
-              <span>Claims by state</span>
+              <span>Investigations by state</span>
               <Map data={dashboard?.claimsByState} />
             </div>
           </div>

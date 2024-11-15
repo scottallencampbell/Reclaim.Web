@@ -493,7 +493,7 @@ form.form-error .input-container {
       display: inline-block;
       text-align: left;
       position: relative;
-      font-size: 18px;
+      font-size: 16px;
       margin-left: 12px;
       margin-right: 12px;
       width: 22px;
@@ -1452,56 +1452,90 @@ form.form-error .input-container {
   }
 }
 
-.aggregate {
-  height: 130px;
-  min-height: 130px;
-  max-height: 130px;
-
-  div {
-    border: solid 1px $blackColor;
-    padding: 0 15px 0 15px;
-    border-radius: 4px;
-    height: 100%;
+.dashboard {
+  .aggregates {
+    min-height: 130px;
   }
 
-  p {
-    margin: 0;
-  }
+  .aggregate {
+    height: 130px;
+    min-height: 130px;
+    max-height: 130px;
 
-  p:nth-child(1) {
+    div {
+      border: solid 1px $blackColor;
+      padding: 0 15px 0 15px;
+      border-radius: 4px;
+      height: 100%;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    p:nth-child(1) {
+      color: $lightGrayColor;
+      text-transform: uppercase;
+      font-size: 14px;
+      font-weight: 600;
+      padding-top: 10px;
+    }
+
+    p:nth-child(2) {
+      font-size: 32px;
+      font-weight: 400;
+      padding-top: 5px;
+    }
+
+    p:nth-child(3) {
+      color: $mutedColor;
+      padding-top: 8px;
+      font-size: 14px;
+    }
+
+    .icon {
+      margin-right: 8px;
+    }
+
+    .icon-ArrowTrendUp,
+    span.trendUp {
+      color: $greenColor;
+    }
+
+    .icon-ArrowTrendDown,
+    span.trendDown {
+      color: $redColor;
+    }
+  }
+}
+
+.dashboard-chart {
+  border: solid 1px $blackColor;
+  border-radius: 4px;
+  padding-top: 14px;
+  padding-left: 10px;
+  height: 250px;
+  min-height: 2px;
+  pointer-events: none;
+  font-family: 'Lato';
+  font-size: 13px;
+  color: $blackColor;
+  position: relative;
+  
+  span {
     color: $lightGrayColor;
     text-transform: uppercase;
     font-size: 14px;
     font-weight: 600;
-    padding-top: 10px;
+    padding-left: 10px;
+    position: absolute;
   }
 
-  p:nth-child(2) {
-    font-size: 32px;
-    font-weight: 400;
-    padding-top: 5px;
-  }
-
-  p:nth-child(3) {
-    color: $mutedColor;
-    padding-top: 8px;
-    font-size: 14px;
-  }
-
-  .icon {
-    margin-right: 8px;
-  }
-
-  .icon-ArrowTrendUp,
-  span.trendUp
-  {
-    color: $greenColor;
-  }
-
-  .icon-ArrowTrendDown,
-  span.trendDown
-  {
-    color: $redColor;
+  .recharts-responsive-container {
+    position: relative;
+    left: -10px;
+    padding-top: 30px;
+    padding-right: 20px;
   }
 }
 
@@ -1511,6 +1545,7 @@ form.form-error .input-container {
   padding: 10px;
   height: 375px;
   min-height: 375px;
+  pointer-events: none;
 
   span {
     color: $lightGrayColor;
@@ -1534,14 +1569,14 @@ form.form-error .input-container {
   height: 375px;
   min-height: 375px;
   overflow: hidden;
-    
+
   span {
     color: $lightGrayColor;
     text-transform: uppercase;
     font-size: 14px;
     font-weight: 600;
     padding-top: 10px;
-    padding-left: 10px;    
+    padding-left: 10px;
   }
 
   .items {
@@ -1552,7 +1587,7 @@ form.form-error .input-container {
 
     .item {
       padding-left: 10px;
-      
+
       p:nth-child(1) {
         font-weight: 600;
         margin: 0;
@@ -1562,9 +1597,9 @@ form.form-error .input-container {
 
       p:nth-child(2) {
         font-weight: 400;
-        padding-top: 5px; 
+        padding-top: 5px;
         padding-bottom: 10px;
-        font-size: 14px;      
+        font-size: 14px;
       }
     }
   }

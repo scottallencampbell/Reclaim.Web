@@ -1029,6 +1029,52 @@ export class CustomerClient extends ApiBase {
     }
 
     /**
+     * @return Array of Claim DTOs
+     */
+    getClaims(): Promise<Claim[]> {
+        let url_ = this.baseUrl + "/customer/claim/all";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetClaims(_response);
+        });
+    }
+
+    protected processGetClaims(response: Response): Promise<Claim[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Claim.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Claim[]>(null as any);
+    }
+
+    /**
      * Create a new customer, via the self-service registration workflow
      * @param dto A CustomerRegistration DTO
      * @return Account retrieved
@@ -1716,6 +1762,7 @@ export class AdministratorDashboard extends Base implements IAdministratorDashbo
     newOrders!: DashboardAggregate;
     monthlyRevenue!: DashboardAggregate;
     claimsByState!: { [key: string]: number; };
+    claimsByMonth!: { [key: string]: ClaimStatusValue[]; };
 
     constructor(data?: IAdministratorDashboard) {
         super(data);
@@ -1747,6 +1794,13 @@ export class AdministratorDashboard extends Base implements IAdministratorDashbo
                         (<any>this.claimsByState)![key] = _data["claimsByState"][key];
                 }
             }
+            if (_data["claimsByMonth"]) {
+                this.claimsByMonth = {} as any;
+                for (let key in _data["claimsByMonth"]) {
+                    if (_data["claimsByMonth"].hasOwnProperty(key))
+                        (<any>this.claimsByMonth)![key] = _data["claimsByMonth"][key] ? _data["claimsByMonth"][key].map((i: any) => ClaimStatusValue.fromJS(i)) : [];
+                }
+            }
         }
     }
 
@@ -1770,6 +1824,13 @@ export class AdministratorDashboard extends Base implements IAdministratorDashbo
                     (<any>data["claimsByState"])[key] = (<any>this.claimsByState)[key];
             }
         }
+        if (this.claimsByMonth) {
+            data["claimsByMonth"] = {};
+            for (let key in this.claimsByMonth) {
+                if (this.claimsByMonth.hasOwnProperty(key))
+                    (<any>data["claimsByMonth"])[key] = (<any>this.claimsByMonth)[key];
+            }
+        }
         super.toJSON(data);
         return data;
     }
@@ -1781,6 +1842,7 @@ export interface IAdministratorDashboard extends IBase {
     newOrders: IDashboardAggregate;
     monthlyRevenue: IDashboardAggregate;
     claimsByState: { [key: string]: number; };
+    claimsByMonth: { [key: string]: ClaimStatusValue[]; };
 }
 
 export class DashboardAggregate extends Base implements IDashboardAggregate {
@@ -1843,6 +1905,54 @@ export enum Period {
     Week = "Week",
     Month = "Month",
     Year = "Year",
+}
+
+export class ClaimStatusValue implements IClaimStatusValue {
+    status!: ClaimStatus;
+    value!: number;
+
+    constructor(data?: IClaimStatusValue) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.status = _data["status"];
+            this.value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): ClaimStatusValue {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClaimStatusValue();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["status"] = this.status;
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface IClaimStatusValue {
+    status: ClaimStatus;
+    value: number;
+}
+
+export enum ClaimStatus {
+    Unassigned = "Unassigned",
+    Investigating = "Investigating",
+    Adjudicated = "Adjudicated",
+    Resolved = "Resolved",
+    Tombstoned = "Tombstoned",
 }
 
 export class Claim implements IClaim {
@@ -1971,14 +2081,6 @@ export enum ClaimType {
     Mold = "Mold",
     Hail = "Hail",
     Other = "Other",
-}
-
-export enum ClaimStatus {
-    Unassigned = "Unassigned",
-    Investigating = "Investigating",
-    Adjudicated = "Adjudicated",
-    Resolved = "Resolved",
-    Tombstoned = "Tombstoned",
 }
 
 export enum ClaimDisposition {

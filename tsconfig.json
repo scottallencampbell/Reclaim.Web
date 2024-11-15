@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": ["dom", "dom.iterable"],
+    "lib": ["es2023", "dom", "dom.iterable"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -19,7 +19,7 @@
     "baseUrl": "./src",
     "paths": {
       "@/*": ["*"]
-    }
+    },
   },
   "include": ["src"]
 }
