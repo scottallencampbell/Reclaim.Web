@@ -258,12 +258,11 @@ const Table = ({
     }
   }
 
-  return sourceData == null ? (
-    <></>
-  ) : sourceData.length === 0 ? (
+  return sourceData?.length === 0 ? (
     <div className="no-data">No {type} were found</div>
   ) : (
-    <div className={`table${isHoverable ? ' is-hoverable' : ''}`}>
+    <div
+      className={`table${isHoverable ? ' is-hoverable' : ''} ${sourceData === undefined ? 'element-loading' : 'element-loaded'}`}>
       <div className="table-options">
         {children}
         <input

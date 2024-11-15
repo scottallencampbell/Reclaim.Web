@@ -55,7 +55,7 @@ const StackedBarChart = ({ data }: IStackedBarChart) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart
-        style={{ display: mappedData.length === 0 ? 'none' : 'block' }}
+        style={{ opacity: mappedData.length === 0 ? 0 : 1 }}
         data={mappedData}
         margin={{
           top: 10,

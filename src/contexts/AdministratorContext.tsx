@@ -43,8 +43,11 @@ export const AdministratorContext = (): IAdministratorContext => {
 const Context = createContext({} as IAdministratorContext)
 
 export function AdministratorProvider({ children }: { children: any }) {
-  const apiClient = useMemo(() => new AdministratorClient(process.env.REACT_APP_API_URL), [])
-  
+  const apiClient = useMemo(
+    () => new AdministratorClient(process.env.REACT_APP_API_URL),
+    []
+  )
+
   const getDashboard = async (): Promise<AdministratorDashboard> => {
     return await apiClient.getDashboard()
   }

@@ -26,38 +26,40 @@ const Dashboard = () => {
     <main>
       <div id="overlay" className="wrapper dashboard">
         <div className="header">Dashboard</div>
-        <div className="row no-gutter aggregates">
-          <DashboardAggregateBox
-            title={'Claims under investigation'}
-            data={dashboard?.claimsValueUnderInvestigation}
-          />
-          <DashboardAggregateBox
-            title={'Monthly revenue'}
-            data={dashboard?.monthlyRevenue}
-          />
-          <DashboardAggregateBox title={'New orders'} data={dashboard?.newOrders} />
-          <DashboardAggregateBox
-            title={'Unique signins'}
-            data={dashboard?.uniqueLogins}
-          />
-        </div>
-        <div className="row dashboard-spacer"></div>
-        <div className="dashboard-chart">
-          <span>Monthly Investigations</span>
-          <StackedBarChart data={dashboard?.claimsByMonth} />
-        </div>
-        <div className="row dashboard-spacer"></div>
-        <div className="row no-gutter">
-          <div className="col-lg-6">
-            <div className="dashboard-news">
-              <span>News</span>
-              <News />
-            </div>
+        <div className={dashboard === undefined ? 'element-loading' : 'element-loaded'}>
+          <div className="row no-gutter aggregates">
+            <DashboardAggregateBox
+              title={'Claims under investigation'}
+              data={dashboard?.claimsValueUnderInvestigation}
+            />
+            <DashboardAggregateBox
+              title={'Monthly revenue'}
+              data={dashboard?.monthlyRevenue}
+            />
+            <DashboardAggregateBox title={'New orders'} data={dashboard?.newOrders} />
+            <DashboardAggregateBox
+              title={'Unique signins'}
+              data={dashboard?.uniqueLogins}
+            />
           </div>
-          <div className="col-lg-6">
-            <div className="dashboard-map">
-              <span>Investigations by state</span>
-              <Map data={dashboard?.claimsByState} />
+          <div className="row dashboard-spacer"></div>
+          <div className="dashboard-chart">
+            <span>Monthly Investigations</span>
+            <StackedBarChart data={dashboard?.claimsByMonth} />
+          </div>
+          <div className="row dashboard-spacer"></div>
+          <div className="row no-gutter">
+            <div className="col-lg-6">
+              <div className="dashboard-news">
+                <span>News</span>
+                <News />
+              </div>
+            </div>
+            <div className="col-lg-6">
+              <div className="dashboard-map">
+                <span>Investigations by state</span>
+                <Map data={dashboard?.claimsByState} />
+              </div>
             </div>
           </div>
         </div>

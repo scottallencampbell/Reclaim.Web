@@ -49,6 +49,15 @@ select {
   -moz-appearance: none;
 }
 
+.element-loaded {
+  opacity: 1;
+  transition: all 200ms;
+}
+
+.element-loading {
+  opacity: 0;
+}
+
 .unauth-container {
   #overlay {
     position: absolute;
