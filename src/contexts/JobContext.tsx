@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useMemo } from 'react'
 import { Job, JobClient } from 'api/schema'
 
 interface IJobContext {
@@ -16,7 +16,7 @@ export const JobContext = (): IJobContext => {
 const Context = createContext({} as IJobContext)
 
 export function JobProvider({ children }: { children: any }) {
-  const apiClient = new JobClient(process.env.REACT_APP_API_URL)
+  const apiClient = useMemo(() => new JobClient(process.env.REACT_APP_API_URL), [])
 
   const getAll = async (): Promise<Job[]> => {
     return apiClient.getAll()

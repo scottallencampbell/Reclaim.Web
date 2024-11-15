@@ -1,6 +1,6 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useMemo } from 'react'
 import { Customer, CustomerClient, CustomerRegistration } from 'api/schema'
-import jwt from 'jwt-decode'
+import * as jwtDecode from 'jwt-decode'
 
 interface ICustomerContext {
   update: (customer: Customer) => Promise<Customer>
@@ -19,9 +19,10 @@ export const CustomerContext = (): ICustomerContext => {
 }
 
 const Context = createContext({} as ICustomerContext)
-const apiClient = new CustomerClient(process.env.REACT_APP_API_URL)
 
 export function CustomerProvider({ children }: { children: any }) {
+  const apiClient = useMemo(() => new CustomerClient(process.env.REACT_APP_API_URL), [])
+
   const update = async (customer: Customer): Promise<Customer> => {
     if (customer.uniqueID !== undefined) {
       return new Customer() // await apiClient.updateCustomer(customer.uniqueID, customer);
@@ -35,7 +36,12 @@ export function CustomerProvider({ children }: { children: any }) {
   }
 
   const registerGoogle = async (credential: string, nonce: string): Promise<Customer> => {
-    const item = jwt<any>(credential)
+    const item = jwtDecode.jwtDecode<{
+      given_name: string
+      family_name: string
+      telephone: string
+      email: string
+    }>(credential)
     const dto = new CustomerRegistration()
 
     dto.name = item.given_name // hmm

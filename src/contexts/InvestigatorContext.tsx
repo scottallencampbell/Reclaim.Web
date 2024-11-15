@@ -16,7 +16,7 @@ export const InvestigatorContext = (): IInvestigatorContext => {
 }
 
 const Context = createContext({} as IInvestigatorContext)
-// const apiClient = new InvestigatorClient(process.env.REACT_APP_API_URL);
+// const apiClient = useMemo(() => new InvestigatorClient(process.env.REACT_APP_API_URL), [])
 
 export function InvestigatorProvider({ children }: { children: any }) {
   const getMe = async (): Promise<Investigator> => {

@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useMemo } from 'react'
 import {
   Account,
   Customer,
@@ -43,8 +43,8 @@ export const AdministratorContext = (): IAdministratorContext => {
 const Context = createContext({} as IAdministratorContext)
 
 export function AdministratorProvider({ children }: { children: any }) {
-  const apiClient = new AdministratorClient(process.env.REACT_APP_API_URL)
-
+  const apiClient = useMemo(() => new AdministratorClient(process.env.REACT_APP_API_URL), [])
+  
   const getDashboard = async (): Promise<AdministratorDashboard> => {
     return await apiClient.getDashboard()
   }

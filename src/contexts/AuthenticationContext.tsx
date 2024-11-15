@@ -1,7 +1,14 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
-import jwt from 'jwt-decode'
+import * as jwtDecode from 'jwt-decode'
 import { ErrorCode } from 'api/schema'
 import { Identity } from 'models/Identity'
 import configSettings from 'settings/config.json'
@@ -57,7 +64,7 @@ const Context = createContext({} as IAuthenticationContext)
 export function AuthenticationProvider({ children }: { children: any }) {
   const [jwtAccessTokenLifeRemaining, setJwtAccessTokenLifeRemaining] = useState(100)
 
-  const apiClient = new AccountClient(process.env.REACT_APP_API_URL)
+  const apiClient = useMemo(() => new AccountClient(process.env.REACT_APP_API_URL), [])
   const navigate = useNavigate()
 
   const redirectUnauthenticated = (includeRedirectParam: boolean) => {
@@ -141,7 +148,7 @@ export function AuthenticationProvider({ children }: { children: any }) {
   const authorizeGoogle = async (credential: string, nonce: string): Promise<string> => {
     console.log('authorizing google...')
 
-    const item = jwt<any>(credential)
+    const item = jwtDecode.jwtDecode<{ email: string; nonce: string }>(credential)
 
     const request = new GoogleAccountAuthentication()
     request.emailAddress = item.email
@@ -172,29 +179,6 @@ export function AuthenticationProvider({ children }: { children: any }) {
     return ''
   }
 
-  const reauthorize = useCallback(
-    async (emailAddress: string): Promise<string> => {
-      console.log('reauthorizing...')
-
-      const request = new AccountAuthenticationRefresh()
-      request.emailAddress = emailAddress
-      request.refreshToken = '_'
-
-      await apiClient
-        .authenticateRefresh(request)
-        .then(async (result) => {
-          saveIdentity(emailAddress, result.role, result.validUntil.toISOString())
-          return result.accessToken
-        })
-        .catch((error) => {
-          throw error
-        })
-
-      return ''
-    },
-    [apiClient]
-  )
-
   const restartJwtTimers = useCallback(
     (identity: Identity) => {
       clearTimeout(authTimer)
@@ -214,7 +198,7 @@ export function AuthenticationProvider({ children }: { children: any }) {
         localStorage.setItem(authLocalStorageKey, countdown.toString())
       }, 250)
     },
-    [setJwtAccessTokenLifeRemaining, reauthorize]
+    [setJwtAccessTokenLifeRemaining]
   )
 
   const saveIdentity: (emailAddress: string, role: string, validUntil: string) => void =
@@ -236,6 +220,29 @@ export function AuthenticationProvider({ children }: { children: any }) {
       },
       [restartJwtTimers]
     )
+
+  const reauthorize = useCallback(
+    async (emailAddress: string): Promise<string> => {
+      console.log('reauthorizing...')
+
+      const request = new AccountAuthenticationRefresh()
+      request.emailAddress = emailAddress
+      request.refreshToken = '_'
+
+      await apiClient
+        .authenticateRefresh(request)
+        .then(async (result) => {
+          saveIdentity(emailAddress, result.role, result.validUntil.toISOString())
+          return result.accessToken
+        })
+        .catch((error) => {
+          throw error
+        })
+
+      return ''
+    },
+    [apiClient, saveIdentity]
+  )
 
   useEffect(() => {
     // on page refresh we need to restart the JWT token timer
