@@ -3,7 +3,6 @@ import Icon from './Icon'
 import moment from 'moment'
 import React from 'react'
 import Avatar from './Avatar'
-import { match } from 'assert'
 
 interface ITable {
   children: any
@@ -39,12 +38,6 @@ const Table = ({
   const [searchTerms, setSearchTerms] = useState('')
 
   useEffect(() => {
-    if (sourceData == null) {
-      return
-    }
-
-    setData(sourceData)
-
     if (sortColumn === undefined || sortColumn === '') {
       setSortColumn(columns[0].accessor)
     }
@@ -52,6 +45,14 @@ const Table = ({
     if (sortOrder === undefined || sortOrder === '') {
       setSortOrder('asc')
     }
+  }, [columns, sortColumn, sortOrder])
+
+  useEffect(() => {
+    if (sourceData == null) {
+      return
+    }
+
+    setData(sourceData)
   }, [sourceData])
 
   const unselectAllRows = () => {
@@ -196,8 +197,13 @@ const Table = ({
 
     if (newSortColumn) {
       const sorted = [...data].sort((a, b) => {
-        const aItem = getFromAccessor(a, column.type, newSortColumn)
-        const bItem = getFromAccessor(b, column.type, newSortColumn)
+        let aItem = getFromAccessor(a, column.type, newSortColumn)
+        let bItem = getFromAccessor(b, column.type, newSortColumn)
+
+        if (column.type === 'fullName') {
+          aItem = a['lastName'] + ' ' + a['firstName']
+          bItem = b['lastName'] + ' ' + b['firstName']
+        }
 
         if (aItem === null) {
           return 1

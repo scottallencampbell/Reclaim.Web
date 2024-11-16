@@ -20,7 +20,8 @@ const NavItemList = ({ role }: INavItemList) => {
             href="/administrator/claims"></NavItem>
           <NavItem
             label="Investigators"
-            icon="MagnifyingGlass"
+            icon="Clipboard"
+            iconStyle="regular"
             href="/administrator/investigators"></NavItem>
           <NavItem
             label="Customers"
@@ -30,7 +31,10 @@ const NavItemList = ({ role }: INavItemList) => {
             label="Current sign-ins"
             icon="NetworkWired"
             href="/administrator/signins"></NavItem>
-          <NavItem label="Jobs" icon="PersonDigging" href="/administrator/jobs"></NavItem>
+          <NavItem
+            label="Scheduled jobs"
+            icon="PersonDigging"
+            href="/administrator/jobs"></NavItem>
         </ul>
       )
 

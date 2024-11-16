@@ -1,13 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
 import { Claim } from 'api/schema'
-import SearchBar from 'components/SearchBar'
 import { AdministratorContext } from 'contexts/AdministratorContext'
-import { template } from 'lodash'
 
 const Claims = () => {
-  const [allClaims, setAllClaims] = useState<Claim[]>()
-  const [filteredClaims, setFilteredClaims] = useState<Claim[]>()
+  const [claims, setClaims] = useState<Claim[]>()
   const [isPropertyBarVisible] = useState(false)
 
   const { getAllClaims } = AdministratorContext()
@@ -53,8 +50,7 @@ const Claims = () => {
     ;(async () => {
       try {
         const result = await getAllClaims()
-        setAllClaims(result)
-        setFilteredClaims(result)
+        setClaims(result)
       } catch (error) {
         console.log(JSON.stringify(error))
       }
@@ -70,7 +66,7 @@ const Claims = () => {
           type="claims"
           keyField="uniqueID"
           columns={columns}
-          sourceData={filteredClaims}
+          sourceData={claims}
           isPropertyBarVisible={isPropertyBarVisible}
           onSearchTermsChange={null}
           onRowClick={null}

@@ -119,7 +119,7 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
     if (identity) {
       setAvatarUrl(identity.avatarUrl)
     }
-  }, [])
+  }, [getIdentity])
 
   useEffect(() => {
     if (idleTimer.current) {
