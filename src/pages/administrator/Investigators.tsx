@@ -176,70 +176,66 @@ const Investigators = () => {
   }, [getAllInvestigators])
 
   return (
-    <main>
+    <>
       <CommandBar
         onExport={() => exportInvestigators(investigators!)}
         onLogout={null}></CommandBar>
-      <div id="overlay" className="wrapper">
-        <div className="header">Investigators</div>
-        <div className="inner">
-          <Table
-            id="investigator-table"
-            type="investigators"
-            keyField="uniqueID"
-            columns={columns}
-            sourceData={investigators}
-            isPropertyBarVisible={isPropertyBarVisible}
-            onSearchTermsChange={null}
-            // onSearchTermsChange={handleSearchTermsChange}
-            onRowClick={handleRowClick}
-            initialSortColumn={'lastName'}>
-            <Icon
-              toolTip="Add investigator"
-              className="context-icon"
-              name="UserPlus"
-              onClick={handleAddInvestigator}
-            />
-          </Table>
-        </div>
-        <PropertyBar
-          entityID={editInvestigator.uniqueID ?? ''}
-          isVisible={isPropertyBarVisible}
-          onSave={handleInvestigatorUpdate}
-          onCancel={handleCancel}>
-          <>
-            <div className="caption">
-              {editInvestigator.uniqueID === undefined
-                ? 'New investigator'
-                : 'Edit investigator'}
-            </div>
-            {fields.map((o, i) => {
-              return (
-                <TextInput
-                  entityID={editInvestigator.uniqueID?.toString()}
-                  key={o.accessor}
-                  type={o.type}
-                  label={o.label}
-                  name={o.accessor}
-                  value={(editInvestigator as any)[o.accessor]}
-                  required={o.required ?? false}
-                  groupError={groupError}
-                  columnSpec={o.columnSpec}
-                  onChange={(value: string) =>
-                    updateInvestigatorProperty(o.accessor, value, o.type)
-                  }
-                />
-              )
-            })}
-          </>
-        </PropertyBar>
-        <button
-          className="styled-button add"
-          onClick={() => setIsPropertyBarVisible(true)}>
-          Add investigator
-        </button>
+      <div className="header">Investigators</div>
+      <div className="inner">
+        <Table
+          id="investigator-table"
+          type="investigators"
+          keyField="uniqueID"
+          columns={columns}
+          sourceData={investigators}
+          isPropertyBarVisible={isPropertyBarVisible}
+          onSearchTermsChange={null}
+          // onSearchTermsChange={handleSearchTermsChange}
+          onRowClick={handleRowClick}
+          initialSortColumn={'lastName'}>
+          <Icon
+            toolTip="Add investigator"
+            className="context-icon"
+            name="UserPlus"
+            onClick={handleAddInvestigator}
+          />
+        </Table>
       </div>
-    </main>
+      <PropertyBar
+        entityID={editInvestigator.uniqueID ?? ''}
+        isVisible={isPropertyBarVisible}
+        onSave={handleInvestigatorUpdate}
+        onCancel={handleCancel}>
+        <>
+          <div className="caption">
+            {editInvestigator.uniqueID === undefined
+              ? 'New investigator'
+              : 'Edit investigator'}
+          </div>
+          {fields.map((o, i) => {
+            return (
+              <TextInput
+                entityID={editInvestigator.uniqueID?.toString()}
+                key={o.accessor}
+                type={o.type}
+                label={o.label}
+                name={o.accessor}
+                value={(editInvestigator as any)[o.accessor]}
+                required={o.required ?? false}
+                groupError={groupError}
+                columnSpec={o.columnSpec}
+                onChange={(value: string) =>
+                  updateInvestigatorProperty(o.accessor, value, o.type)
+                }
+              />
+            )
+          })}
+        </>
+      </PropertyBar>
+      <button className="styled-button add" onClick={() => setIsPropertyBarVisible(true)}>
+        Add investigator
+      </button>
+    </>
   )
 }
 

@@ -203,67 +203,63 @@ const Customers = () => {
   }, [getAllCustomers])
 
   return (
-    <main>
+    <>
       <CommandBar
         onExport={() => exportCustomers(customers!)}
         onLogout={null}></CommandBar>
-      <div id="overlay" className="wrapper">
-        <div className="header">Customers</div>
-        <div className="inner">
-          <Table
-            id="customer-table"
-            type="customers"
-            keyField="uniqueID"
-            columns={columns}
-            sourceData={customers}
-            isPropertyBarVisible={isPropertyBarVisible}
-            onSearchTermsChange={null}
-            // onSearchTermsChange={handleSearchTermsChange}
-            onRowClick={handleRowClick}>
-            <Icon
-              toolTip="Add customer"
-              className="context-icon"
-              name="UserPlus"
-              onClick={handleAddCustomer}
-            />
-          </Table>
-        </div>
-        <PropertyBar
-          entityID={editCustomer.uniqueID ?? ''}
-          isVisible={isPropertyBarVisible}
-          onSave={handleCustomerUpdate}
-          onCancel={handleCancel}>
-          <>
-            <div className="caption">
-              {editCustomer.uniqueID === undefined ? 'New customer' : 'Edit customer'}
-            </div>
-            {fields.map((o, i) => {
-              return (
-                <TextInput
-                  entityID={editCustomer.uniqueID?.toString()}
-                  key={o.accessor}
-                  type={o.type}
-                  label={o.label}
-                  name={o.accessor}
-                  value={(editCustomer as any)[o.accessor]}
-                  required={o.required ?? false}
-                  regex={o.regex}
-                  columnSpec={o.columnSpec}
-                  onChange={(value: string) =>
-                    updateCustomerProperty(o.accessor, value, o.type)
-                  }
-                />
-              )
-            })}
-          </>
-        </PropertyBar>
-        <button
-          className="styled-button add"
-          onClick={() => setIsPropertyBarVisible(true)}>
-          Add customer
-        </button>
+      <div className="header">Customers</div>
+      <div className="inner">
+        <Table
+          id="customer-table"
+          type="customers"
+          keyField="uniqueID"
+          columns={columns}
+          sourceData={customers}
+          isPropertyBarVisible={isPropertyBarVisible}
+          onSearchTermsChange={null}
+          // onSearchTermsChange={handleSearchTermsChange}
+          onRowClick={handleRowClick}>
+          <Icon
+            toolTip="Add customer"
+            className="context-icon"
+            name="UserPlus"
+            onClick={handleAddCustomer}
+          />
+        </Table>
       </div>
-    </main>
+      <PropertyBar
+        entityID={editCustomer.uniqueID ?? ''}
+        isVisible={isPropertyBarVisible}
+        onSave={handleCustomerUpdate}
+        onCancel={handleCancel}>
+        <>
+          <div className="caption">
+            {editCustomer.uniqueID === undefined ? 'New customer' : 'Edit customer'}
+          </div>
+          {fields.map((o, i) => {
+            return (
+              <TextInput
+                entityID={editCustomer.uniqueID?.toString()}
+                key={o.accessor}
+                type={o.type}
+                label={o.label}
+                name={o.accessor}
+                value={(editCustomer as any)[o.accessor]}
+                required={o.required ?? false}
+                regex={o.regex}
+                columnSpec={o.columnSpec}
+                onChange={(value: string) =>
+                  updateCustomerProperty(o.accessor, value, o.type)
+                }
+              />
+            )
+          })}
+        </>
+      </PropertyBar>
+      <button className="styled-button add" onClick={() => setIsPropertyBarVisible(true)}>
+        Add customer
+      </button>
+    </>
   )
 }
 

@@ -133,7 +133,12 @@ export function AuthenticationProvider({ children }: { children: any }) {
     await apiClient
       .authenticate(request)
       .then(async (result) => {
-        saveIdentity(emailAddress, result.role, result.validUntil.toISOString())
+        saveIdentity(
+          emailAddress,
+          result.avatarUrl,
+          result.role,
+          result.validUntil.toISOString()
+        )
         saveProvider('Local')
 
         return result.accessToken
@@ -167,7 +172,13 @@ export function AuthenticationProvider({ children }: { children: any }) {
           }
         }
 
-        saveIdentity(item.email, result.role, result.validUntil.toISOString())
+        // todo
+        saveIdentity(
+          item.email,
+          result.avatarUrl,
+          result.role,
+          result.validUntil.toISOString()
+        )
         saveProvider('Google')
 
         return result.accessToken
@@ -201,25 +212,29 @@ export function AuthenticationProvider({ children }: { children: any }) {
     [setJwtAccessTokenLifeRemaining]
   )
 
-  const saveIdentity: (emailAddress: string, role: string, validUntil: string) => void =
-    useCallback(
-      (emailAddress: string, role: string, validUntil: string) => {
-        const emailAddresses = emailAddress.split(':')
-        const expiresInSeconds = (new Date(validUntil).getTime() - Date.now()) / 1000
-        const expiresInDays = expiresInSeconds / 60 / 60 / 24
-        const params = {
-          domain: window.location.hostname,
-          secure: true,
-          expires: expiresInDays,
-        }
+  const saveIdentity: (
+    emailAddress: string,
+    avatarUrl: string,
+    role: string,
+    validUntil: string
+  ) => void = useCallback(
+    (emailAddress: string, avatarUrl: string, role: string, validUntil: string) => {
+      const emailAddresses = emailAddress.split(':')
+      const expiresInSeconds = (new Date(validUntil).getTime() - Date.now()) / 1000
+      const expiresInDays = expiresInSeconds / 60 / 60 / 24
+      const params = {
+        domain: window.location.hostname,
+        secure: true,
+        expires: expiresInDays,
+      }
 
-        const identity = new Identity(emailAddresses[0], role, null, validUntil)
+      const identity = new Identity(emailAddresses[0], avatarUrl, role, null, validUntil)
 
-        Cookies.set(identityCookieName, JSON.stringify(identity), params)
-        restartJwtTimers(identity)
-      },
-      [restartJwtTimers]
-    )
+      Cookies.set(identityCookieName, JSON.stringify(identity), params)
+      restartJwtTimers(identity)
+    },
+    [restartJwtTimers]
+  )
 
   const reauthorize = useCallback(
     async (emailAddress: string): Promise<string> => {
@@ -232,7 +247,12 @@ export function AuthenticationProvider({ children }: { children: any }) {
       await apiClient
         .authenticateRefresh(request)
         .then(async (result) => {
-          saveIdentity(emailAddress, result.role, result.validUntil.toISOString())
+          saveIdentity(
+            emailAddress,
+            result.avatarUrl,
+            result.role,
+            result.validUntil.toISOString()
+          )
           return result.accessToken
         })
         .catch((error) => {

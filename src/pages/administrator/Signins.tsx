@@ -51,26 +51,24 @@ const SignIns = () => {
   }, [getAuthenticatedAccounts])
 
   return (
-    <main>
+    <>
       <CommandBar onExport={() => exportSignins(accounts!)} onLogout={null}></CommandBar>
-      <div id="overlay" className="wrapper">
-        <div className="header">Sign-ins</div>
-        <div className="inner">
-          <Table
-            id="sign-in-table"
-            type="current sign-ins"
-            keyField="emailAddress"
-            columns={columns}
-            sourceData={accounts}
-            isPropertyBarVisible={false}
-            onSearchTermsChange={null}
-            onRowClick={null}
-            initialSortColumn={'emailAddress'}
-            children={undefined}
-          />
-        </div>
+      <div className="header">Sign-ins</div>
+      <div className="inner">
+        <Table
+          id="sign-in-table"
+          type="current sign-ins"
+          keyField="emailAddress"
+          columns={columns}
+          sourceData={accounts}
+          isPropertyBarVisible={false}
+          onSearchTermsChange={null}
+          onRowClick={null}
+          initialSortColumn={'emailAddress'}
+          children={undefined}
+        />
       </div>
-    </main>
+    </>
   )
 }
 

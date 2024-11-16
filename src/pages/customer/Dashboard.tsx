@@ -18,13 +18,11 @@ const Dashboard = () => {
   }, [getMe])
 
   return (
-    <main>
+    <>
       <CommandBar onLogout={null}></CommandBar>
-      <div id="overlay" className="wrapper">
-        <div className="header">Dashboard</div>
-        <div className="row no-gutter">{content}</div>
-      </div>
-    </main>
+      <div className="header">Dashboard</div>
+      <div className="row no-gutter">{content}</div>
+    </>
   )
 }
 

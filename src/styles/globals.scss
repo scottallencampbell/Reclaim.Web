@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Lato:wght@100;300;400;800;900');
 
 $primaryColor: #0f75bc;
-$primaryTranslucentColor: #afd1e8;
+$primaryTranslucentColor: #e0e0e0;
 $secondaryColor: #844c85;
 $errorColor: #aa0000;
 $errorBackgroundColor: #ffeeee;
@@ -13,13 +13,13 @@ $flashCellEvenColor: #f3f3f3;
 $whiteColor: #ffffff;
 $blackColor: #555555;
 $superBlackColor: #000000;
-$navbarColor: #ffffff;
-$backgroundColor: #f2f2f2;
+$backgroundColor: #ffffff;
 $highlightColor: #eaf2ff;
 $disabledBackgroundColor: #f8f8f8;
 $redColor: #dd1111;
 $greenColor: #11aa11;
 $lightGrayColor: #aaaaaa;
+$navBarBackgroundColor: #f0f0f0;
 
 * {
   font-family: 'Lato';
@@ -421,17 +421,23 @@ form.form-error .input-container {
   }
 }
 
+.auth-account {
+  position: absolute;
+  top: 16px;
+  right: 0;
+}
+
 .nav-bar {
   position: fixed;
   flex-grow: 0;
   flex-shrink: 0;
-  width: 210px;
+  width: 230px;
   height: 100%;
-  flex-basis: 200px;
+  flex-basis: 230px;
   flex: 0 0 220px;
   z-index: 100;
   padding: 0;
-  background-color: $backgroundColor !important;
+  background-color: $navBarBackgroundColor !important;
   color: $blackColor;
   clip-path: inset(0px -12px 0px 0px);
   padding-top: 0;
@@ -451,12 +457,11 @@ form.form-error .input-container {
   }
 
   .logo {
-    background-color: $backgroundColor !important;
   }
 
   .logo img {
     height: 52px;
-    margin: 8px 0 20px 25px !important;
+    margin: 14px 0 20px 25px !important;
 
     @media (max-width: 900px) {
       height: 27px;
@@ -465,13 +470,11 @@ form.form-error .input-container {
   }
 
   .position-sticky {
-    background-color: $navbarColor !important;
     z-index: 100;
   }
 
   .position-sticky {
     padding-top: 1px !important;
-    background-color: $backgroundColor !important;
   }
 
   .nav-item-link {
@@ -479,18 +482,21 @@ form.form-error .input-container {
     position: relative;
     display: inline-block;
     height: 45px;
-    width: 210px;
-    max-width: 210px;
+    width: 190px;
+    max-width: 200px;
     min-height: 45px;
     max-height: 45px;
     margin-top: 0;
+    margin-left: 20px;
     margin-bottom: 0;
     border-width: 0;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
     text-decoration: none;
     padding-left: 6px;
-    padding-top: 7px;
+    padding-top: 9px;
     border-left: solid 8px transparent;
 
     @media (max-width: 900px) {
@@ -498,12 +504,16 @@ form.form-error .input-container {
       border-left: solid 4px transparent;
     }
 
+    .nav-item-label {
+      padding-top: 2px;
+    }
+
     .icon {
       display: inline-block;
       text-align: left;
       position: relative;
       font-size: 16px;
-      margin-left: 12px;
+      margin-left: 4px;
       margin-right: 12px;
       width: 22px;
       margin-top: 2px;
@@ -563,8 +573,6 @@ form.form-error .input-container {
     &.active {
       color: $superBlackColor;
       background-color: $primaryTranslucentColor;
-      border-left: solid 8px $primaryColor;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
       cursor: default;
 
       @media (max-width: 900px) {
@@ -632,7 +640,6 @@ form.form-error .input-container {
           width: 55px;
           height: 55px;
           border-radius: 50%;
-          background: $navbarColor;
           left: 5px;
           top: 5px;
           position: absolute;
@@ -957,12 +964,11 @@ form.form-error .input-container {
   min-width: 1200px;
 
   main {
-    margin-left: 220px;
-    padding-left: 20px;
-    padding-top: 20px;
+    margin-left: 230px;
+    padding-left: 10px;
+    padding-top: 0;
     padding-bottom: 30px;
     padding-right: 30px;
-    xtransition: all 0.2s;
     flex-grow: 1; /* grow wider by any factor */
     flex-shrink: 1; /* grow smaller by any factor */
     flex-basis: auto; /* auto-compute initial width */
@@ -980,13 +986,12 @@ form.form-error .input-container {
       background-color: $whiteColor;
       border-radius: 8px;
       height: calc(100% - 60px);
-      padding: 12px 30px 20px 32px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+      padding: 12px 0 20px 28px;
       min-height: calc(100vh - 110px);
     }
 
     .header {
-      padding-top: 8px;
+      padding-top: 4px;
       padding-bottom: 20px;
       font-weight: 300;
       font-size: 38px;
@@ -1015,8 +1020,7 @@ form.form-error .input-container {
 .nav.flex-column {
   font-size: 15px;
   font-weight: 400;
-  background-color: $backgroundColor !important;
-}
+ }
 
 .landing {
   position: fixed;

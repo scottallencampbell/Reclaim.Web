@@ -1410,6 +1410,7 @@ export class AuthenticationToken extends Base implements IAuthenticationToken {
     refreshToken!: string;
     validUntil!: Date;
     emailAddress!: string;
+    avatarUrl!: string;
     role!: Role;
 
     constructor(data?: IAuthenticationToken) {
@@ -1423,6 +1424,7 @@ export class AuthenticationToken extends Base implements IAuthenticationToken {
             this.refreshToken = _data["refreshToken"];
             this.validUntil = _data["validUntil"] ? new Date(_data["validUntil"].toString()) : <any>undefined;
             this.emailAddress = _data["emailAddress"];
+            this.avatarUrl = _data["avatarUrl"];
             this.role = _data["role"];
         }
     }
@@ -1440,6 +1442,7 @@ export class AuthenticationToken extends Base implements IAuthenticationToken {
         data["refreshToken"] = this.refreshToken;
         data["validUntil"] = this.validUntil ? this.validUntil.toISOString() : <any>undefined;
         data["emailAddress"] = this.emailAddress;
+        data["avatarUrl"] = this.avatarUrl;
         data["role"] = this.role;
         super.toJSON(data);
         return data;
@@ -1451,6 +1454,7 @@ export interface IAuthenticationToken extends IBase {
     refreshToken: string;
     validUntil: Date;
     emailAddress: string;
+    avatarUrl: string;
     role: Role;
 }
 

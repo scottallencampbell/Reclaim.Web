@@ -92,25 +92,23 @@ const Jobs = () => {
   }, [getAll])
 
   return (
-    <main>
+    <>
       <CommandBar onExport={() => exportJobs(jobs!)} onLogout={null}></CommandBar>
-      <div id="overlay" className="wrapper">
-        <div className="header">Scheduled Jobs</div>
-        <div className="inner">
-          <Table
-            id="job-table"
-            type="jobs"
-            keyField="id"
-            columns={columns}
-            sourceData={jobs}
-            isPropertyBarVisible={false}
-            onRowClick={handleRowClick}
-            onSearchTermsChange={null}
-            children={undefined}
-          />
-        </div>
+      <div className="header">Scheduled Jobs</div>
+      <div className="inner">
+        <Table
+          id="job-table"
+          type="jobs"
+          keyField="id"
+          columns={columns}
+          sourceData={jobs}
+          isPropertyBarVisible={false}
+          onRowClick={handleRowClick}
+          onSearchTermsChange={null}
+          children={undefined}
+        />
       </div>
-    </main>
+    </>
   )
 }
 

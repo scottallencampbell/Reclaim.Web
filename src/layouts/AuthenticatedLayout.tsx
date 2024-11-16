@@ -5,6 +5,7 @@ import NavBar from '../components/NavBar'
 import { HelmetProvider } from 'react-helmet-async'
 import configSettings from 'settings/config.json'
 import { Outlet } from 'react-router'
+import Avatar from '../components/Avatar'
 
 interface IAuthenticatedLayout {
   header?: string
@@ -16,6 +17,7 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
   const [isIdlePopupOpen, setIsIdlePopupOpen] = useState(false)
   const [lastActiveTime, setLastActiveTime] = useState(Date.now())
   const [idleLifeRemaining, setIdleLifeRemaining] = useState(100)
+  const [avatarUrl, setAvatarUrl] = useState('')
   const [role, setRole] = useState('')
 
   const {
@@ -112,6 +114,14 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
   }, [domEvents, resetIdleTimer])
 
   useEffect(() => {
+    const identity = getIdentity()
+
+    if (identity) {
+      setAvatarUrl(identity.avatarUrl)
+    }
+  }, [])
+
+  useEffect(() => {
     if (idleTimer.current) {
       clearInterval(idleTimer.current)
     }
@@ -153,7 +163,17 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
             role={role}
             jwtAccessTokenLifeRemaining={jwtAccessTokenLifeRemaining}
             idleLifeRemaining={idleLifeRemaining}></NavBar>
-          <Outlet context={logout} />
+          <main>
+            <div id="overlay" className="wrapper">
+              <div className="auth-account">
+                <Avatar
+                  url={`${process.env.REACT_APP_API_URL}/content${avatarUrl}`}
+                  initials={undefined}
+                />
+              </div>
+              <Outlet context={logout} />
+            </div>
+          </main>
         </div>
       </div>
     </>

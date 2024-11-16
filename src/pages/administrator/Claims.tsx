@@ -93,26 +93,24 @@ const Claims = () => {
   }, [getAllClaims])
 
   return (
-    <main>
+    <>
       <CommandBar onExport={() => exportClaims(claims!)} onLogout={null}></CommandBar>
-      <div id="overlay" className="wrapper">
-        <div className="header">Claims</div>
-        <div className="inner">
-          <Table
-            id="claims-table"
-            type="claims"
-            keyField="uniqueID"
-            columns={columns}
-            sourceData={claims}
-            isPropertyBarVisible={isPropertyBarVisible}
-            onSearchTermsChange={null}
-            // onSearchTermsChange={handleSearchTermsChange}
-            onRowClick={null}
-            children={null}
-          />
-        </div>
+      <div className="header">Claims</div>
+      <div className="inner">
+        <Table
+          id="claims-table"
+          type="claims"
+          keyField="uniqueID"
+          columns={columns}
+          sourceData={claims}
+          isPropertyBarVisible={isPropertyBarVisible}
+          onSearchTermsChange={null}
+          // onSearchTermsChange={handleSearchTermsChange}
+          onRowClick={null}
+          children={null}
+        />
       </div>
-    </main>
+    </>
   )
 }
 

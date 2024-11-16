@@ -23,7 +23,7 @@ const NavItem = ({ label, icon, iconStyle = '', href = '' }: INavItem) => {
         className={`nav-item-link${isActive ? ' active' : ''}${href === '' ? ' disabled-links' : ''}`}
         to={href}>
         <Icon name={icon} style={iconStyle} />
-        <span>{label}</span>
+        <span className="nav-item-label">{label}</span>
       </Link>
     </li>
   )
