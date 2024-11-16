@@ -20,6 +20,7 @@ $redColor: #dd1111;
 $greenColor: #11aa11;
 $lightGrayColor: #aaaaaa;
 $navBarBackgroundColor: #f0f0f0;
+$lightLineColor: #e0e0e0;
 
 * {
   font-family: 'Lato';
@@ -320,88 +321,86 @@ form.form-error .input-container {
   text-decoration: none;
 }
 
-.command-bar {
+.table-controls {
   width: 100%;
-  color: $whiteColor;
-  position: relative;
+  top: -70px;
+  right: 0px;
+  margin-right: 60px;
   z-index: 99;
-  min-height: 40px;
-  height: 40px;
-  background-color: $whiteColor;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  text-align: right;
 
-  .command-bar-buttons {
-    position: relative;
-    right: 6px;
-    top: 7px;
-    width: 100%;
-    text-align: right;
+  .search-bar {
+    text-align: left;
+    width: 300px;
+    display: inline-block;
+    color: $blackColor;
+    min-height: 40px;
+    height: 40px;
+    background-color: $whiteColor;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: solid 1px $lightLineColor;
+    font-size: 13px;
+    padding: 0;
 
-    button.logout {
-      display: inline;
-      border: solid 2px $whiteColor;
-      background-color: $blackColor;
-      color: $whiteColor;
-      border-radius: 4px;
-      padding: 4px 6px 7px 6px;
-      font-size: 14px;
-      width: 100px;
-      transition: all 0.2s;
-      vertical-align: top;
-      font-weight: 600;
-      margin-top: 17px;
-      margin-right: 20px;
-    }
-
-    button.logout:hover {
-      background-color: $primaryColor;
-      color: $whiteColor;
-    }
-
-    .icon-circle {
-      width: 37px;
-      height: 37px;
-      border: solid 2px $whiteColor;
-      border-radius: 37px;
-      background-color: $whiteColor;
-      display: inline-block;
-      transition: all 0.2s;
-      margin-right: 14px;
-      display: none;
-    }
-
-    span.icon {
+    .search-bar-buttons {
       position: relative;
+      text-align: left;
       display: inline-block;
-      font-size: 18px;
-      vertical-align: top;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: $blackColor;
-      text-align: center;
-      width: 35px;
-      transition: all 0.2s;
+      left: 4px;
+      top: -6px;
+      margin: 0;
+      padding: 0;
+
+      span.icon {
+        position: relative;
+        display: inline-block;
+        font-size: 15px;
+        vertical-align: top;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: #999999;
+        text-align: center;
+        width: 35px;
+        transition: all 0.2s;
+        padding-top: 6px;
+        padding-bottom: 0 !important;
+      }
+
+      span.icon.left {
+        position: absolute;
+        left: 16px;
+      }
     }
 
-    span.icon.left {
-      position: absolute;
-      left: 16px;
-    }
-
-    .search-bar {
+    input {
+      position: relative;
+      top: 1px;
       width: calc(100% - 144px);
       border: none;
       outline: none;
+      color: $blackColor;
+      padding-left: 4px;
     }
+  }
 
-    .icon-circle:hover {
-      background-color: $primaryColor;
-    }
+  .children {
+    display: inline-block;
+    padding-right: 10px;
+    font-size: 15px;
 
-    .icon-circle:hover span.icon {
-      color: $whiteColor;
+    span {
+      color: #999999;
+      position: relative;
+      top: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 20px;
+
+      &:hover {
+        color: $primaryColor;
+      }
     }
   }
 }
@@ -423,7 +422,7 @@ form.form-error .input-container {
 
 .auth-account {
   position: absolute;
-  top: 16px;
+  top: 20px;
   right: 0;
 }
 
@@ -504,17 +503,13 @@ form.form-error .input-container {
       border-left: solid 4px transparent;
     }
 
-    .nav-item-label {
-      padding-top: 2px;
-    }
-
     .icon {
       display: inline-block;
       text-align: left;
       position: relative;
-      font-size: 16px;
+      font-size: 14px;
       margin-left: 4px;
-      margin-right: 12px;
+      margin-right: 8px;
       width: 22px;
       margin-top: 2px;
 
@@ -552,10 +547,15 @@ form.form-error .input-container {
     span {
       font-size: 16px;
       position: relative;
-      top: -2px;
       color: $blackColor;
       font-weight: normal;
       transition: color 0.2s;
+
+      &.nav-item-label {
+        font-size: 15px;
+        position: relative;
+        top: 1px;
+      }
 
       @media (max-width: 900px) {
         display: none;
@@ -823,6 +823,10 @@ form.form-error .input-container {
   display: none;
 }
 
+.no-data {
+  font-size: 14px;
+}
+
 .table {
   width: 100%;
   font-size: 14px;
@@ -836,7 +840,6 @@ form.form-error .input-container {
     text-align: right;
     height: 45px;
     z-index: 200;
-    display: none;
   }
 
   .table-options .search-terms {
@@ -860,15 +863,16 @@ form.form-error .input-container {
 
     td {
       font-size: 14px;
-      padding: 4px 0 6px 10px;
-      border-bottom: solid 1px #e0e0e0;
+      padding: 6px 0 8px 10px;
+      border-bottom: solid 1px $lightLineColor;
     }
 
     th {
-      border-bottom: solid 1px #e0e0e0;
+      border-bottom: solid 1px $lightLineColor;
+      font-weight: bold;
 
       div {
-        height: 23px;
+        height: 26px;
         overflow: hidden;
         line-break: anywhere;
       }
@@ -878,6 +882,7 @@ form.form-error .input-container {
         left: -1px;
         cursor: pointer;
         padding: 5px 0 5px 10px;
+        color: $blackColor;
       }
 
       span.icon {
@@ -925,32 +930,6 @@ form.form-error .input-container {
 
   table tbody tr.selected {
     background-color: $highlightColor;
-  }
-
-  .table-options {
-    .context-icon {
-      font-size: 18px;
-      transition: all 0.2s;
-      cursor: pointer;
-      margin-right: 0px;
-      position: relative;
-      top: 7px;
-    }
-
-    .context-icon:hover {
-      color: $primaryColor;
-    }
-
-    .search-terms-icon {
-      position: absolute;
-      right: 3px;
-      top: 10px;
-    }
-
-    .icon-placeholder {
-      display: inline-block;
-      height: 31px;
-    }
   }
 }
 
@@ -1003,13 +982,25 @@ form.form-error .input-container {
   }
 
   .styled-button.add {
-    height: 39px;
+    padding: 0 !important;
+    height: 40px;
+    width: 40px;
+    min-height: 40px;
+    min-width: 40px;
     position: absolute;
     right: 30px;
     top: 30px;
-    padding: 10px 20px 10px 20px;
-    font-size: 12px;
+
     z-index: 100;
+
+    span {
+      font-size: 30px;
+      max-width: 40px;
+      max-height: 40px;
+      position: relative;
+      top: -3px;
+      left: 1px;
+    }
   }
 
   .outer {
@@ -1020,7 +1011,7 @@ form.form-error .input-container {
 .nav.flex-column {
   font-size: 15px;
   font-weight: 400;
- }
+}
 
 .landing {
   position: fixed;
@@ -1534,7 +1525,7 @@ form.form-error .input-container {
   font-size: 13px;
   color: $blackColor;
   position: relative;
-  
+
   span {
     color: $lightGrayColor;
     text-transform: uppercase;

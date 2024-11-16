@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
 import { Claim } from 'api/schema'
-import CommandBar from 'components/CommandBar'
-import { exportClaims } from 'helpers/exporter'
+import SearchBar from 'components/SearchBar'
 import { AdministratorContext } from 'contexts/AdministratorContext'
+import { template } from 'lodash'
 
 const Claims = () => {
-  const [claims, setClaims] = useState<Claim[]>()
+  const [allClaims, setAllClaims] = useState<Claim[]>()
+  const [filteredClaims, setFilteredClaims] = useState<Claim[]>()
   const [isPropertyBarVisible] = useState(false)
 
   const { getAllClaims } = AdministratorContext()
@@ -48,44 +49,12 @@ const Claims = () => {
     []
   )
 
-  /*
-  const handleSearchTermsDebounce = async (inputValue: string) => {
-    await search(inputValue)
-      .then((result: Claim[]) => {
-        setClaims(result);
-      })
-      .catch((error: any) => {
-        console.log(JSON.stringify(error));
-      });
-  }
-  */
-
-  /*
-  const handleSearchTermsChange = (terms: string) => {
-    searchTermsDebouncer(terms);
-  }
-  */
-
-  /*
-  const handleRowClick = (clickedClaim: Claim) => {
-    setEditClaim(Object.assign(new Claim(), clickedClaim));
-    setIsPropertyBarVisible(true);
-  }
-  */
-
-  /*
-  const searchTermsDebouncer = useCallback(debounce(handleSearchTermsDebounce, 250), []);
-
-  useEffect(() => {
-    handleSearchTermsDebounce("");
-  }, []);
-  */
-
   useEffect(() => {
     ;(async () => {
       try {
         const result = await getAllClaims()
-        setClaims(result)
+        setAllClaims(result)
+        setFilteredClaims(result)
       } catch (error) {
         console.log(JSON.stringify(error))
       }
@@ -94,7 +63,6 @@ const Claims = () => {
 
   return (
     <>
-      <CommandBar onExport={() => exportClaims(claims!)} onLogout={null}></CommandBar>
       <div className="header">Claims</div>
       <div className="inner">
         <Table
@@ -102,10 +70,9 @@ const Claims = () => {
           type="claims"
           keyField="uniqueID"
           columns={columns}
-          sourceData={claims}
+          sourceData={filteredClaims}
           isPropertyBarVisible={isPropertyBarVisible}
           onSearchTermsChange={null}
-          // onSearchTermsChange={handleSearchTermsChange}
           onRowClick={null}
           children={null}
         />

@@ -3,6 +3,7 @@ import Icon from './Icon'
 import moment from 'moment'
 import React from 'react'
 import Avatar from './Avatar'
+import { match } from 'assert'
 
 interface ITable {
   children: any
@@ -44,14 +45,14 @@ const Table = ({
 
     setData(sourceData)
 
-    if (sortColumn === null || sortColumn === '') {
+    if (sortColumn === undefined || sortColumn === '') {
       setSortColumn(columns[0].accessor)
     }
 
-    if (sortOrder === null || sortOrder === '') {
+    if (sortOrder === undefined || sortOrder === '') {
       setSortOrder('asc')
     }
-  }, [columns, sortColumn, sortOrder, sourceData])
+  }, [sourceData])
 
   const unselectAllRows = () => {
     var elements = document.getElementById(id)!.getElementsByClassName('selected')
@@ -90,19 +91,30 @@ const Table = ({
       })
     } else {
       const termsLower = terms.toLowerCase().split(' ')
+
       data.forEach((item: any) => {
-        let matchCount = 0
+        let allTermsMatchCount = 0
 
         termsLower.forEach((term) => {
+          let matchCount = 0
+
           columns.forEach((column) => {
-            if (item[column.accessor].toString().toLowerCase().indexOf(term) >= 0) {
+            const value = getFromAccessor(item, column.type, column.accessor)
+              ?.toString()
+              ?.toLowerCase()
+
+            if (value !== undefined && value.indexOf(term) >= 0) {
               matchCount++
               return false
             }
           })
+
+          if (matchCount > 0) {
+            allTermsMatchCount++
+          }
         })
 
-        item.isHidden = matchCount !== termsLower.length
+        item.isHidden = allTermsMatchCount !== termsLower.length
       })
     }
   }
@@ -180,13 +192,18 @@ const Table = ({
     setSortOrder(newSortOrder)
     setSortColumn(newSortColumn)
 
+    const column = columns.find((c) => c.accessor === newSortColumn)
+
     if (newSortColumn) {
       const sorted = [...data].sort((a, b) => {
-        if (a[newSortColumn] === null) {
+        const aItem = getFromAccessor(a, column.type, newSortColumn)
+        const bItem = getFromAccessor(b, column.type, newSortColumn)
+
+        if (aItem === null) {
           return 1
-        } else if (b[newSortColumn] === null) {
+        } else if (bItem === null) {
           return -1
-        } else if (a[newSortColumn] === null && b[newSortColumn] === null) {
+        } else if (aItem === null && bItem === null) {
           return 0
         }
 
@@ -201,11 +218,9 @@ const Table = ({
 
           default:
             return (
-              a[newSortColumn]
-                .toString()
-                .localeCompare(b[newSortColumn].toString(), 'en', {
-                  numeric: true,
-                }) * (newSortOrder === 'asc' ? 1 : -1)
+              aItem.toString().localeCompare(bItem.toString(), 'en', {
+                numeric: true,
+              }) * (newSortOrder === 'asc' ? 1 : -1)
             )
         }
       })
@@ -214,7 +229,7 @@ const Table = ({
     }
   }
 
-  const getFromAccessor = (obj: any, accessor: string): any => {
+  const getFromAccessor = (obj: any, type: string, accessor: string): any => {
     const parts = accessor.split('.')
 
     let value = obj
@@ -225,6 +240,47 @@ const Table = ({
       }
 
       value = value[parts[i]]
+    }
+
+    if (type !== undefined) {
+      switch (type) {
+        case 'fullName':
+          value = `${obj['firstName']} ${obj['lastName']}`
+          break
+
+        case 'cityStatePostalCode':
+          if (value != null && value !== '') {
+            value = getCityStatePostalCodeFromAccessor(obj, accessor)
+          }
+          break
+
+        case 'addressAddress2':
+          value = getAddressAddress2FromAccessor(obj, accessor)
+          break
+
+        case 'date':
+          value = moment.utc(value).format('MM/DD/YYYY')
+          break
+
+        case 'datetime':
+          value = moment(value).format('MM/DD/YYYY [at] hh:mma')
+          break
+
+        case 'fileSize':
+          value = getFileSize(value)
+          break
+
+        case 'hash':
+          value =
+            value.length > 8
+              ? value.substring(0, 4) + ' ... ' + value.substring(value.length - 4)
+              : value
+          break
+
+        case 'interval':
+          value = formatDuration(value * 1000) ?? ''
+          break
+      }
     }
 
     return value
@@ -258,171 +314,139 @@ const Table = ({
     }
   }
 
-  return sourceData?.length === 0 ? (
-    <div className="no-data">No {type} were found</div>
-  ) : (
-    <div
-      className={`table${isHoverable ? ' is-hoverable' : ''} ${sourceData === undefined ? 'element-loading' : 'element-loaded'}`}>
-      <div className="table-options">
-        {children}
-        <input
-          type="text"
-          className="search-terms"
-          value={searchTerms}
-          onChange={(e) => handleSearchTermsChange(e.target.value)}></input>
-        <Icon name="Search" className="search-terms-icon"></Icon>
-      </div>
-      <table id={id}>
-        <thead>
-          <tr>
-            {columns.map(({ label, accessor, sortable, type }) => {
-              const cl =
-                sortable !== false
-                  ? sortColumn === accessor && sortOrder === 'asc'
-                    ? 'Up'
-                    : sortColumn === accessor && sortOrder === 'desc'
-                      ? 'Down'
-                      : 'Default'
-                  : ''
-              return (
-                <th
-                  key={accessor}
-                  className={`${cl} ${type}-header`}
-                  onClick={() => sort(accessor, sortOrder!, type)}>
-                  <div>
-                    <span>{label}</span>
-                    {sortColumn === accessor && cl !== 'Default' ? (
-                      <Icon name={`Caret${cl}`} className="sort-icon"></Icon>
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-                </th>
-              )
-            })}
-          </tr>
-        </thead>
-        <tbody onMouseMove={(ev) => handleMouseMove(ev)}>
-          {data.map((item: any) => {
-            return (
-              <tr
-                id={`row-${item[keyField]}`}
-                key={item[keyField]}
-                className={item.isHidden ? 'hidden' : ''}
-                onClick={() => handleRowClick(item)}>
-                {columns.map(({ accessor, type }) => {
-                  let cell = '-'
-                  let tag = undefined
-                  const value = getFromAccessor(item, accessor)
-
-                  if (value) {
-                    switch (type) {
-                      case 'avatar':
-                        tag = (
-                          <Avatar
-                            url={`${process.env.REACT_APP_API_URL}/content${value}`}
-                            initials=""
-                          />
-                        )
-                        break
-
-                      case 'cityStatePostalCode':
-                        if (value != null && value !== '') {
-                          cell = getCityStatePostalCodeFromAccessor(item, accessor)
-                        }
-                        break
-
-                      case 'addressAddress2':
-                        cell = getAddressAddress2FromAccessor(item, accessor)
-                        break
-
-                      case 'date':
-                        cell = moment.utc(value).format('MM/DD/YYYY')
-                        break
-
-                      case 'datetime':
-                        cell = moment(value).format('MM/DD/YYYY [at] hh:mma')
-                        break
-
-                      case 'fileSize':
-                        cell = getFileSize(value)
-                        break
-
-                      case 'hash':
-                        cell =
-                          value.length > 8
-                            ? value.substring(0, 4) +
-                              ' ... ' +
-                              value.substring(value.length - 4)
-                            : value
-                        break
-
-                      case 'interval':
-                        cell = formatDuration(value * 1000) ?? ''
-                        break
-
-                      case 'jobStatus':
-                        tag = <div className={`job-status ${value}`}></div>
-                        break
-
-                      case 'fullName':
-                        cell = `${item['firstName']} ${item['lastName']}`
-                        break
-
-                      case 'thumbnail':
-                        if (value !== null && value !== '') {
-                          tag = (
-                            <div
-                              style={{ backgroundImage: `url(${value})` }}
-                              className="thumbnail"></div>
-                          )
-                        }
-                        break
-
-                      default:
-                        cell = value
-                        break
-                    }
-                  } else {
-                    switch (type) {
-                      case 'avatar':
-                        let initials = '??'
-                        if (
-                          Object.prototype.hasOwnProperty.call(item, 'firstName') &&
-                          Object.prototype.hasOwnProperty.call(item, 'lastName')
-                        ) {
-                          initials =
-                            `${item['firstName'].charAt(0)}${item['lastName'].charAt(0)}`.toUpperCase()
-                        } else if (
-                          Object.prototype.hasOwnProperty.call(item, 'emailAddress')
-                        ) {
-                          initials = item['emailAddress'].slice(0, 2).toUpperCase()
-                        }
-                        tag = <Avatar initials={initials} />
-                        break
-
-                      case 'thumbnail2':
-                        if (item['extension'] != null && item['extension'] !== '') {
-                          tag = (
-                            <div
-                              style={{
-                                backgroundImage: `url(/filetypes/${item['extension'].split('.').pop()}.png)`,
-                              }}
-                              className="thumbnail-icon"></div>
-                          )
-                        }
-                        break
-                    }
-                  }
-
-                  return <td key={accessor}>{tag === undefined ? cell : tag}</td>
+  return (
+    <>
+      {sourceData?.length === 0 ? (
+        <div className="no-data">No {type} were found</div>
+      ) : (
+        <div
+          className={`table${isHoverable ? ' is-hoverable' : ''} ${sourceData === undefined ? 'element-loading' : 'element-loaded'}`}>
+          <div className="table-controls">
+            <div className="children">{children}</div>
+            <div className="search-bar">
+              <div className="search-bar-buttons">
+                <Icon name="Search" className="left"></Icon>
+              </div>
+              <input
+                type="text"
+                value={searchTerms}
+                onChange={(e) => handleSearchTermsChange(e.target.value)}></input>
+            </div>
+          </div>
+          <table id={id}>
+            <thead>
+              <tr>
+                {columns.map(({ label, accessor, sortable, type }) => {
+                  const cl =
+                    sortable !== false
+                      ? sortColumn === accessor && sortOrder === 'asc'
+                        ? 'Up'
+                        : sortColumn === accessor && sortOrder === 'desc'
+                          ? 'Down'
+                          : 'Default'
+                      : ''
+                  return (
+                    <th
+                      key={accessor}
+                      className={`${cl} ${type}-header`}
+                      onClick={() => sort(accessor, sortOrder!, type)}>
+                      <div>
+                        <span>{label}</span>
+                        {sortColumn === accessor && cl !== 'Default' ? (
+                          <Icon name={`Caret${cl}`} className="sort-icon"></Icon>
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+                    </th>
+                  )
                 })}
               </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
+            </thead>
+            <tbody onMouseMove={(ev) => handleMouseMove(ev)}>
+              {data.map((item: any) => {
+                return (
+                  <tr
+                    id={`row-${item[keyField]}`}
+                    key={item[keyField]}
+                    className={item.isHidden ? 'hidden' : ''}
+                    onClick={() => handleRowClick(item)}>
+                    {columns.map(({ accessor, type }) => {
+                      let cell = '-'
+                      let tag = undefined
+                      const value = getFromAccessor(item, type, accessor)
+
+                      if (value) {
+                        switch (type) {
+                          case 'avatar':
+                            tag = (
+                              <Avatar
+                                url={`${process.env.REACT_APP_API_URL}/content${value}`}
+                                initials=""
+                              />
+                            )
+                            break
+
+                          case 'jobStatus':
+                            tag = <div className={`job-status ${value}`}></div>
+                            break
+
+                          case 'thumbnail':
+                            if (value !== null && value !== '') {
+                              tag = (
+                                <div
+                                  style={{ backgroundImage: `url(${value})` }}
+                                  className="thumbnail"></div>
+                              )
+                            }
+                            break
+
+                          default:
+                            cell = value
+                            break
+                        }
+                      } else {
+                        switch (type) {
+                          case 'avatar':
+                            let initials = '??'
+                            if (
+                              Object.prototype.hasOwnProperty.call(item, 'firstName') &&
+                              Object.prototype.hasOwnProperty.call(item, 'lastName')
+                            ) {
+                              initials =
+                                `${item['firstName'].charAt(0)}${item['lastName'].charAt(0)}`.toUpperCase()
+                            } else if (
+                              Object.prototype.hasOwnProperty.call(item, 'emailAddress')
+                            ) {
+                              initials = item['emailAddress'].slice(0, 2).toUpperCase()
+                            }
+                            tag = <Avatar initials={initials} />
+                            break
+
+                          case 'thumbnail2':
+                            if (item['extension'] != null && item['extension'] !== '') {
+                              tag = (
+                                <div
+                                  style={{
+                                    backgroundImage: `url(/filetypes/${item['extension'].split('.').pop()}.png)`,
+                                  }}
+                                  className="thumbnail-icon"></div>
+                              )
+                            }
+                            break
+                        }
+                      }
+
+                      return <td key={accessor}>{tag === undefined ? cell : tag}</td>
+                    })}
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </>
   )
 }
 

@@ -5,8 +5,6 @@ import TextInput from 'components/TextInput'
 import { Investigator } from 'api/schema'
 import moment from 'moment'
 import Icon from 'components/Icon'
-import CommandBar from 'components/CommandBar'
-import { exportInvestigators } from 'helpers/exporter'
 import { AdministratorContext } from 'contexts/AdministratorContext'
 import { postalCodeRegex } from 'helpers/constants'
 
@@ -136,7 +134,6 @@ const Investigators = () => {
     await updateInvestigator(editInvestigator)
     var investigators = await getAllInvestigators()
     setInvestigators(investigators)
-    // handleSearchTermsDebounce("");
   }
 
   const handleRowClick = (clickedInvestigator: Investigator) => {
@@ -177,9 +174,6 @@ const Investigators = () => {
 
   return (
     <>
-      <CommandBar
-        onExport={() => exportInvestigators(investigators!)}
-        onLogout={null}></CommandBar>
       <div className="header">Investigators</div>
       <div className="inner">
         <Table
@@ -190,13 +184,11 @@ const Investigators = () => {
           sourceData={investigators}
           isPropertyBarVisible={isPropertyBarVisible}
           onSearchTermsChange={null}
-          // onSearchTermsChange={handleSearchTermsChange}
           onRowClick={handleRowClick}
           initialSortColumn={'lastName'}>
           <Icon
             toolTip="Add investigator"
-            className="context-icon"
-            name="UserPlus"
+            name="SquarePlus"
             onClick={handleAddInvestigator}
           />
         </Table>
@@ -232,9 +224,6 @@ const Investigators = () => {
           })}
         </>
       </PropertyBar>
-      <button className="styled-button add" onClick={() => setIsPropertyBarVisible(true)}>
-        Add investigator
-      </button>
     </>
   )
 }

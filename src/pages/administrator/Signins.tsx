@@ -3,8 +3,6 @@ import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
 import { Account } from 'api/schema'
 import { AdministratorContext } from 'contexts/AdministratorContext'
-import CommandBar from 'components/CommandBar'
-import { exportSignins } from 'helpers/exporter'
 
 const SignIns = () => {
   const [accounts, setAccounts] = useState<Account[]>()
@@ -52,7 +50,6 @@ const SignIns = () => {
 
   return (
     <>
-      <CommandBar onExport={() => exportSignins(accounts!)} onLogout={null}></CommandBar>
       <div className="header">Sign-ins</div>
       <div className="inner">
         <Table

@@ -6,8 +6,6 @@ import { Customer } from 'api/schema'
 import { postalCodeRegex } from 'helpers/constants'
 import moment from 'moment'
 import Icon from 'components/Icon'
-import CommandBar from 'components/CommandBar'
-import { exportCustomers } from 'helpers/exporter'
 import { AdministratorContext } from 'contexts/AdministratorContext'
 
 const Customers = () => {
@@ -134,24 +132,6 @@ const Customers = () => {
     }, 500)
   }
 
-  /*
-  const handleSearchTermsDebounce = async (inputValue: string) => {
-    await search(inputValue)
-      .then((result: { data: SetStateAction<Customer[] | undefined> }) => {
-        setCustomers(result.data);
-      })
-      .catch((error: any) => {
-        console.log(JSON.stringify(error));
-      });
-  }
-  */
-
-  /*
-  const handleSearchTermsChange = (terms: string) => {
-    searchTermsDebouncer(terms);
-  }
-  */
-
   const handleRowClick = (clickedCustomer: Customer) => {
     setEditCustomer(Object.assign(new Customer(), clickedCustomer))
     setIsPropertyBarVisible(true)
@@ -183,13 +163,6 @@ const Customers = () => {
     setCustomers(customers)
     // handleSearchTermsDebounce("");
   }
-  /*
-  const searchTermsDebouncer = useCallback(debounce(handleSearchTermsDebounce, 250), []);
-
-  useEffect(() => {
-    handleSearchTermsDebounce("");
-  }, []);
-  */
 
   useEffect(() => {
     ;(async () => {
@@ -204,9 +177,6 @@ const Customers = () => {
 
   return (
     <>
-      <CommandBar
-        onExport={() => exportCustomers(customers!)}
-        onLogout={null}></CommandBar>
       <div className="header">Customers</div>
       <div className="inner">
         <Table
@@ -217,14 +187,11 @@ const Customers = () => {
           sourceData={customers}
           isPropertyBarVisible={isPropertyBarVisible}
           onSearchTermsChange={null}
-          // onSearchTermsChange={handleSearchTermsChange}
           onRowClick={handleRowClick}>
-          <Icon
-            toolTip="Add customer"
-            className="context-icon"
-            name="UserPlus"
-            onClick={handleAddCustomer}
-          />
+          <>
+            <Icon toolTip="Add customer" name="SquarePlus" onClick={handleAddCustomer} />
+            <Icon toolTip="Export" name="Download" onClick={handleAddCustomer} />
+          </>
         </Table>
       </div>
       <PropertyBar
@@ -256,9 +223,6 @@ const Customers = () => {
           })}
         </>
       </PropertyBar>
-      <button className="styled-button add" onClick={() => setIsPropertyBarVisible(true)}>
-        Add customer
-      </button>
     </>
   )
 }

@@ -3,8 +3,6 @@ import Table from 'components/Table'
 import { Job, JobStatus } from 'api/schema'
 import { JobContext } from 'contexts/JobContext'
 import * as signalR from '@microsoft/signalr'
-import CommandBar from 'components/CommandBar'
-import { exportJobs } from 'helpers/exporter'
 
 const Jobs = () => {
   const [jobs, setJobs] = useState<Job[]>()
@@ -93,7 +91,6 @@ const Jobs = () => {
 
   return (
     <>
-      <CommandBar onExport={() => exportJobs(jobs!)} onLogout={null}></CommandBar>
       <div className="header">Scheduled Jobs</div>
       <div className="inner">
         <Table

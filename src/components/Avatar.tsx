@@ -6,7 +6,6 @@ interface IAvatar {
 }
 
 const Avatar = ({ url, initials }: IAvatar) => {
-  console.log('Avatar', url === undefined, initials === undefined)
   return (
     <div className="avatar">
       {url === undefined || url.length === 0 ? (
