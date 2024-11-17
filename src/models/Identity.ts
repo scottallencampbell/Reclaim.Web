@@ -22,7 +22,13 @@ export class Identity {
   static parse(json: string) {
     try {
       const data = JSON.parse(json)
-      return new Identity(data.emailAddress, data.avatarUrl, data.role, data.nonce, data.expiration)
+      return new Identity(
+        data.emailAddress,
+        data.avatarUrl,
+        data.role,
+        data.nonce,
+        data.expiration
+      )
     } catch (e) {
       return null
     }
