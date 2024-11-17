@@ -28,25 +28,21 @@ const Investigators = () => {
       {
         label: 'Name',
         accessor: 'lastName',
-        type: 'fullName',
-      },
-      {
-        label: 'Email address',
-        accessor: 'emailAddress',
+        type: 'fullNameAndEmailAddress',
       },
       {
         label: 'Address',
         accessor: 'address',
-        type: 'addressAddress2',
-      },
-      {
-        label: 'City',
-        accessor: 'city',
-        type: 'cityStatePostalCode',
+        type: 'fullAddress',
       },
       {
         label: 'Telephone',
         accessor: 'telephone',
+      },
+      {
+        label: 'Status',
+        accessor: 'status',
+        type: 'status',
       },
       {
         label: 'Last active',

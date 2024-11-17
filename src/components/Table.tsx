@@ -3,6 +3,7 @@ import Icon from './Icon'
 import moment from 'moment'
 import React from 'react'
 import Avatar from './Avatar'
+import { lowerCase, upperFirst } from 'lodash'
 
 interface ITable {
   children: any
@@ -197,10 +198,10 @@ const Table = ({
 
     if (newSortColumn) {
       const sorted = [...data].sort((a, b) => {
-        let aItem = getFromAccessor(a, column.type, newSortColumn)
-        let bItem = getFromAccessor(b, column.type, newSortColumn)
+        let [aItem] = getFromAccessor(a, column.type, newSortColumn)
+        let [bItem] = getFromAccessor(b, column.type, newSortColumn)
 
-        if (column.type === 'fullName') {
+        if (column.type === 'fullName' || column.type === 'fullNameAndEmailAddress') {
           aItem = a['lastName'] + ' ' + a['firstName']
           bItem = b['lastName'] + ' ' + b['firstName']
         }
@@ -235,16 +236,18 @@ const Table = ({
     }
   }
 
-  const getFromAccessor = (obj: any, type: string, accessor: string): any => {
+  const getFromAccessor = (item: any, type: string, accessor: string): any => {
     const parts = accessor.split('.')
 
-    let value = obj
+    let value = item
+    let obj = item
 
     for (let i = 0; i < parts.length; i++) {
-      if (value == null) {
-        return null
+      if (value === null) {
+        return [null, null]
       }
 
+      obj = value
       value = value[parts[i]]
     }
 
@@ -254,14 +257,24 @@ const Table = ({
           value = `${obj['firstName']} ${obj['lastName']}`
           break
 
-        case 'cityStatePostalCode':
-          if (value != null && value !== '') {
-            value = getCityStatePostalCodeFromAccessor(obj, accessor)
-          }
+        case 'fullNameAndEmailAddress':
+          value = `${obj['firstName']} ${obj['lastName']} ${obj['emailAddress']}`
           break
 
-        case 'addressAddress2':
-          value = getAddressAddress2FromAccessor(obj, accessor)
+        case 'claimExternalIDAndValue':
+          value = `${obj['externalID']} ${obj['amountSubmitted']}`
+          break
+
+        case 'customerNameAndCode':
+          value = `${obj['name']} ${obj['code']}`
+          break
+
+        case 'cityState':
+          value = `${obj['city']}, ${obj['state']}`
+          break
+
+        case 'fullAddress':
+          value = `${obj['address']} ${obj['address2']} ${obj['city']} ${obj['state']} ${obj['postalCode']}`
           break
 
         case 'date':
@@ -289,35 +302,7 @@ const Table = ({
       }
     }
 
-    return value
-  }
-
-  const getCityStatePostalCodeFromAccessor = (obj: any, accessor: string): string => {
-    const parts = accessor.split('.')
-
-    let value = obj
-
-    for (let i = 0; i < parts.length - 1; i++) {
-      value = value[parts[i]]
-    }
-
-    return `${value['city']}, ${value['state']} ${value['postalCode']}`
-  }
-
-  const getAddressAddress2FromAccessor = (obj: any, accessor: string): string => {
-    const parts = accessor.split('.')
-
-    let value = obj
-
-    for (let i = 0; i < parts.length - 1; i++) {
-      value = value[parts[i]]
-    }
-
-    if (value['address2'] === null || value['address2'] === '') {
-      return value['address']
-    } else {
-      return `${value['address']} ${value['address2']}`
-    }
+    return [value, obj]
   }
 
   return (
@@ -377,13 +362,67 @@ const Table = ({
                     key={item[keyField]}
                     className={item.isHidden ? 'hidden' : ''}
                     onClick={() => handleRowClick(item)}>
-                    {columns.map(({ accessor, type }) => {
+                    {columns.map(({ accessor, type, override }) => {
                       let cell = '-'
                       let tag = undefined
-                      const value = getFromAccessor(item, type, accessor)
+                      let [value, obj] = getFromAccessor(item, type, accessor)
+
+                      if (override !== undefined) {
+                        value = override
+                      }
 
                       if (value) {
                         switch (type) {
+                          case 'status':
+                            tag = (
+                              <div className={`status ${value}`}>
+                                <div>{upperFirst(lowerCase(value))}</div>
+                              </div>
+                            )
+                            break
+
+                          case 'fullNameAndEmailAddress':
+                            tag = (
+                              <div className="full-name">
+                                <div>
+                                  {obj['firstName']} {obj['lastName']}
+                                </div>
+                                <div>{obj['emailAddress']}</div>
+                              </div>
+                            )
+                            break
+
+                          case 'customerNameAndCode':
+                            tag = (
+                              <div className="customer-name-and-code">
+                                <div>{obj['name']}</div>
+                                <div>{obj['code']}</div>
+                              </div>
+                            )
+                            break
+
+                          case 'claimExternalIDAndValue':
+                            tag = (
+                              <div className="claim-externalid-and-value">
+                                <div>{obj['externalID']}</div>
+                                <div>{obj['amountSubmitted']}</div>
+                              </div>
+                            )
+                            break
+
+                          case 'fullAddress':
+                            tag = (
+                              <div className="full-address">
+                                <div>
+                                  {obj['address']} {obj['address2']}
+                                </div>
+                                <div>
+                                  {obj['city']}, {obj['state']} {obj['postalCode']}
+                                </div>
+                              </div>
+                            )
+                            break
+
                           case 'avatar':
                             tag = (
                               <Avatar

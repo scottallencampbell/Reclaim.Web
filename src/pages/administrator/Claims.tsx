@@ -12,23 +12,19 @@ const Claims = () => {
   const columns = useMemo(
     () => [
       {
-        label: 'Address',
-        accessor: 'policy.address',
-        type: 'addressAddress2',
+        label: 'ID',
+        accessor: 'externalID',
+        type: 'claimExternalIDAndValue',
       },
       {
-        label: 'City',
-        accessor: 'policy.city',
-        type: 'cityStatePostalCode',
+        label: 'Address',
+        accessor: 'policy.address',
+        type: 'fullAddress',
       },
       {
         label: 'Date',
         accessor: 'eventDate',
         type: 'date',
-      },
-      {
-        label: 'External ID',
-        accessor: 'externalID',
       },
       {
         label: 'Type',
@@ -37,10 +33,12 @@ const Claims = () => {
       {
         label: 'Status',
         accessor: 'status',
+        type: 'status',
       },
       {
         label: 'Disposition',
         accessor: 'disposition',
+        type: 'status',
       },
     ],
     []

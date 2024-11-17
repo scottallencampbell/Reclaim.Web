@@ -20,25 +20,23 @@ const Customers = () => {
       {
         label: 'Name',
         accessor: 'name',
-      },
-      {
-        label: 'Code',
-        accessor: 'code',
+        type: 'customerNameAndCode',
       },
       {
         label: 'Contact',
-        accessor: 'firstName',
-        type: 'fullName',
+        accessor: 'lastName',
+        type: 'fullNameAndEmailAddress',
       },
       {
         label: 'Address',
         accessor: 'address',
-        type: 'addressAddress2',
+        type: 'fullAddress',
       },
       {
-        label: 'City',
-        accessor: 'city',
-        type: 'cityStatePostalCode',
+        label: 'Status',
+        accessor: 'status',
+        type: 'status',
+        override: 'Active',
       },
       {
         label: 'Last active',

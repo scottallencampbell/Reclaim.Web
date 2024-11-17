@@ -13,7 +13,7 @@ const Jobs = () => {
       {
         label: 'Status',
         accessor: 'status',
-        type: 'jobStatus',
+        type: 'status',
       },
       {
         label: 'Description',

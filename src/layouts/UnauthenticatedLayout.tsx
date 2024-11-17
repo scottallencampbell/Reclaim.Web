@@ -33,14 +33,8 @@ export const UnauthenticatedLayout = ({
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;800;900"
+          href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
           rel="preload prefetch stylesheet"
-          as="style"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;800;900&display=swap"
-          rel="preload prefetch stylesheet"
-          media="print"
         />
       </HelmetProvider>
       <div id={id} className={`unauth-container`}>

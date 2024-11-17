@@ -1,7 +1,7 @@
 import { AdministratorContext } from 'contexts/AdministratorContext'
 import { useEffect, useState } from 'react'
 import { AdministratorDashboard } from 'api/schema'
-import DashboardAggregateBox from 'components/DashboardAggregateBox'
+import AggregateBox from 'components/AggregateBox'
 import Map from 'components/Map'
 import News from 'components/News'
 import StackedBarChart from 'components/StackedBarChart'
@@ -27,36 +27,30 @@ const Dashboard = () => {
       <div className="header">Dashboard</div>
       <div className={dashboard === undefined ? 'element-loading' : 'element-loaded'}>
         <div className="row no-gutter aggregates">
-          <DashboardAggregateBox
+          <AggregateBox
             title={'Claims under investigation'}
             data={dashboard?.claimsValueUnderInvestigation}
           />
-          <DashboardAggregateBox
-            title={'Monthly revenue'}
-            data={dashboard?.monthlyRevenue}
-          />
-          <DashboardAggregateBox title={'New orders'} data={dashboard?.newOrders} />
-          <DashboardAggregateBox
-            title={'Unique signins'}
-            data={dashboard?.uniqueLogins}
-          />
+          <AggregateBox title={'Monthly revenue'} data={dashboard?.monthlyRevenue} />
+          <AggregateBox title={'New orders'} data={dashboard?.newOrders} />
+          <AggregateBox title={'Unique signins'} data={dashboard?.uniqueLogins} />
         </div>
         <div className="row dashboard-spacer"></div>
         <div className="dashboard-chart">
-          <span>Monthly Investigations</span>
+          <span className="header">Monthly Investigations</span>
           <StackedBarChart data={dashboard?.claimsByMonth} />
         </div>
         <div className="row dashboard-spacer"></div>
         <div className="row no-gutter">
           <div className="col-lg-6">
             <div className="dashboard-news">
-              <span>News</span>
+              <span className="header">News</span>
               <News />
             </div>
           </div>
           <div className="col-lg-6">
             <div className="dashboard-map">
-              <span>Investigations by state</span>
+              <span className="header">Investigations by state</span>
               <Map data={dashboard?.claimsByState} />
             </div>
           </div>

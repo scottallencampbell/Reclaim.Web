@@ -1,14 +1,14 @@
 import { DashboardAggregate } from 'api/schema'
 import Icon from './Icon'
 
-interface IDashboardAggregateBox {
+interface IAggregateBox {
   title: string
   data: DashboardAggregate | undefined
 }
 
 const numberTriplets = /\B(?=(\d{3})+(?!\d))/g
 
-const DashboardAggregateBox = ({ title, data }: IDashboardAggregateBox) => {
+const AggregateBox = ({ title, data }: IAggregateBox) => {
   const formatNumber = (value: number, type: string) => {
     if (type === 'Money') {
       return `$${value.toFixed(2).replace(numberTriplets, ',')}`
@@ -22,7 +22,7 @@ const DashboardAggregateBox = ({ title, data }: IDashboardAggregateBox) => {
   return data === undefined ? null : (
     <div className="aggregate col-lg-3 col-md-6">
       <div>
-        <p>{title}</p>
+        <span className="header">{title}</span>
         <p>{formatNumber(data?.currentValue, data.valueType)}</p>
         <p>
           {data.percentChange ? (
@@ -44,4 +44,4 @@ const DashboardAggregateBox = ({ title, data }: IDashboardAggregateBox) => {
     </div>
   )
 }
-export default DashboardAggregateBox
+export default AggregateBox

@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Lato:wght@100;300;400;800;900');
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 $primaryColor: #0f75bc;
 $primaryTranslucentColor: #e8e8e8;
 $secondaryColor: #844c85;
@@ -23,7 +22,7 @@ $navBarBackgroundColor: #f4f4f4;
 $lightLineColor: #e0e0e0;
 
 * {
-  font-family: 'Lato';
+  font-family: 'Inter', sans-serif;
 }
 
 html,
@@ -570,7 +569,8 @@ form.form-error .input-container {
       transition: color 0.2s;
 
       &.nav-item-label {
-        font-size: 15px;
+        font-size: 14px;
+        font-weight: 600;
         position: absolute;
         top: 11px;
       }
@@ -880,9 +880,93 @@ form.form-error .input-container {
     width: 100%;
 
     td {
-      font-size: 14px;
+      font-size: 13px;
       padding: 6px 0 8px 10px;
       border-bottom: solid 1px $lightLineColor;
+
+      .status {
+        border-radius: 5px;
+        padding: 2px 7px 2px 7px;
+        display: inline-block;
+        position: relative;
+        top: -1px;
+        left: -2px;
+        border: solid 1px #cccccc;
+        background-color: #f0f0f0;
+
+        &.Active,
+        &.Resolved,
+        &.NotFraudulent,
+        &.Customer,
+        &.Waiting {
+          background-color: #eaf7ed;
+          border-color: #c4ddca;
+          color: #155724;
+        }
+
+        &.OnProbation,
+        &.Investigating,
+        &.Running {
+          background-color: #fff3cd;
+          border-color: #efdeaa;
+          color: #856404;
+        }
+
+        &.Terminated,
+        &.Tombstoned,
+        &.Fraudulent,
+        &.Error {
+          background-color: #f8d7da;
+          border-color: #e5b6bb;
+          color: #721c24;
+        }
+
+        &.Orange,
+        &.Support {
+          background-color: #ffe5cc;
+          border-color: #f3bc89;
+          color: #995c00;
+        }
+
+        &.Adjudicated,
+        &.Investigator {
+          background-color: #e5e3f6;
+          border-color: #cabaf2;
+          color: #6b20a2;
+        }
+
+        &.Administrator {
+          background-color: #ddeafb;
+          border-color: #b3d4f7;
+          color: #0b5394;
+        }
+      }
+
+      .claims-open-all {
+        div:nth-child(1) {
+          display: inline;
+          padding: 3px;
+          border-radius: 3px;
+          border: solid 1px #aaaafe;
+          background-color: #eeeefe;
+        }
+        div:nth-child(2) {
+          display: inline;
+          padding-left: 3px;
+        }
+      }
+      .full-name,
+      .customer-name-and-code,
+      .claim-externalid-and-value {
+        line-height: 19px;
+
+        div:nth-child(1) {
+          font-weight: 600;
+        }
+        div:nth-child(2) {
+          color: $disabledButtonColor;
+        }
+      }
     }
 
     th {
@@ -987,11 +1071,12 @@ form.form-error .input-container {
       min-height: calc(100vh - 110px);
     }
 
-    .header {
+    div.header {
       padding-top: 4px;
       padding-bottom: 20px;
-      font-weight: 300;
+      font-weight: 200;
       font-size: 38px;
+      letter-spacing: 1px;
     }
 
     .inner {
@@ -1475,6 +1560,16 @@ form.form-error .input-container {
 }
 
 .dashboard {
+  span.header {
+    color: $lightGrayColor;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 700;
+    left: 15px;
+    top: 12px;
+    position: absolute;
+  }
+
   .aggregates {
     min-height: 130px;
   }
@@ -1489,6 +1584,7 @@ form.form-error .input-container {
       padding: 0 15px 0 15px;
       border-radius: 4px;
       height: 100%;
+      position: relative;
     }
 
     p {
@@ -1498,21 +1594,26 @@ form.form-error .input-container {
     p:nth-child(1) {
       color: $lightGrayColor;
       text-transform: uppercase;
-      font-size: 14px;
-      font-weight: 600;
-      padding-top: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      position: absolute;
+      top: 13px;
     }
 
     p:nth-child(2) {
-      font-size: 32px;
-      font-weight: 400;
-      padding-top: 5px;
+      color: $blackColor;
+      font-size: 36px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      position: absolute;
+      top: 35px;
     }
 
     p:nth-child(3) {
       color: $mutedColor;
-      padding-top: 8px;
       font-size: 14px;
+      position: absolute;
+      bottom: 10px;
     }
 
     .icon {
@@ -1539,19 +1640,10 @@ form.form-error .input-container {
   height: 250px;
   min-height: 2px;
   pointer-events: none;
-  font-family: 'Lato';
+  font-family: 'Open Sans', sans-serif;
   font-size: 13px;
   color: $blackColor;
   position: relative;
-
-  span {
-    color: $lightGrayColor;
-    text-transform: uppercase;
-    font-size: 14px;
-    font-weight: 600;
-    padding-left: 10px;
-    position: absolute;
-  }
 
   .recharts-responsive-container {
     position: relative;
@@ -1568,17 +1660,10 @@ form.form-error .input-container {
   height: 375px;
   min-height: 375px;
   pointer-events: none;
-
-  span {
-    color: $lightGrayColor;
-    text-transform: uppercase;
-    font-size: 14px;
-    font-weight: 600;
-    padding-top: 10px;
-    padding-left: 10px;
-  }
+  position: relative;
 
   .us-state-map {
+    padding-top: 30px;
     width: 100%;
     height: 100%;
   }
@@ -1587,24 +1672,20 @@ form.form-error .input-container {
 .dashboard-news {
   border: solid 1px $blackColor;
   border-radius: 4px;
-  padding: 10px 10px 15px 10px;
   height: 375px;
   min-height: 375px;
   overflow: hidden;
+  position: relative;
 
-  span {
-    color: $lightGrayColor;
-    text-transform: uppercase;
-    font-size: 14px;
-    font-weight: 600;
-    padding-top: 10px;
-    padding-left: 10px;
+  .frame {
+    margin: 30px 30px 30px 15px;
   }
 
   .items {
     column-count: 2;
     column-gap: 5px;
-    height: 335px;
+    height: 340px;
+    max-height: 340px;
     overflow: hidden;
 
     .item {

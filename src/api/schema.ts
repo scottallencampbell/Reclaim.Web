@@ -2416,6 +2416,7 @@ export interface ICustomer {
 
 export class Investigator implements IInvestigator {
     uniqueID!: string;
+    status!: InvestigatorStatus;
     firstName!: string;
     lastName!: string;
     address!: string;
@@ -2439,6 +2440,7 @@ export class Investigator implements IInvestigator {
     init(_data?: any) {
         if (_data) {
             this.uniqueID = _data["uniqueID"];
+            this.status = _data["status"];
             this.firstName = _data["firstName"];
             this.lastName = _data["lastName"];
             this.address = _data["address"];
@@ -2462,6 +2464,7 @@ export class Investigator implements IInvestigator {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["uniqueID"] = this.uniqueID;
+        data["status"] = this.status;
         data["firstName"] = this.firstName;
         data["lastName"] = this.lastName;
         data["address"] = this.address;
@@ -2478,6 +2481,7 @@ export class Investigator implements IInvestigator {
 
 export interface IInvestigator {
     uniqueID: string;
+    status: InvestigatorStatus;
     firstName: string;
     lastName: string;
     address: string;
@@ -2488,6 +2492,12 @@ export interface IInvestigator {
     telephone: string;
     emailAddress: string;
     avatarUrl: string;
+}
+
+export enum InvestigatorStatus {
+    Active = "Active",
+    OnProbation = "OnProbation",
+    Terminated = "Terminated",
 }
 
 export class CustomerCreateOrUpdate extends Base implements ICustomerCreateOrUpdate {
