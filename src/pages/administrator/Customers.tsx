@@ -18,12 +18,12 @@ const Customers = () => {
   const columns = useMemo(
     () => [
       {
-        label: 'Name',
+        label: 'Name / Code',
         accessor: 'name',
         type: 'customerNameAndCode',
       },
       {
-        label: 'Contact',
+        label: 'Contact / Email',
         accessor: 'lastName',
         type: 'fullNameAndEmailAddress',
       },
@@ -36,7 +36,6 @@ const Customers = () => {
         label: 'Status',
         accessor: 'status',
         type: 'status',
-        override: 'Active',
       },
       {
         label: 'Last active',
@@ -166,6 +165,7 @@ const Customers = () => {
     ;(async () => {
       try {
         const result = await getAllCustomers()
+        console.log(result)
         setCustomers(result)
       } catch (error) {
         console.log(JSON.stringify(error))

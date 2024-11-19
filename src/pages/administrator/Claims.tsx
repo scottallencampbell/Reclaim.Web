@@ -12,7 +12,7 @@ const Claims = () => {
   const columns = useMemo(
     () => [
       {
-        label: 'ID',
+        label: 'ID / Value',
         accessor: 'externalID',
         type: 'claimExternalIDAndValue',
       },

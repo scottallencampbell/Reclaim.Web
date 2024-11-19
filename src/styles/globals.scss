@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+$dark-theme: false !default;
+
 $primaryColor: #0f75bc;
 $primaryTranslucentColor: #e8e8e8;
 $secondaryColor: #844c85;
@@ -20,6 +22,18 @@ $greenColor: #11aa11;
 $lightGrayColor: #aaaaaa;
 $navBarBackgroundColor: #f4f4f4;
 $lightLineColor: #e0e0e0;
+
+@if $dark-theme {
+  $blackColor: #eeeeee;
+  $superBlackColor: #ffffff;
+  $backgroundColor: #333333;
+  $navBarBackgroundColor: #444444;
+  $lightGrayColor: #cccccc;
+  $primaryTranslucentColor: #666666;
+  $lightLineColor: #666666;
+  $disabledButtonColor: #999999;
+  $highlightColor: #505060;
+}
 
 * {
   font-family: 'Inter', sans-serif;
@@ -65,7 +79,7 @@ select {
     left: 0;
     width: 100%;
     height: 100%;
-    background: $whiteColor;
+    background: $backgroundColor;
     opacity: 0;
     filter: alpha(opacity=0);
     pointer-events: none;
@@ -81,8 +95,10 @@ select {
 }
 
 .auth-container {
+  color: $blackColor;
+
   #overlay {
-    background: $whiteColor;
+    background: $backgroundColor;
     opacity: 1;
     filter: alpha(opacity=1);
     pointer-events: all;
@@ -282,34 +298,6 @@ form.form-error .input-container {
   background-color: #eeeeee !important;
 }
 
-.job-status {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  border-radius: 14px;
-  background-color: #aaaaaa;
-  border: solid 1px #aaaaaa;
-  margin-left: 11px;
-  position: relative;
-  top: 2px;
-  transition: all 0.2s;
-}
-
-.job-status.Running {
-  background-color: #ffd700;
-  border: solid 1px #ffd700;
-}
-
-.job-status.Waiting {
-  background-color: #55aa55;
-  border: solid 1px #55aa55;
-}
-
-.job-status.Paused {
-  background-color: #aaaaaa;
-  border: solid 1px #aaaaaa;
-}
-
 .simple-link {
   color: $primaryColor;
   cursor: pointer;
@@ -390,7 +378,8 @@ form.form-error .input-container {
     font-size: 15px;
 
     span {
-      color: #999999;
+      background-color: transparent;
+      color: $grayColor;
       position: relative;
       top: 4px;
       cursor: pointer;
@@ -457,6 +446,19 @@ form.form-error .input-container {
   }
 
   .logo {
+    margin-top: 14px;
+    margin-bottom: 6px;
+    height: 53px;
+    width: 100%;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+
+    @if $dark-theme {
+      background-image: url('~/public/logo-darkmode.png');
+    } @else {
+      background-image: url('~/public/logo.png');
+    }
   }
 
   .logo img {
@@ -570,9 +572,9 @@ form.form-error .input-container {
 
       &.nav-item-label {
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 500;
         position: absolute;
-        top: 11px;
+        top: 12px;
       }
 
       @media (max-width: 900px) {
@@ -849,6 +851,7 @@ form.form-error .input-container {
   width: 100%;
   font-size: 14px;
   position: relative;
+  color: $backgroundColor;
 
   .table-options {
     position: absolute;
@@ -879,10 +882,19 @@ form.form-error .input-container {
   table {
     width: 100%;
 
+    tr:hover td {
+      background-color: $highlightColor;
+    }
+
     td {
+      height: 55px;
       font-size: 13px;
-      padding: 6px 0 8px 10px;
+      padding-left: 12px;
+      padding-right: 8px;
       border-bottom: solid 1px $lightLineColor;
+      line-height: 19px;
+      background-color: $backgroundColor;
+      color: $blackColor;
 
       .status {
         border-radius: 5px;
@@ -893,12 +905,13 @@ form.form-error .input-container {
         left: -2px;
         border: solid 1px #cccccc;
         background-color: #f0f0f0;
+        color: #333333;
 
         &.Active,
         &.Resolved,
         &.NotFraudulent,
         &.Customer,
-        &.Waiting {
+        &.Pending {
           background-color: #eaf7ed;
           border-color: #c4ddca;
           color: #155724;
@@ -915,7 +928,8 @@ form.form-error .input-container {
         &.Terminated,
         &.Tombstoned,
         &.Fraudulent,
-        &.Error {
+        &.Error,
+        &.TimedOut {
           background-color: #f8d7da;
           border-color: #e5b6bb;
           color: #721c24;
@@ -940,28 +954,64 @@ form.form-error .input-container {
           border-color: #b3d4f7;
           color: #0b5394;
         }
+
+        @if $dark-theme {
+          &.Active,
+          &.Resolved,
+          &.NotFraudulent,
+          &.Customer,
+          &.Pending {
+            background-color: #a3e4b8;
+            border-color: #7ccf8e;
+            color: #0b3d1b;
+          }
+
+          &.OnProbation,
+          &.Investigating,
+          &.Running {
+            background-color: #ffdd99;
+            border-color: #ffcc66;
+            color: #664400;
+          }
+
+          &.Terminated,
+          &.Tombstoned,
+          &.Fraudulent,
+          &.Error,
+          &.TimedOut {
+            background-color: #f5a3a8;
+            border-color: #f08085;
+            color: #4a0d12;
+          }
+
+          &.Orange,
+          &.Support {
+            background-color: #ffb366;
+            border-color: #ff9933;
+            color: #663300;
+          }
+
+          &.Adjudicated,
+          &.Investigator {
+            background-color: #b399ff;
+            border-color: #9966ff;
+            color: #330066;
+          }
+
+          &.Administrator {
+            background-color: #99ccff;
+            border-color: #66b2ff;
+            color: #003366;
+          }
+        }
       }
 
-      .claims-open-all {
-        div:nth-child(1) {
-          display: inline;
-          padding: 3px;
-          border-radius: 3px;
-          border: solid 1px #aaaafe;
-          background-color: #eeeefe;
-        }
-        div:nth-child(2) {
-          display: inline;
-          padding-left: 3px;
-        }
-      }
       .full-name,
       .customer-name-and-code,
       .claim-externalid-and-value {
-        line-height: 19px;
-
         div:nth-child(1) {
           font-weight: 600;
+          color: $blackColor;
         }
         div:nth-child(2) {
           color: $disabledButtonColor;
@@ -972,6 +1022,7 @@ form.form-error .input-container {
     th {
       border-bottom: solid 1px $lightLineColor;
       font-weight: bold;
+      background-color: $backgroundColor;
 
       div {
         height: 26px;
@@ -981,14 +1032,18 @@ form.form-error .input-container {
 
       span {
         position: relative;
-        left: -1px;
         cursor: pointer;
         padding: 5px 0 5px 10px;
         color: $blackColor;
+
+        span {
+          color: $disabledButtonColor;
+          padding: 0;
+        }
       }
 
       span.icon {
-        padding: 5px 0 5px 5px;
+        padding: 5px 0 5px 8px;
       }
 
       div:hover {
@@ -1430,9 +1485,8 @@ form.form-error .input-container {
     font-size: 63px;
     font-weight: 800;
     margin-bottom: 40px;
-    color: #ffffff;
+    color: $whiteColor;
     letter-spacing: 5px;
-    color: #ffffff;
     text-shadow:
       0 0 15px rgba(255, 255, 255, 0.5),
       0 0 10px rgba(255, 255, 255, 0.5);
@@ -1610,7 +1664,7 @@ form.form-error .input-container {
     }
 
     p:nth-child(3) {
-      color: $mutedColor;
+      color: $grayColor;
       font-size: 14px;
       position: absolute;
       bottom: 10px;

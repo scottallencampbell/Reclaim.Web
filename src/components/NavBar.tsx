@@ -10,9 +10,7 @@ const NavBar = ({ role, jwtAccessTokenLifeRemaining, idleLifeRemaining }: INavBa
   return (
     <nav id="nav-bar" className="nav-bar">
       <div className="position-sticky pt-md-5">
-        <div className="logo">
-          <img src="/logo.png" alt="logo" />
-        </div>
+        <div className="logo"></div>
         <NavItemList role={role}></NavItemList>
       </div>
     </nav>

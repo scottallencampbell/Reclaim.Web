@@ -11,17 +11,22 @@ const Jobs = () => {
   const columns = useMemo(
     () => [
       {
+        label: 'Description',
+        accessor: 'description',
+      },
+      {
         label: 'Status',
         accessor: 'status',
         type: 'status',
       },
       {
-        label: 'Description',
-        accessor: 'description',
-      },
-      {
         label: 'Interval',
         accessor: 'interval',
+        type: 'interval',
+      },
+      {
+        label: 'Timeout',
+        accessor: 'timeout',
         type: 'interval',
       },
       {
@@ -73,7 +78,7 @@ const Jobs = () => {
           job.nextEvent = new Date(nextEvent)
           setJobs([...jobs!])
         },
-        status === 'Waiting' ? 2000 : 0
+        status === 'Pending' ? 2000 : 0
       )
     }
   })

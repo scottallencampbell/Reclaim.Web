@@ -26,7 +26,7 @@ const Investigators = () => {
         type: 'avatar',
       },
       {
-        label: 'Name',
+        label: 'Name / Email',
         accessor: 'lastName',
         type: 'fullNameAndEmailAddress',
       },

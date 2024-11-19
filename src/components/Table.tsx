@@ -39,22 +39,25 @@ const Table = ({
   const [searchTerms, setSearchTerms] = useState('')
 
   useEffect(() => {
-    if (sortColumn === undefined || sortColumn === '') {
+    if (sortColumn === undefined || sortColumn === undefined) {
       setSortColumn(columns[0].accessor)
     }
 
-    if (sortOrder === undefined || sortOrder === '') {
+    if (sortOrder === undefined || sortOrder === undefined) {
       setSortOrder('asc')
     }
-  }, [columns, sortColumn, sortOrder])
+  }, [columns])
 
   useEffect(() => {
-    if (sourceData == null) {
+    if (sourceData === undefined || sortColumn === undefined || sortOrder === undefined) {
       return
     }
 
-    setData(sourceData)
-  }, [sourceData])
+    const column = columns.find((x) => x.accessor === sortColumn)
+    const sorted = sort(sourceData, sortColumn, sortOrder, column.type)
+
+    setData(sorted)
+  }, [sourceData, columns, sortColumn, sortOrder])
 
   const unselectAllRows = () => {
     var elements = document.getElementById(id)!.getElementsByClassName('selected')
@@ -70,6 +73,18 @@ const Table = ({
 
     if (row) {
       row.classList.add('selected')
+    }
+  }
+
+  const handleSort = (column: string) => {
+    if (column === sortColumn) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortColumn(column)
+
+      if (sortOrder === 'desc') {
+        setSortOrder('asc')
+      }
     }
   }
 
@@ -184,20 +199,16 @@ const Table = ({
     return parts.join(', ')
   }
 
-  const sort = (newSortColumn: string, currentSortOrder: string, type: string) => {
-    let newSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc'
-
-    if (newSortColumn !== sortColumn) {
-      newSortOrder = 'asc'
-    }
-
-    setSortOrder(newSortOrder)
-    setSortColumn(newSortColumn)
-
+  const sort = (
+    items: any,
+    newSortColumn: string,
+    newSortOrder: string,
+    type: string
+  ) => {
     const column = columns.find((c) => c.accessor === newSortColumn)
 
     if (newSortColumn) {
-      const sorted = [...data].sort((a, b) => {
+      const sorted = [...items].sort((a, b) => {
         let [aItem] = getFromAccessor(a, column.type, newSortColumn)
         let [bItem] = getFromAccessor(b, column.type, newSortColumn)
 
@@ -232,7 +243,7 @@ const Table = ({
         }
       })
 
-      setData(sorted)
+      return sorted
     }
   }
 
@@ -328,6 +339,7 @@ const Table = ({
             <thead>
               <tr>
                 {columns.map(({ label, accessor, sortable, type }) => {
+                  const labelParts = label.split('/')
                   const cl =
                     sortable !== false
                       ? sortColumn === accessor && sortOrder === 'asc'
@@ -340,9 +352,15 @@ const Table = ({
                     <th
                       key={accessor}
                       className={`${cl} ${type}-header`}
-                      onClick={() => sort(accessor, sortOrder!, type)}>
+                      onClick={() => handleSort(accessor)}>
                       <div>
-                        <span>{label}</span>
+                        {labelParts.length == 1 ? (
+                          <span>{label}</span>
+                        ) : (
+                          <span>
+                            {labelParts[0]} / <span>{labelParts[1]}</span>
+                          </span>
+                        )}
                         {sortColumn === accessor && cl !== 'Default' ? (
                           <Icon name={`Caret${cl}`} className="sort-icon"></Icon>
                         ) : (
@@ -405,7 +423,7 @@ const Table = ({
                             tag = (
                               <div className="claim-externalid-and-value">
                                 <div>{obj['externalID']}</div>
-                                <div>{obj['amountSubmitted']}</div>
+                                <div>${obj['amountSubmitted']}</div>
                               </div>
                             )
                             break

@@ -2332,6 +2332,7 @@ export enum RoofType {
 
 export class Customer implements ICustomer {
     uniqueID!: string;
+    status!: CustomerStatus;
     name!: string;
     firstName!: string;
     lastName!: string;
@@ -2357,6 +2358,7 @@ export class Customer implements ICustomer {
     init(_data?: any) {
         if (_data) {
             this.uniqueID = _data["uniqueID"];
+            this.status = _data["status"];
             this.name = _data["name"];
             this.firstName = _data["firstName"];
             this.lastName = _data["lastName"];
@@ -2382,6 +2384,7 @@ export class Customer implements ICustomer {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["uniqueID"] = this.uniqueID;
+        data["status"] = this.status;
         data["name"] = this.name;
         data["firstName"] = this.firstName;
         data["lastName"] = this.lastName;
@@ -2400,6 +2403,7 @@ export class Customer implements ICustomer {
 
 export interface ICustomer {
     uniqueID: string;
+    status: CustomerStatus;
     name: string;
     firstName: string;
     lastName: string;
@@ -2412,6 +2416,12 @@ export interface ICustomer {
     telephone: string;
     emailAddress: string;
     avatarUrl: string | undefined;
+}
+
+export enum CustomerStatus {
+    Active = "Active",
+    Uncommitted = "Uncommitted",
+    Terminated = "Terminated",
 }
 
 export class Investigator implements IInvestigator {
@@ -2722,6 +2732,7 @@ export class Job extends Base implements IJob {
     name!: string;
     description!: string;
     interval!: number;
+    timeout!: number;
     nextEvent!: Date | undefined;
 
     constructor(data?: IJob) {
@@ -2737,6 +2748,7 @@ export class Job extends Base implements IJob {
             this.name = _data["name"];
             this.description = _data["description"];
             this.interval = _data["interval"];
+            this.timeout = _data["timeout"];
             this.nextEvent = _data["nextEvent"] ? new Date(_data["nextEvent"].toString()) : <any>undefined;
         }
     }
@@ -2756,6 +2768,7 @@ export class Job extends Base implements IJob {
         data["name"] = this.name;
         data["description"] = this.description;
         data["interval"] = this.interval;
+        data["timeout"] = this.timeout;
         data["nextEvent"] = this.nextEvent ? this.nextEvent.toISOString() : <any>undefined;
         super.toJSON(data);
         return data;
@@ -2769,6 +2782,7 @@ export interface IJob extends IBase {
     name: string;
     description: string;
     interval: number;
+    timeout: number;
     nextEvent: Date | undefined;
 }
 
@@ -2778,9 +2792,11 @@ export enum JobType {
 }
 
 export enum JobStatus {
-    Waiting = "Waiting",
+    Pending = "Pending",
     Running = "Running",
     Paused = "Paused",
+    TimedOut = "TimedOut",
+    Disabled = "Disabled",
 }
 
 export enum ErrorCode {
@@ -2808,6 +2824,7 @@ export enum ErrorCode {
     ApplicationSettingsInvalid = "ApplicationSettingsInvalid",
     ModelValidationFailed = "ModelValidationFailed",
     EmailDeliveryFailed = "EmailDeliveryFailed",
+    ScheduledJobTimeout = "ScheduledJobTimeout",
     AccountCredentialsInvalid = "AccountCredentialsInvalid",
     AccountExternalCredentialsInvalid = "AccountExternalCredentialsInvalid",
     AccountDoesNotExist = "AccountDoesNotExist",

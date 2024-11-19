@@ -16,7 +16,7 @@ const SignIns = () => {
         type: 'avatar',
       },
       {
-        label: 'Email address',
+        label: 'Email',
         accessor: 'emailAddress',
       },
       {
