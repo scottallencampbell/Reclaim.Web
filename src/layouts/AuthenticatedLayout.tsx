@@ -6,6 +6,8 @@ import { HelmetProvider } from 'react-helmet-async'
 import configSettings from 'settings/config.json'
 import { Outlet } from 'react-router'
 import Avatar from '../components/Avatar'
+import { Popover } from 'react-tiny-popover'
+import Icon from 'components/Icon'
 
 interface IAuthenticatedLayout {
   header?: string
@@ -19,6 +21,9 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
   const [idleLifeRemaining, setIdleLifeRemaining] = useState(100)
   const [avatarUrl, setAvatarUrl] = useState('')
   const [role, setRole] = useState('')
+  const [emailAddress, setEmailAddress] = useState('')
+  const [theme, setTheme] = useState('light')
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 
   const {
     redirectUnauthenticated,
@@ -40,6 +45,7 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
     }
 
     setRole(identity.role)
+    setEmailAddress(identity.emailAddress)
 
     const parts = window.location.pathname.split('/').slice(1)
 
@@ -65,7 +71,8 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
     }, 1000)
   }, [])
 
-  const logout = () => {
+  const signout = () => {
+    console.log('signout')
     clearIdentity()
 
     if (idleTimer.current) {
@@ -91,6 +98,10 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
     },
     [clearIdentity, redirectUnauthenticated]
   )
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light')
+  }
 
   useEffect(() => {
     const id = setTimeout(
@@ -135,6 +146,20 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
     }
   }, [redirectUnauthenticated, resetIdleTimer, validateIdentity])
 
+  useEffect(() => {
+    localStorage.setItem('theme', theme)
+    console.log('set to', theme)
+    document.body.setAttribute('data-theme', theme)
+  }, [theme])
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme')
+    console.log(storedTheme)
+    if (storedTheme) {
+      setTheme(storedTheme)
+    }
+  }, [])
+
   return (
     <>
       <HelmetProvider>
@@ -147,11 +172,11 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
           rel="preload prefetch stylesheet"
         />
       </HelmetProvider>
-      <IdlePopup isOpen={isIdlePopupOpen} onClose={onIdlePopupClose}></IdlePopup>
-      <div className="auth-timeout-bar">
-        <div style={{ width: `${jwtAccessTokenLifeRemaining}%` }}></div>
-      </div>
       <div className={`auth-container ${isAuthenticated ? '' : 'not-authenticated'}`}>
+        <IdlePopup isOpen={isIdlePopupOpen} onClose={onIdlePopupClose}></IdlePopup>
+        <div className="auth-timeout-bar">
+          <div style={{ width: `${jwtAccessTokenLifeRemaining}%` }}></div>
+        </div>
         <div className="outer">
           <NavBar
             role={role}
@@ -160,12 +185,60 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
           <main>
             <div id="overlay" className="wrapper">
               <div className="auth-account">
-                <Avatar
-                  url={`${process.env.REACT_APP_API_URL}/content${avatarUrl}`}
-                  initials={undefined}
-                />
-              </div>
-              <Outlet context={logout} />
+                <Icon name="Inbox"></Icon>
+                <Popover
+                  containerClassName="popover"
+                  isOpen={isPopoverOpen}
+                  content={
+                    <div
+                      className={`popover-content fade-in ${isPopoverOpen ? 'show' : ''}`}>
+                      <span>{emailAddress}</span>
+                      <hr></hr>
+                      <div>
+                        <Icon name="User" />
+                        Profile
+                      </div>
+                      <div
+                        onClick={() => {
+                          toggleTheme()
+                          setIsPopoverOpen(false)
+                        }}>
+                        {theme === 'light' ? (
+                          <div>
+                            <Icon name="Moon" />
+                            Dark mode
+                          </div>
+                        ) : (
+                          <div>
+                            <Icon name="Sun" />
+                            Light mode
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <Icon name="Gear" />
+                        Settings
+                      </div>
+                      <div onClick={signout}>
+                        <Icon name="SignOut" />
+                        Sign out
+                      </div>
+                    </div>
+                  }
+                  positions={['bottom']}
+                  onClickOutside={() => setIsPopoverOpen(false)}
+                  align="start">
+                  <div
+                    className="avatar"
+                    onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
+                    <img
+                      src={`${process.env.REACT_APP_API_URL}/content${avatarUrl}`}
+                      alt="Avatar"
+                    />
+                  </div>
+                </Popover>
+              </div>{' '}
+              <Outlet />{' '}
             </div>
           </main>
         </div>

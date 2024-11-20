@@ -500,7 +500,11 @@ const Table = ({
                         }
                       }
 
-                      return <td key={accessor}>{tag === undefined ? cell : tag}</td>
+                      return (
+                        <td key={accessor}>
+                          <p>{tag === undefined ? cell : tag}</p>
+                        </td>
+                      )
                     })}
                   </tr>
                 )

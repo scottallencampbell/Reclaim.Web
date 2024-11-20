@@ -3,11 +3,12 @@ import Icon from './Icon'
 interface IAvatar {
   url?: string
   initials?: string
+  onClick?: () => void
 }
 
-const Avatar = ({ url, initials }: IAvatar) => {
+const Avatar = ({ url, initials, onClick }: IAvatar) => {
   return (
-    <div className="avatar">
+    <div className="avatar" onClick={onClick}>
       {url === undefined || url.length === 0 ? (
         initials === undefined || initials.length === 0 ? (
           <div className="initials">

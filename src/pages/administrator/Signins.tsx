@@ -12,7 +12,7 @@ const SignIns = () => {
     () => [
       {
         label: '',
-        accessor: 'avatarUrl',
+        accessor: 'avatarUrlx',
         type: 'avatar',
       },
       {
@@ -40,6 +40,7 @@ const SignIns = () => {
 
   useEffect(() => {
     ;(async () => {
+      console.log(1, 'starting')
       try {
         const result = await getAuthenticatedAccounts()
         setAccounts(result)
