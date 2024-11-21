@@ -13,6 +13,7 @@ const NavItem = ({ label, icon, iconStyle = '', href = '' }: INavItem) => {
   const [isActive, setIsActive] = useState(false)
 
   const { pathname } = useLocation()
+
   useEffect(() => {
     setIsActive(location.pathname === href)
   }, [href, pathname])

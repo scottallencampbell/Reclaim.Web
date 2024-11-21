@@ -10,16 +10,16 @@ import { Popover } from 'react-tiny-popover'
 import Icon from 'components/Icon'
 
 interface IAuthenticatedLayout {
-  header?: string
-  children?: any
+  header?: any
 }
 
-export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) => {
+export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isIdlePopupOpen, setIsIdlePopupOpen] = useState(false)
   const [lastActiveTime, setLastActiveTime] = useState(Date.now())
   const [idleLifeRemaining, setIdleLifeRemaining] = useState(100)
   const [avatarUrl, setAvatarUrl] = useState('')
+  const [name, setName] = useState('')
   const [role, setRole] = useState('')
   const [emailAddress, setEmailAddress] = useState('')
   const [theme, setTheme] = useState('light')
@@ -72,7 +72,6 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
   }, [])
 
   const signout = () => {
-    console.log('signout')
     clearIdentity()
 
     if (idleTimer.current) {
@@ -128,7 +127,8 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
     const identity = getIdentity()
 
     if (identity) {
-      setAvatarUrl(identity.avatarUrl)
+      setName(identity.name ?? '')
+      setAvatarUrl(identity.avatarUrl ?? '')
     }
   }, [getIdentity])
 
@@ -148,13 +148,12 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
 
   useEffect(() => {
     localStorage.setItem('theme', theme)
-    console.log('set to', theme)
     document.body.setAttribute('data-theme', theme)
   }, [theme])
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme')
-    console.log(storedTheme)
+
     if (storedTheme) {
       setTheme(storedTheme)
     }
@@ -163,7 +162,7 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
   return (
     <>
       <HelmetProvider>
-        <title>Reclaim</title>
+        <title>Reclaim SIU</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -185,6 +184,7 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
           <main>
             <div id="overlay" className="wrapper">
               <div className="auth-account">
+                {header}
                 <Icon name="Inbox"></Icon>
                 <Popover
                   containerClassName="popover"
@@ -228,17 +228,10 @@ export const AuthenticatedLayout = ({ header, children }: IAuthenticatedLayout) 
                   positions={['bottom']}
                   onClickOutside={() => setIsPopoverOpen(false)}
                   align="start">
-                  <div
-                    className="avatar"
-                    onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-                    <img
-                      src={`${process.env.REACT_APP_API_URL}/content${avatarUrl}`}
-                      alt="Avatar"
-                    />
-                  </div>
+                  <Avatar url={avatarUrl} name={name} />
                 </Popover>
-              </div>{' '}
-              <Outlet />{' '}
+              </div>
+              <Outlet />
             </div>
           </main>
         </div>

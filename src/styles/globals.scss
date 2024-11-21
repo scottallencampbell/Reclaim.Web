@@ -145,7 +145,7 @@ select {
       display: inline-block;
     }
 
-    .icon {
+    .icon.button {
       background-color: transparent;
       color: var(--color-gray);
       position: relative;
@@ -1664,6 +1664,7 @@ form.form-error .input-container {
   width: 40px;
   height: 40px;
   position: relative;
+  color: var(--color-white);
 
   .initials {
     width: 100%;
@@ -1672,10 +1673,11 @@ form.form-error .input-container {
     background-color: var(--color-primary);
     color: var(--color-white);
     text-align: center;
-    padding-top: 11px;
+    padding-top: 10px;
     font-size: 18px;
-    font-weight: semibold;
+    font-weight: 600;
     position: relative;
+    line-height: 19px;
   }
 
   img {

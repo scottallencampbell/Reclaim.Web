@@ -134,9 +134,10 @@ export function AuthenticationProvider({ children }: { children: any }) {
       .authenticate(request)
       .then(async (result) => {
         saveIdentity(
+          result.role,
           emailAddress,
           result.avatarUrl,
-          result.role,
+          result.name,
           result.validUntil.toISOString()
         )
         saveProvider('Local')
@@ -172,8 +173,8 @@ export function AuthenticationProvider({ children }: { children: any }) {
           }
         }
 
-        // todo
         saveIdentity(
+          result.role,
           item.email,
           result.avatarUrl,
           result.role,
@@ -213,12 +214,19 @@ export function AuthenticationProvider({ children }: { children: any }) {
   )
 
   const saveIdentity: (
+    role: string,
     emailAddress: string,
     avatarUrl: string,
-    role: string,
+    name: string,
     validUntil: string
   ) => void = useCallback(
-    (emailAddress: string, avatarUrl: string, role: string, validUntil: string) => {
+    (
+      role: string,
+      emailAddress: string,
+      avatarUrl: string,
+      name: string,
+      validUntil: string
+    ) => {
       const emailAddresses = emailAddress.split(':')
       const expiresInSeconds = (new Date(validUntil).getTime() - Date.now()) / 1000
       const expiresInDays = expiresInSeconds / 60 / 60 / 24
@@ -228,7 +236,14 @@ export function AuthenticationProvider({ children }: { children: any }) {
         expires: expiresInDays,
       }
 
-      const identity = new Identity(emailAddresses[0], avatarUrl, role, null, validUntil)
+      const identity = new Identity(
+        role,
+        emailAddresses[0],
+        avatarUrl,
+        name,
+        null,
+        validUntil
+      )
 
       Cookies.set(identityCookieName, JSON.stringify(identity), params)
       restartJwtTimers(identity)
@@ -248,9 +263,10 @@ export function AuthenticationProvider({ children }: { children: any }) {
         .authenticateRefresh(request)
         .then(async (result) => {
           saveIdentity(
+            result.role,
             emailAddress,
             result.avatarUrl,
-            result.role,
+            result.name,
             result.validUntil.toISOString()
           )
           return result.accessToken

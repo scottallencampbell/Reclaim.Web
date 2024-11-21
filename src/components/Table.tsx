@@ -442,12 +442,7 @@ const Table = ({
                             break
 
                           case 'avatar':
-                            tag = (
-                              <Avatar
-                                url={`${process.env.REACT_APP_API_URL}/content${value}`}
-                                initials=""
-                              />
-                            )
+                            tag = <Avatar url={value} name={''} />
                             break
 
                           case 'jobStatus':
@@ -471,19 +466,18 @@ const Table = ({
                       } else {
                         switch (type) {
                           case 'avatar':
-                            let initials = '??'
+                            let name = ''
                             if (
                               Object.prototype.hasOwnProperty.call(item, 'firstName') &&
                               Object.prototype.hasOwnProperty.call(item, 'lastName')
                             ) {
-                              initials =
-                                `${item['firstName'].charAt(0)}${item['lastName'].charAt(0)}`.toUpperCase()
+                              name = `${item['firstName']} ${item['lastName']}`
                             } else if (
                               Object.prototype.hasOwnProperty.call(item, 'emailAddress')
                             ) {
-                              initials = item['emailAddress'].slice(0, 2).toUpperCase()
+                              name = item['emailAddress']
                             }
-                            tag = <Avatar initials={initials} />
+                            tag = <Avatar name={name} url="" />
                             break
 
                           case 'thumbnail2':
