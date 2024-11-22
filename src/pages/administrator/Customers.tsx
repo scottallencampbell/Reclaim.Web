@@ -2,18 +2,20 @@ import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
 import PropertyBar from 'components/PropertyBar'
 import TextInput from 'components/TextInput'
-import { Customer } from 'api/schema'
+import { AdministratorClient, Customer } from 'api/schema'
 import { postalCodeRegex } from 'helpers/constants'
 import moment from 'moment'
 import Icon from 'components/Icon'
-import { AdministratorContext } from 'contexts/AdministratorContext'
 
 const Customers = () => {
+  const apiClient = useMemo(
+    () => new AdministratorClient(process.env.REACT_APP_API_URL),
+    []
+  )
+
   const [customers, setCustomers] = useState<Customer[]>()
   const [editCustomer, setEditCustomer] = useState<Customer>(new Customer())
   const [isPropertyBarVisible, setIsPropertyBarVisible] = useState(false)
-
-  const { getAllCustomers, updateCustomer } = AdministratorContext()
 
   const columns = useMemo(
     () => [
@@ -155,23 +157,21 @@ const Customers = () => {
   }
 
   const handleCustomerUpdate = async () => {
-    await updateCustomer(editCustomer)
-    var customers = await getAllCustomers()
+    await apiClient.updateCustomer(editCustomer.uniqueID, editCustomer)
+    var customers = await apiClient.getCustomers()
     setCustomers(customers)
-    // handleSearchTermsDebounce("");
   }
 
   useEffect(() => {
     ;(async () => {
       try {
-        const result = await getAllCustomers()
-        console.log(result)
+        const result = await apiClient.getCustomers()
         setCustomers(result)
       } catch (error) {
         console.log(JSON.stringify(error))
       }
     })()
-  }, [getAllCustomers])
+  }, [apiClient])
 
   return (
     <>

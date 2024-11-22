@@ -1,4 +1,3 @@
-import { AuthenticationContext } from '../contexts/AuthenticationContext'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import IdlePopup from '../components/IdlePopup'
 import NavBar from '../components/NavBar'
@@ -8,6 +7,7 @@ import { Outlet } from 'react-router'
 import Avatar from '../components/Avatar'
 import { Popover } from 'react-tiny-popover'
 import Icon from 'components/Icon'
+import { AuthenticationContext } from 'contexts/AuthenticationContext'
 
 interface IAuthenticatedLayout {
   header?: any
@@ -83,6 +83,7 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
   const onIdlePopupClose = useCallback(
     (isLogout: boolean) => {
       setIsIdlePopupOpen(false)
+
       if (idleTimer.current) {
         clearInterval(idleTimer.current)
         idleTimer.current = null
@@ -99,7 +100,10 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
   )
 
   const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light')
+    const newTheme = theme === 'light' ? 'dark' : 'light'
+    document.body.setAttribute('data-theme', newTheme)
+    localStorage.setItem('theme', newTheme)
+    setTheme(newTheme)
   }
 
   useEffect(() => {
@@ -146,13 +150,11 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
     }
   }, [redirectUnauthenticated, resetIdleTimer, validateIdentity])
 
-  useEffect(() => {
-    localStorage.setItem('theme', theme)
-    document.body.setAttribute('data-theme', theme)
-  }, [theme])
+  useEffect(() => {}, [theme])
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem('theme')
+    const storedTheme = localStorage.getItem('theme')?.toString() ?? 'light'
+    document.body.setAttribute('data-theme', storedTheme)
 
     if (storedTheme) {
       setTheme(storedTheme)
@@ -162,7 +164,7 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
   return (
     <>
       <HelmetProvider>
-        <title>Reclaim SIU</title>
+        <title>Reclaim</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -185,7 +187,7 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
             <div id="overlay" className="wrapper">
               <div className="auth-account">
                 {header}
-                <Icon name="Inbox"></Icon>
+                <Icon className="button" name="Inbox" />
                 <Popover
                   containerClassName="popover"
                   isOpen={isPopoverOpen}
@@ -225,13 +227,20 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
                       </div>
                     </div>
                   }
-                  positions={['bottom']}
-                  onClickOutside={() => setIsPopoverOpen(false)}
-                  align="start">
-                  <Avatar url={avatarUrl} name={name} />
+                  positions={['left', 'right']}
+                  onClickOutside={() => {
+                    return
+                    setIsPopoverOpen(false)
+                  }}>
+                  <Avatar
+                    url={avatarUrl}
+                    name={name}
+                    onClick={() => {
+                      setIsPopoverOpen(true)
+                    }}></Avatar>
                 </Popover>
-              </div>
-              <Outlet />
+              </div>{' '}
+              <Outlet />{' '}
             </div>
           </main>
         </div>

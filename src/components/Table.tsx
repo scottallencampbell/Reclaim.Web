@@ -324,7 +324,6 @@ const Table = ({
         <div
           className={`table${isHoverable ? ' is-hoverable' : ''} ${sourceData === undefined ? 'element-loading' : 'element-loaded'}`}>
           <div className="table-controls">
-            <div className="children">{children}</div>
             <div className="search-bar">
               <div className="search-bar-buttons">
                 <Icon name="Search" className="left"></Icon>
@@ -334,6 +333,7 @@ const Table = ({
                 value={searchTerms}
                 onChange={(e) => handleSearchTermsChange(e.target.value)}></input>
             </div>
+            <div className="children">{children}</div>
           </div>
           <table id={id}>
             <thead>

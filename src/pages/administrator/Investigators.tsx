@@ -2,13 +2,18 @@ import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
 import PropertyBar from 'components/PropertyBar'
 import TextInput from 'components/TextInput'
-import { Investigator } from 'api/schema'
+import { AdministratorClient, Investigator } from 'api/schema'
 import moment from 'moment'
 import Icon from 'components/Icon'
-import { AdministratorContext } from 'contexts/AdministratorContext'
 import { postalCodeRegex } from 'helpers/constants'
+import React from 'react'
 
 const Investigators = () => {
+  const apiClient = useMemo(
+    () => new AdministratorClient(process.env.REACT_APP_API_URL),
+    []
+  )
+
   const [investigators, setInvestigators] = useState<Investigator[]>()
   const [editInvestigator, setEditInvestigator] = useState<Investigator>(
     {} as Investigator
@@ -16,7 +21,7 @@ const Investigators = () => {
   const [isPropertyBarVisible, setIsPropertyBarVisible] = useState(false)
   const [groupError, setGroupError] = useState('')
 
-  const { updateInvestigator, getAllInvestigators } = AdministratorContext()
+  const handleExport = () => {}
 
   const columns = useMemo(
     () => [
@@ -127,8 +132,8 @@ const Investigators = () => {
   const handleInvestigatorUpdate = async () => {
     setGroupError('')
 
-    await updateInvestigator(editInvestigator)
-    var investigators = await getAllInvestigators()
+    await apiClient.updateInvestigator(editInvestigator.uniqueID, editInvestigator)
+    var investigators = await apiClient.getInvestigators()
     setInvestigators(investigators)
   }
 
@@ -160,13 +165,13 @@ const Investigators = () => {
   useEffect(() => {
     ;(async () => {
       try {
-        const result = await getAllInvestigators()
+        const result = await apiClient.getInvestigators()
         setInvestigators(result)
       } catch (error) {
         console.log(JSON.stringify(error))
       }
     })()
-  }, [getAllInvestigators])
+  }, [apiClient])
 
   return (
     <>
@@ -187,6 +192,7 @@ const Investigators = () => {
             name="SquarePlus"
             onClick={handleAddInvestigator}
           />
+          <Icon toolTip="Export" name="Download" onClick={handleExport} />
         </Table>
       </div>
       <PropertyBar

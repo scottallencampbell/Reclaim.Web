@@ -1,26 +1,28 @@
-import { AdministratorContext } from 'contexts/AdministratorContext'
-import { useEffect, useState } from 'react'
-import { AdministratorDashboard } from 'api/schema'
+import { useEffect, useMemo, useState } from 'react'
+import { AdministratorClient, AdministratorDashboard } from 'api/schema'
 import AggregateBox from 'components/AggregateBox'
 import Map from 'components/Map'
 import News from 'components/News'
 import StackedBarChart from 'components/StackedBarChart'
 
 const Dashboard = () => {
-  const [dashboard, setDashboard] = useState<AdministratorDashboard>()
+  const apiClient = useMemo(
+    () => new AdministratorClient(process.env.REACT_APP_API_URL),
+    []
+  )
 
-  const { getDashboard } = AdministratorContext()
+  const [dashboard, setDashboard] = useState<AdministratorDashboard>()
 
   useEffect(() => {
     ;(async () => {
       try {
-        const result = await getDashboard()
+        const result = await apiClient.getDashboard()
         setDashboard(result)
       } catch (error) {
         console.log(JSON.stringify(error))
       }
     })()
-  }, [getDashboard])
+  }, [apiClient])
 
   return (
     <div className="dashboard">

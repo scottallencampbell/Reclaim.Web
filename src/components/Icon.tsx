@@ -14,7 +14,7 @@ interface IIcon {
 
 const Icon = ({ name, className = '', style = '', toolTip, onClick }: IIcon) => {
   return (
-    <span className={`icon fa-${className} icon-${name}`}>
+    <span className={`icon ${className} icon-${name}`}>
       <FontAwesomeIcon
         title={toolTip}
         icon={style === 'regular' ? far['fa' + name] : fas['fa' + name]}

@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
-import { Claim } from 'api/schema'
-import { AdministratorContext } from 'contexts/AdministratorContext'
+import { AdministratorClient, Claim } from 'api/schema'
 
 const Claims = () => {
+  const apiClient = useMemo(
+    () => new AdministratorClient(process.env.REACT_APP_API_URL),
+    []
+  )
+
   const [claims, setClaims] = useState<Claim[]>()
   const [isPropertyBarVisible] = useState(false)
-
-  const { getAllClaims } = AdministratorContext()
 
   const columns = useMemo(
     () => [
@@ -47,13 +49,13 @@ const Claims = () => {
   useEffect(() => {
     ;(async () => {
       try {
-        const result = await getAllClaims()
+        const result = await apiClient.getClaims()
         setClaims(result)
       } catch (error) {
         console.log(JSON.stringify(error))
       }
     })()
-  }, [getAllClaims])
+  }, [apiClient])
 
   return (
     <>

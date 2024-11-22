@@ -1,17 +1,17 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import TextInput from 'components/TextInput'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
 import { emailAddressRegex } from 'helpers/constants'
-import { AccountManagementContext } from 'contexts/AccountManagementContext'
 import { Link, useNavigate } from 'react-router-dom'
+import { AccountClient, PasswordResetRequest } from 'api/schema'
 
 const ForgotPassword = () => {
+  const apiClient = useMemo(() => new AccountClient(process.env.REACT_APP_API_URL), [])
+
   const [emailAddress, setEmailAddress] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [isSubmitButtonEnabled, setIsSubmitButtonEnabled] = useState(false)
-
-  const { requestPasswordReset } = AccountManagementContext()
 
   const navigate = useNavigate()
 
@@ -44,7 +44,8 @@ const ForgotPassword = () => {
   }
 
   const attemptSignin = async () => {
-    await requestPasswordReset(emailAddress)
+    await apiClient
+      .requestResetPassword(new PasswordResetRequest({ emailAddress }))
       .then((result) => {
         navigate('/thankyou')
       })

@@ -1,12 +1,15 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
-import { Account } from 'api/schema'
-import { AdministratorContext } from 'contexts/AdministratorContext'
+import { Account, AdministratorClient } from 'api/schema'
 
 const SignIns = () => {
+  const apiClient = useMemo(
+    () => new AdministratorClient(process.env.REACT_APP_API_URL),
+    []
+  )
+
   const [accounts, setAccounts] = useState<Account[]>()
-  const { getAuthenticatedAccounts } = AdministratorContext()
 
   const columns = useMemo(
     () => [
@@ -40,15 +43,14 @@ const SignIns = () => {
 
   useEffect(() => {
     ;(async () => {
-      console.log(1, 'starting')
       try {
-        const result = await getAuthenticatedAccounts()
+        const result = await apiClient.authenticated()
         setAccounts(result)
       } catch (error) {
         console.log(JSON.stringify(error))
       }
     })()
-  }, [getAuthenticatedAccounts])
+  }, [apiClient])
 
   return (
     <>

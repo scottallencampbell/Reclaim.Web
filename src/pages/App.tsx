@@ -22,62 +22,38 @@ import CustomerDashboard from './customer/Dashboard'
 import InvestigatorDashboard from './investigator/Dashboard'
 
 import Privacy from './public/Privacy'
-import { CustomerProvider } from 'contexts/CustomerContext'
-import { AccountManagementProvider } from 'contexts/AccountManagementContext'
-import { AdministratorProvider } from 'contexts/AdministratorContext'
 import { AuthenticatedLayout } from '../layouts/AuthenticatedLayout'
-import { JobProvider } from 'contexts/JobContext'
-import { InvestigatorProvider } from 'contexts/InvestigatorContext'
 
 const App = () => {
   return (
-    // todo this nesting looks bizarre
     <AuthenticationProvider>
-      <CustomerProvider>
-        <AccountManagementProvider>
-          <InvestigatorProvider>
-            <JobProvider>
-              <AdministratorProvider>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="confirmaccount" element={<ConfirmAccount />} />
-                  <Route path="forgotpassword" element={<ForgotPassword />} />
-                  <Route path="privacy" element={<Privacy />} />
-                  <Route path="register" element={<Register />} />
-                  <Route path="setpassword" element={<SetPassword />} />
-                  <Route path="signin" element={<SignIn />} />
-                  <Route path="thankyou" element={<ThankYou />} />
+      <Routes>
+        <Route path="/" element={<Index />} />
+        <Route path="confirmaccount" element={<ConfirmAccount />} />
+        <Route path="forgotpassword" element={<ForgotPassword />} />
+        <Route path="privacy" element={<Privacy />} />
+        <Route path="register" element={<Register />} />
+        <Route path="setpassword" element={<SetPassword />} />
+        <Route path="signin" element={<SignIn />} />
+        <Route path="thankyou" element={<ThankYou />} />
 
-                  <Route path="customer" element={<AuthenticatedLayout />}>
-                    <Route index path="dashboard" element={<CustomerDashboard />}></Route>
-                  </Route>
+        <Route path="customer" element={<AuthenticatedLayout />}>
+          <Route index path="dashboard" element={<CustomerDashboard />}></Route>
+        </Route>
 
-                  <Route path="investigator" element={<AuthenticatedLayout />}>
-                    <Route
-                      index
-                      path="dashboard"
-                      element={<InvestigatorDashboard />}></Route>
-                  </Route>
+        <Route path="investigator" element={<AuthenticatedLayout />}>
+          <Route index path="dashboard" element={<InvestigatorDashboard />}></Route>
+        </Route>
 
-                  <Route path="administrator" element={<AuthenticatedLayout />}>
-                    <Route
-                      index
-                      path="dashboard"
-                      element={<AdministratorDashboard />}></Route>
-                    <Route path="claims" element={<AdministratorClaims />}></Route>
-                    <Route
-                      path="investigators"
-                      element={<AdministratorInvestigators />}></Route>
-                    <Route path="customers" element={<AdministratorCustomers />}></Route>
-                    <Route path="signins" element={<AdministratorSignIns />}></Route>
-                    <Route path="jobs" element={<AdministratorJobs />}></Route>
-                  </Route>
-                </Routes>
-              </AdministratorProvider>
-            </JobProvider>
-          </InvestigatorProvider>
-        </AccountManagementProvider>
-      </CustomerProvider>
+        <Route path="administrator" element={<AuthenticatedLayout />}>
+          <Route index path="dashboard" element={<AdministratorDashboard />}></Route>
+          <Route path="claims" element={<AdministratorClaims />}></Route>
+          <Route path="investigators" element={<AdministratorInvestigators />}></Route>
+          <Route path="customers" element={<AdministratorCustomers />}></Route>
+          <Route path="signins" element={<AdministratorSignIns />}></Route>
+          <Route path="jobs" element={<AdministratorJobs />}></Route>
+        </Route>
+      </Routes>
     </AuthenticationProvider>
   )
 }

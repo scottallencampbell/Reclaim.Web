@@ -1,20 +1,21 @@
-import { useEffect, useState } from 'react'
-import { AccountManagementContext } from 'contexts/AccountManagementContext'
+import { useEffect, useMemo, useState } from 'react'
+import { AccountClient } from 'api/schema'
 
 const Dashboard = () => {
+  const apiClient = useMemo(() => new AccountClient(process.env.REACT_APP_API_URL), [])
+
   const [content, setContent] = useState('')
-  const { getMe } = AccountManagementContext()
 
   useEffect(() => {
     ;(async () => {
       try {
-        const result = await getMe()
+        const result = await apiClient.me()
         setContent(JSON.stringify(result))
       } catch (error) {
         console.log(JSON.stringify(error))
       }
     })()
-  }, [getMe])
+  }, [apiClient])
 
   return (
     <>

@@ -11,7 +11,6 @@ const Avatar = ({ url, name, onClick }: IAvatar) => {
   const [initials, setInitials] = useState('??')
 
   useEffect(() => {
-    console.log('xxx', name)
     if (name !== undefined && name.length > 0) {
       const parts = name.toUpperCase().split(' ')
       if (parts.length > 1) {

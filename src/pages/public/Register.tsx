@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import TextInput from 'components/TextInput'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   emailAddressRegex,
   passwordRegex,
@@ -11,10 +11,11 @@ import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
 import { v4 } from 'uuid'
 import { Link, useNavigate } from 'react-router-dom'
 import { GoogleLogin } from '@react-oauth/google'
-import { CustomerRegistration, ErrorCode } from 'api/schema'
-import { CustomerContext } from 'contexts/CustomerContext'
+import { CustomerClient, CustomerRegistration, ErrorCode } from 'api/schema'
 
 const Register = () => {
+  const apiClient = useMemo(() => new CustomerClient(process.env.REACT_APP_API_URL), [])
+
   const [isSubmitButtonEnabled, setIsSubmitButtonEnabled] = useState(false)
   const [isPasswordAllowed] = useState(false)
   const [firstName, setFirstName] = useState('')
@@ -31,8 +32,6 @@ const Register = () => {
   const [telephone, setTelephone] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [nonce] = useState(v4())
-
-  const { register, registerGoogle } = CustomerContext()
 
   const navigate = useNavigate()
 
@@ -89,7 +88,7 @@ const Register = () => {
       dto.emailAddress = emailAddress
       dto.password = password
 
-      await register(dto)
+      await apiClient.register(dto)
     })
   }
 
@@ -102,7 +101,7 @@ const Register = () => {
     }
 
     await attemptRegister(async () => {
-      await registerGoogle(credentialResponse.credential, nonce)
+      await apiClient.register(credentialResponse.credential)
     })
   }
 

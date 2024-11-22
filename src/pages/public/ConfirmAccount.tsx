@@ -1,11 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
-import { ErrorCode } from 'api/schema'
+import { AccountClient, AccountConfirmation, ErrorCode } from 'api/schema'
 import { Link } from 'react-router-dom'
-import { AccountManagementContext } from 'contexts/AccountManagementContext'
 
 const ConfirmAccount = () => {
+  const apiClient = useMemo(() => new AccountClient(process.env.REACT_APP_API_URL), [])
+
   const [emailAddress, setEmailAddress] = useState('')
   const [token, setToken] = useState('')
   const [isPasswordResetRequired] = useState(false)
@@ -14,14 +15,13 @@ const ConfirmAccount = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const [isConfirmed, setIsConfirmed] = useState(false)
 
-  const { confirmAccount } = AccountManagementContext()
-
   useEffect(() => {
     const apiConfirmAccount = async (
       emailAddress: string,
       token: string
     ): Promise<void> => {
-      await confirmAccount(emailAddress, token)
+      await apiClient
+        .confirm(new AccountConfirmation({ emailAddress: emailAddress, token: token }))
         .then(() => {
           // note, even if the email or token are wrong, this will display.
           // I don't want to have an un-authenticated method that allows bots
@@ -73,7 +73,7 @@ const ConfirmAccount = () => {
 
       await apiConfirmAccount(paramEmailAddress!, paramToken!)
     })()
-  }, [confirmAccount])
+  }, [apiClient])
 
   return (
     <UnauthenticatedLayout

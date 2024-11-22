@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
-import { Job, JobStatus } from 'api/schema'
-import { JobContext } from 'contexts/JobContext'
+import { AdministratorClient, Job, JobStatus } from 'api/schema'
 import * as signalR from '@microsoft/signalr'
 
 const Jobs = () => {
+  const apiClient = useMemo(
+    () => new AdministratorClient(process.env.REACT_APP_API_URL),
+    []
+  )
+
   const [jobs, setJobs] = useState<Job[]>()
-  const { getAll } = JobContext()
 
   const columns = useMemo(
     () => [
@@ -86,13 +89,13 @@ const Jobs = () => {
   useEffect(() => {
     ;(async () => {
       try {
-        const result = await getAll()
+        const result = await apiClient.getAllJobs()
         setJobs(result)
       } catch (error) {
         console.log(JSON.stringify(error))
       }
     })()
-  }, [getAll])
+  }, [apiClient])
 
   return (
     <>

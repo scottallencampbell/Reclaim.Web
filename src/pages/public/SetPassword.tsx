@@ -1,13 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import TextInput from 'components/TextInput'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { passwordRegex } from 'helpers/constants'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
-import { AccountManagementContext } from 'contexts/AccountManagementContext'
-import { ErrorCode } from 'api/schema'
+import { AccountClient, ErrorCode, PasswordReset } from 'api/schema'
 import { useNavigate } from 'react-router-dom'
 
 const SetPassword = () => {
+  const apiClient = useMemo(() => new AccountClient(process.env.REACT_APP_API_URL), [])
+
   const [title, setTitle] = useState('')
   const [message, setMessage] = useState('')
   const [emailAddress, setEmailAddress] = useState('')
@@ -17,8 +18,6 @@ const SetPassword = () => {
   const [errorMessage, setErrorMessage] = useState('')
   const [isSubmitButtonEnabled, setIsSubmitButtonEnabled] = useState(false)
   const [isSuccessful, setIsSuccessful] = useState(false)
-
-  const { updatePassword } = AccountManagementContext()
 
   const navigate = useNavigate()
 
@@ -82,7 +81,8 @@ const SetPassword = () => {
   }
 
   const apiSetPassword = async () => {
-    await updatePassword(emailAddress, password, token)
+    await apiClient
+      .resetPassword(new PasswordReset({ emailAddress, token, newPassword: password }))
       .then((result) => {
         setTitle('Success!')
         setMessage(
