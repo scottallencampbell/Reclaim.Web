@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import Icon from './Icon'
 
 interface IAvatar {
+  id?: string
   url: string
   name: string
   onClick?: () => void
 }
 
-const Avatar = ({ url, name, onClick }: IAvatar) => {
+const Avatar = ({ id, url, name, onClick }: IAvatar) => {
   const [initials, setInitials] = useState('??')
 
   useEffect(() => {
@@ -24,7 +25,7 @@ const Avatar = ({ url, name, onClick }: IAvatar) => {
   }, [name])
 
   return (
-    <div className="avatar" onClick={onClick}>
+    <div id={id} className="avatar" onClick={onClick}>
       {url.length === 0 ? (
         name.length === 0 ? (
           <div className="name">
