@@ -106,6 +106,25 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
     setTheme(newTheme)
   }
 
+  const bodyClickEventLister = () => {
+    document.body.removeEventListener('click', bodyClickEventLister)
+    document.getElementsByClassName('popover-container')[0].classList.add('closing')
+
+    setTimeout(() => {
+      document.getElementsByClassName('popover-container')[0].classList.remove('closing')
+      setIsPopoverOpen(false)
+    }, 300)
+  }
+
+  const toggleIsPopoverOpen = () => {
+    if (!isPopoverOpen) {
+      setIsPopoverOpen(true)
+      setTimeout(() => {
+        document.body.addEventListener('click', bodyClickEventLister)
+      }, 200)
+    }
+  }
+
   useEffect(() => {
     const id = setTimeout(
       () => {
@@ -150,8 +169,6 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
     }
   }, [redirectUnauthenticated, resetIdleTimer, validateIdentity])
 
-  useEffect(() => {}, [theme])
-
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme')?.toString() ?? 'light'
     document.body.setAttribute('data-theme', storedTheme)
@@ -189,11 +206,10 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
                 {header}
                 <Icon className="button" name="Inbox" />
                 <Popover
-                  containerClassName="popover"
+                  containerClassName="popover-container"
                   isOpen={isPopoverOpen}
                   content={
-                    <div
-                      className={`popover-content fade-in ${isPopoverOpen ? 'show' : ''}`}>
+                    <div className={`popover-content`}>
                       <span>{emailAddress}</span>
                       <hr></hr>
                       <div>
@@ -203,7 +219,6 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
                       <div
                         onClick={() => {
                           toggleTheme()
-                          setIsPopoverOpen(false)
                         }}>
                         {theme === 'light' ? (
                           <div>
@@ -227,17 +242,11 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
                       </div>
                     </div>
                   }
-                  positions={['left', 'right']}
-                  onClickOutside={() => {
-                    return
-                    setIsPopoverOpen(false)
-                  }}>
+                  positions={['left', 'right']}>
                   <Avatar
                     url={avatarUrl}
                     name={name}
-                    onClick={() => {
-                      setIsPopoverOpen(true)
-                    }}></Avatar>
+                    onClick={toggleIsPopoverOpen}></Avatar>
                 </Popover>
               </div>{' '}
               <Outlet />{' '}
