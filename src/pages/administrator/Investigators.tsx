@@ -7,6 +7,7 @@ import moment from 'moment'
 import Icon from 'components/Icon'
 import { postalCodeRegex } from 'helpers/constants'
 import React from 'react'
+import * as XLSX from 'xlsx'
 
 const Investigators = () => {
   const apiClient = useMemo(
@@ -20,8 +21,6 @@ const Investigators = () => {
   )
   const [isPropertyBarVisible, setIsPropertyBarVisible] = useState(false)
   const [groupError, setGroupError] = useState('')
-
-  const handleExport = () => {}
 
   const columns = useMemo(
     () => [
@@ -179,6 +178,7 @@ const Investigators = () => {
       <div className="inner">
         <Table
           id="investigator-table"
+          name="Investigators"
           type="investigators"
           keyField="uniqueID"
           columns={columns}
@@ -192,7 +192,6 @@ const Investigators = () => {
             name="SquarePlus"
             onClick={handleAddInvestigator}
           />
-          <Icon toolTip="Export" name="Download" onClick={handleExport} />
         </Table>
       </div>
       <PropertyBar

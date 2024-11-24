@@ -3,13 +3,18 @@ import Icon from './Icon'
 import moment from 'moment'
 import React from 'react'
 import Avatar from './Avatar'
-import { lowerCase, upperFirst } from 'lodash'
+import { lowerCase, startCase, upperFirst } from 'lodash'
+import * as Excel from 'exceljs'
+import { flatten } from 'helpers/json'
+import { exportFile } from 'helpers/excel'
 
 interface ITable {
-  children: any
+  children?: any
   id: string
+  name: string
   type: string
   keyField: string
+  ignoredFields?: string[]
   columns: any[]
   sourceData: any[] | undefined
   isPropertyBarVisible: boolean
@@ -22,8 +27,10 @@ interface ITable {
 const Table = ({
   children,
   id,
+  name,
   type,
   keyField,
+  ignoredFields,
   columns,
   sourceData,
   isPropertyBarVisible,
@@ -141,6 +148,15 @@ const Table = ({
       unselectAllRows()
       setIsHoverable(true)
     }
+  }
+
+  const handleExport = (name: string, ignoredFields: string[] | undefined) => {
+    if (!ignoredFields) {
+      ignoredFields = []
+    }
+    ignoredFields.push('avatarUrl', 'uniqueID')
+    const flattenedData = flatten(data, ignoredFields)
+    exportFile(name, flattenedData)
   }
 
   const getFileSize = (bytes: number, decimals = 1) => {
@@ -289,11 +305,11 @@ const Table = ({
           break
 
         case 'date':
-          value = moment.utc(value).format('MM/DD/YYYY')
+          value = moment.utc(value).format('MMM DD, YYYY')
           break
 
         case 'datetime':
-          value = moment(value).format('MM/DD/YYYY [at] hh:mma')
+          value = moment(value).format('MMM DD, YYYY [at] hh:mma')
           break
 
         case 'fileSize':
@@ -333,7 +349,14 @@ const Table = ({
                 value={searchTerms}
                 onChange={(e) => handleSearchTermsChange(e.target.value)}></input>
             </div>
-            <div className="children">{children}</div>
+            <div className="children">
+              <Icon
+                toolTip="Export"
+                name="Download"
+                onClick={() => handleExport(name, ignoredFields)}
+              />
+              {children}
+            </div>
           </div>
           <table id={id}>
             <thead>

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
 import { AdministratorClient, Job, JobStatus } from 'api/schema'
 import * as signalR from '@microsoft/signalr'
+import moment from 'moment'
 
 const Jobs = () => {
   const apiClient = useMemo(
@@ -78,7 +79,7 @@ const Jobs = () => {
       setTimeout(
         () => {
           job.status = status as JobStatus
-          job.nextEvent = new Date(nextEvent)
+          job.nextEvent = moment(nextEvent)
           setJobs([...jobs!])
         },
         status === 'Pending' ? 2000 : 0
@@ -103,6 +104,7 @@ const Jobs = () => {
       <div className="inner">
         <Table
           id="job-table"
+          name="Jobs"
           type="jobs"
           keyField="id"
           columns={columns}

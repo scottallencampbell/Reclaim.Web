@@ -179,6 +179,7 @@ const Customers = () => {
       <div className="inner">
         <Table
           id="customer-table"
+          name="Customers"
           type="customers"
           keyField="uniqueID"
           columns={columns}
@@ -186,10 +187,7 @@ const Customers = () => {
           isPropertyBarVisible={isPropertyBarVisible}
           onSearchTermsChange={null}
           onRowClick={handleRowClick}>
-          <>
-            <Icon toolTip="Add customer" name="SquarePlus" onClick={handleAddCustomer} />
-            <Icon toolTip="Export" name="Download" onClick={handleAddCustomer} />
-          </>
+          <Icon toolTip="Add customer" name="SquarePlus" onClick={handleAddCustomer} />
         </Table>
       </div>
       <PropertyBar

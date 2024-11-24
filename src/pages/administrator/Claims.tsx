@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
 import { AdministratorClient, Claim } from 'api/schema'
+import { lowerCase, startCase, upperFirst } from 'lodash'
+import moment from 'moment'
 
 const Claims = () => {
   const apiClient = useMemo(
@@ -63,15 +65,15 @@ const Claims = () => {
       <div className="inner">
         <Table
           id="claims-table"
+          name="Claims"
           type="claims"
           keyField="uniqueID"
           columns={columns}
           sourceData={claims}
           isPropertyBarVisible={isPropertyBarVisible}
           onSearchTermsChange={null}
-          onRowClick={null}
-          children={null}
-        />
+          ignoredFields={['attachments']}
+          onRowClick={null}></Table>
       </div>
     </>
   )

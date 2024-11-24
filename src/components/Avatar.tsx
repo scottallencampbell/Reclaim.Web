@@ -14,9 +14,10 @@ const Avatar = ({ id, url, name, onClick }: IAvatar) => {
   useEffect(() => {
     if (name !== undefined && name.length > 0) {
       const parts = name.toUpperCase().split(' ')
+
       if (parts.length > 1) {
         setInitials(parts[0][0] + parts[1][0])
-      } else if (parts.length > 1) {
+      } else if (parts.length == 1) {
         setInitials(parts[0][0] + parts[0][1])
       } else {
         setInitials(parts[0][0])

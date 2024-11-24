@@ -101,17 +101,18 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light'
-    document.body.setAttribute('data-theme', newTheme)
     localStorage.setItem('theme', newTheme)
     setTheme(newTheme)
   }
 
   const bodyClickEventLister = () => {
     document.body.removeEventListener('click', bodyClickEventLister)
-    document.getElementsByClassName('popover-container')[0].classList.add('closing')
+    document.getElementsByClassName('popover-container')[0]?.classList?.add('closing')
 
     setTimeout(() => {
-      document.getElementsByClassName('popover-container')[0].classList.remove('closing')
+      document
+        .getElementsByClassName('popover-container')[0]
+        ?.classList?.remove('closing')
       setIsPopoverOpen(false)
     }, 300)
   }
@@ -171,7 +172,6 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme')?.toString() ?? 'light'
-    document.body.setAttribute('data-theme', storedTheme)
 
     if (storedTheme) {
       setTheme(storedTheme)
@@ -190,7 +190,9 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
           rel="preload prefetch stylesheet"
         />
       </HelmetProvider>
-      <div className={`auth-container ${isAuthenticated ? '' : 'not-authenticated'}`}>
+      <div
+        data-theme={theme}
+        className={`auth-container ${isAuthenticated ? '' : 'not-authenticated'}`}>
         <IdlePopup isOpen={isIdlePopupOpen} onClose={onIdlePopupClose}></IdlePopup>
         <div className="auth-timeout-bar">
           <div style={{ width: `${jwtAccessTokenLifeRemaining}%` }}></div>
@@ -206,11 +208,14 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
                 {header}
                 <Icon className="button" name="Inbox" />
                 <Popover
+                  parentElement={
+                    document.getElementsByClassName('auth-account')[0] as HTMLElement
+                  }
                   containerClassName="popover-container"
                   isOpen={isPopoverOpen}
                   content={
                     <div className={`popover-content`}>
-                      <span>{emailAddress}</span>
+                      <span className="name">{name}</span>
                       <hr></hr>
                       <div>
                         <Icon name="User" />

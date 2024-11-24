@@ -137,9 +137,9 @@ select {
   }
 
   .auth-account {
-    position: fixed;
-    top: 22px;
-    right: 30px;
+    position: absolute;
+    top: 19px;
+    right: 0;
     z-index: 1000000;
 
     .avatar {
@@ -211,19 +211,20 @@ select {
     animation: fadeout 0.3s;
   }
 
-  .name {
-    text-align: center;
-    display: block;
-  }
-
   .popover-content {
     position: relative;
     font-weight: 500;
+    font-size: 14px;
     color: var(--color-black);
     background-color: var(--color-white);
 
+    .name {
+      text-align: center;
+      display: block;
+    }
+
     div {
-      line-height: 32px;
+      line-height: 38px;
       transition: color 0.2s;
     }
 
@@ -240,7 +241,7 @@ select {
     }
 
     .icon {
-      margin-right: 10px;
+      margin-right: 12px;
       width: 14px;
       min-width: 14px;
       display: inline-block;
@@ -460,7 +461,7 @@ form.form-error .input-container {
   width: 100%;
   top: -71px;
   right: 0px;
-  margin-right: 78px;
+  margin-right: 73px;
   z-index: 99;
   position: absolute;
   text-align: right;
@@ -475,7 +476,7 @@ form.form-error .input-container {
     background-color: var(--color-white);
     border-radius: 8px;
     margin-bottom: 20px;
-    margin-right: 3px;
+    margin-right: 5px;
     border: solid 1px var(--color-light-line);
     font-size: 13px;
     padding: 0;
@@ -543,7 +544,9 @@ form.form-error .input-container {
       cursor: pointer;
       transition: all 0.2s;
       font-size: 20px;
-
+      padding: 0;
+      margin-left: 4px;
+      margin-right: 12px;
       &:hover {
         color: var(--color-primary);
       }
@@ -1042,9 +1045,6 @@ form.form-error .input-container {
       p {
         margin: 0;
         padding-top: 1px;
-      }
-
-      .avatar {
       }
 
       .status {
@@ -1706,9 +1706,10 @@ form.form-error .input-container {
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   position: relative;
+  top: 1px;
   color: var(--color-white);
 
   .initials {
@@ -1728,7 +1729,8 @@ form.form-error .input-container {
   img {
     width: 100%;
     height: 100%;
-    border-radius: 41px;
+    border-radius: 42px;
+    border: solid 1px var(--color-light-line);
   }
 }
 

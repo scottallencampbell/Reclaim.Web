@@ -58,6 +58,7 @@ const SignIns = () => {
       <div className="inner">
         <Table
           id="sign-in-table"
+          name="Sign-Ins"
           type="current sign-ins"
           keyField="emailAddress"
           columns={columns}
