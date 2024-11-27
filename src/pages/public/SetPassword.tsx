@@ -3,7 +3,7 @@ import TextInput from 'components/TextInput'
 import { useEffect, useMemo, useState } from 'react'
 import { passwordRegex } from 'helpers/constants'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
-import { AccountClient, ErrorCode, PasswordReset } from 'api/schema'
+import { AccountClient, ErrorCode, PasswordReset } from 'api/api'
 import { useNavigate } from 'react-router-dom'
 
 const SetPassword = () => {
@@ -81,8 +81,14 @@ const SetPassword = () => {
   }
 
   const apiSetPassword = async () => {
+    const request = PasswordReset.fromJS({
+      emailAddress: emailAddress,
+      token: token,
+      newPassword: password,
+    })
+
     await apiClient
-      .resetPassword(new PasswordReset({ emailAddress, token, newPassword: password }))
+      .resetPassword(request)
       .then((result) => {
         setTitle('Success!')
         setMessage(

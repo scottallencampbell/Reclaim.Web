@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import { useEffect, useMemo, useState } from 'react'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
-import { AccountClient, AccountConfirmation, ErrorCode } from 'api/schema'
+import { AccountClient, AccountConfirmation, ErrorCode } from 'api/api'
 import { Link } from 'react-router-dom'
 
 const ConfirmAccount = () => {

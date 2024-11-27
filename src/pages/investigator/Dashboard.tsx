@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { AccountClient } from 'api/schema'
+import { AccountClient } from 'api/api'
 
 const Dashboard = () => {
   const apiClient = useMemo(() => new AccountClient(process.env.REACT_APP_API_URL), [])

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
-import { AdministratorClient, Claim } from 'api/schema'
+import { AdministratorClient, Claim } from 'api/api'
 import { lowerCase, startCase, upperFirst } from 'lodash'
 import moment from 'moment'
 

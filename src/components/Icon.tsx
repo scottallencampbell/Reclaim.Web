@@ -10,9 +10,17 @@ interface IIcon {
   style?: string
   toolTip?: string
   onClick?: any
+  children?: any
 }
 
-const Icon = ({ name, className = '', style = '', toolTip, onClick }: IIcon) => {
+const Icon = ({
+  name,
+  className = '',
+  style = '',
+  toolTip,
+  onClick,
+  children,
+}: IIcon) => {
   return (
     <span className={`icon ${className} icon-${name}`}>
       <FontAwesomeIcon
@@ -20,6 +28,7 @@ const Icon = ({ name, className = '', style = '', toolTip, onClick }: IIcon) => 
         icon={style === 'regular' ? far['fa' + name] : fas['fa' + name]}
         onClick={onClick}
       />
+      {children}
     </span>
   )
 }

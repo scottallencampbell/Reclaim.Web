@@ -1,4 +1,4 @@
-import { DashboardAggregate } from 'api/schema'
+import { DashboardAggregate } from 'api/api'
 import Icon from './Icon'
 
 interface IAggregateBox {

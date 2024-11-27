@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { AdministratorClient, AdministratorDashboard } from 'api/schema'
+import { AdministratorClient, AdministratorDashboard } from 'api/api'
 import AggregateBox from 'components/AggregateBox'
 import Map from 'components/Map'
 import News from 'components/News'
@@ -35,7 +35,7 @@ const Dashboard = () => {
           />
           <AggregateBox title={'Monthly revenue'} data={dashboard?.monthlyRevenue} />
           <AggregateBox title={'New orders'} data={dashboard?.newOrders} />
-          <AggregateBox title={'Unique signins'} data={dashboard?.uniqueLogins} />
+          <AggregateBox title={'Unique signins'} data={dashboard?.uniqueSignins} />
         </div>
         <div className="row dashboard-spacer"></div>
         <div className="dashboard-chart">

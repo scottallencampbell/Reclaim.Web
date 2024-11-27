@@ -1759,7 +1759,7 @@ export interface IPasswordReset extends IBase {
 }
 
 export class AdministratorDashboard extends Base implements IAdministratorDashboard {
-    uniqueLogins!: DashboardAggregate;
+    uniqueSignins!: DashboardAggregate;
     claimsValueUnderInvestigation!: DashboardAggregate;
     newOrders!: DashboardAggregate;
     monthlyRevenue!: DashboardAggregate;
@@ -1769,13 +1769,13 @@ export class AdministratorDashboard extends Base implements IAdministratorDashbo
     constructor(data?: IAdministratorDashboard) {
         super(data);
         if (data) {
-            this.uniqueLogins = data.uniqueLogins && !(<any>data.uniqueLogins).toJSON ? new DashboardAggregate(data.uniqueLogins) : <DashboardAggregate>this.uniqueLogins;
+            this.uniqueSignins = data.uniqueSignins && !(<any>data.uniqueSignins).toJSON ? new DashboardAggregate(data.uniqueSignins) : <DashboardAggregate>this.uniqueSignins;
             this.claimsValueUnderInvestigation = data.claimsValueUnderInvestigation && !(<any>data.claimsValueUnderInvestigation).toJSON ? new DashboardAggregate(data.claimsValueUnderInvestigation) : <DashboardAggregate>this.claimsValueUnderInvestigation;
             this.newOrders = data.newOrders && !(<any>data.newOrders).toJSON ? new DashboardAggregate(data.newOrders) : <DashboardAggregate>this.newOrders;
             this.monthlyRevenue = data.monthlyRevenue && !(<any>data.monthlyRevenue).toJSON ? new DashboardAggregate(data.monthlyRevenue) : <DashboardAggregate>this.monthlyRevenue;
         }
         if (!data) {
-            this.uniqueLogins = new DashboardAggregate();
+            this.uniqueSignins = new DashboardAggregate();
             this.claimsValueUnderInvestigation = new DashboardAggregate();
             this.newOrders = new DashboardAggregate();
             this.monthlyRevenue = new DashboardAggregate();
@@ -1785,7 +1785,7 @@ export class AdministratorDashboard extends Base implements IAdministratorDashbo
     init(_data?: any) {
         super.init(_data);
         if (_data) {
-            this.uniqueLogins = _data["uniqueLogins"] ? DashboardAggregate.fromJS(_data["uniqueLogins"]) : new DashboardAggregate();
+            this.uniqueSignins = _data["uniqueSignins"] ? DashboardAggregate.fromJS(_data["uniqueSignins"]) : new DashboardAggregate();
             this.claimsValueUnderInvestigation = _data["claimsValueUnderInvestigation"] ? DashboardAggregate.fromJS(_data["claimsValueUnderInvestigation"]) : new DashboardAggregate();
             this.newOrders = _data["newOrders"] ? DashboardAggregate.fromJS(_data["newOrders"]) : new DashboardAggregate();
             this.monthlyRevenue = _data["monthlyRevenue"] ? DashboardAggregate.fromJS(_data["monthlyRevenue"]) : new DashboardAggregate();
@@ -1815,7 +1815,7 @@ export class AdministratorDashboard extends Base implements IAdministratorDashbo
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["uniqueLogins"] = this.uniqueLogins ? this.uniqueLogins.toJSON() : <any>undefined;
+        data["uniqueSignins"] = this.uniqueSignins ? this.uniqueSignins.toJSON() : <any>undefined;
         data["claimsValueUnderInvestigation"] = this.claimsValueUnderInvestigation ? this.claimsValueUnderInvestigation.toJSON() : <any>undefined;
         data["newOrders"] = this.newOrders ? this.newOrders.toJSON() : <any>undefined;
         data["monthlyRevenue"] = this.monthlyRevenue ? this.monthlyRevenue.toJSON() : <any>undefined;
@@ -1839,7 +1839,7 @@ export class AdministratorDashboard extends Base implements IAdministratorDashbo
 }
 
 export interface IAdministratorDashboard extends IBase {
-    uniqueLogins: IDashboardAggregate;
+    uniqueSignins: IDashboardAggregate;
     claimsValueUnderInvestigation: IDashboardAggregate;
     newOrders: IDashboardAggregate;
     monthlyRevenue: IDashboardAggregate;
@@ -2713,7 +2713,7 @@ export enum JobType {
 }
 
 export enum JobStatus {
-    Pending = "Pending",
+    Ready = "Ready",
     Running = "Running",
     Paused = "Paused",
     TimedOut = "TimedOut",

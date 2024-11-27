@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
-import { Account, AdministratorClient } from 'api/schema'
+import { Account, AdministratorClient } from 'api/api'
 
 const SignIns = () => {
   const apiClient = useMemo(

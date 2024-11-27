@@ -160,6 +160,20 @@ select {
       &:hover {
         color: var(--color-primary);
       }
+
+      .icon-badge {
+        position: absolute;
+        right: -5px;
+        top: -2px;
+        width: 13px;
+        height: 13px;
+        border-radius: 13px;
+        background-color: var(--color-red);
+        color: #ffffff;
+        font-size: 8px;
+        font-weight: 600;
+        text-align: center;
+      }
     }
   }
 }
@@ -531,7 +545,7 @@ form.form-error .input-container {
 
   .children {
     display: inline-block;
-    padding-right: 10px;
+    padding-right: 12px;
     font-size: 15px;
     margin-left: 10px;
 
@@ -549,6 +563,11 @@ form.form-error .input-container {
       margin-right: 12px;
       &:hover {
         color: var(--color-primary);
+      }
+
+      &.icon-Download {
+        font-size: 18px;
+        top: 2px;
       }
     }
   }
@@ -625,8 +644,8 @@ form.form-error .input-container {
     color: var(--color-black);
     position: relative;
     display: inline-block;
-    width: 190px;
-    max-width: 190px;
+    width: 188px;
+    max-width: 188px;
     min-height: 45px;
     max-height: 45px;
     margin-top: 0;
@@ -1062,7 +1081,7 @@ form.form-error .input-container {
         &.Resolved,
         &.NotFraudulent,
         &.Customer,
-        &.Pending {
+        &.Ready {
           background-color: #eaf7ed;
           border-color: #c4ddca;
           color: #155724;
@@ -1220,7 +1239,7 @@ form.form-error .input-container {
     margin-left: 230px;
     padding-left: 10px;
     padding-top: 0;
-    padding-bottom: 30px;
+    padding-bottom: 15px;
     padding-right: 30px;
     flex-grow: 1; /* grow wider by any factor */
     flex-shrink: 1; /* grow smaller by any factor */
@@ -1228,6 +1247,7 @@ form.form-error .input-container {
     flex: 1 1 auto;
     position: relative;
     height: 100%;
+    background-color: var(--color-background);
 
     @media (max-width: 900px) {
       margin-left: 0;

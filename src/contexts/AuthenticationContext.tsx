@@ -9,7 +9,7 @@ import {
 import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
 import * as jwtDecode from 'jwt-decode'
-import { ErrorCode } from 'api/schema'
+import { ErrorCode } from 'api/api'
 import { Identity } from 'models/Identity'
 import configSettings from 'settings/config.json'
 import {
@@ -17,7 +17,7 @@ import {
   AccountAuthenticationRefresh,
   AccountClient,
   GoogleAccountAuthentication,
-} from 'api/schema'
+} from 'api/api'
 import { max } from 'lodash'
 
 const identityCookieName = 'reclaim_identity'
@@ -126,9 +126,10 @@ export function AuthenticationProvider({ children }: { children: any }) {
   const authorize = async (emailAddress: string, password: string): Promise<string> => {
     console.log('authorizing...')
 
-    const request = new AccountAuthentication()
-    request.emailAddress = emailAddress
-    request.password = password
+    const request = AccountAuthentication.fromJS({
+      emailAddress: emailAddress,
+      password: password,
+    })
 
     await apiClient
       .authenticate(request)
@@ -156,9 +157,10 @@ export function AuthenticationProvider({ children }: { children: any }) {
 
     const item = jwtDecode.jwtDecode<{ email: string; nonce: string }>(credential)
 
-    const request = new GoogleAccountAuthentication()
-    request.emailAddress = item.email
-    request.googleJwt = credential
+    const request = GoogleAccountAuthentication.fromJS({
+      emailAddress: item.email,
+      googleJwt: credential,
+    })
 
     await apiClient
       .authenticateGoogle(request)
@@ -255,9 +257,10 @@ export function AuthenticationProvider({ children }: { children: any }) {
     async (emailAddress: string): Promise<string> => {
       console.log('reauthorizing...')
 
-      const request = new AccountAuthenticationRefresh()
-      request.emailAddress = emailAddress
-      request.refreshToken = '_'
+      const request = AccountAuthenticationRefresh.fromJS({
+        emailAddress: emailAddress,
+        refreshToken: '_',
+      })
 
       await apiClient
         .authenticateRefresh(request)

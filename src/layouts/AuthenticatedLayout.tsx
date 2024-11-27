@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import IdlePopup from '../components/IdlePopup'
-import NavBar from '../components/NavBar'
+import IdlePopup from 'components/IdlePopup'
+import NavBar from 'components/NavBar'
 import { HelmetProvider } from 'react-helmet-async'
 import configSettings from 'settings/config.json'
 import { Outlet } from 'react-router'
-import Avatar from '../components/Avatar'
+import Avatar from 'components/Avatar'
 import { Popover } from 'react-tiny-popover'
 import Icon from 'components/Icon'
 import { AuthenticationContext } from 'contexts/AuthenticationContext'
@@ -206,7 +206,9 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
             <div id="overlay" className="wrapper">
               <div className="auth-account">
                 {header}
-                <Icon className="button" name="Inbox" />
+                <Icon className="button" name="Inbox">
+                  <span className="icon-badge">3</span>
+                </Icon>
                 <Popover
                   parentElement={
                     document.getElementsByClassName('auth-account')[0] as HTMLElement
