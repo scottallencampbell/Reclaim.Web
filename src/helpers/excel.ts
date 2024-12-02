@@ -1,6 +1,5 @@
 import moment from 'moment'
 import * as Excel from 'exceljs'
-import { Account, Customer, Investigator, Job, Claim } from 'api/api'
 
 export const exportFile = async (name: string, data: any) => {
   const wb = new Excel.Workbook()

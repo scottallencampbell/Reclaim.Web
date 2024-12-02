@@ -3,8 +3,7 @@ import Icon from './Icon'
 import moment from 'moment'
 import React from 'react'
 import Avatar from './Avatar'
-import { lowerCase, startCase, upperFirst } from 'lodash'
-import * as Excel from 'exceljs'
+import { lowerCase, upperFirst } from 'lodash'
 import { flatten } from 'helpers/json'
 import { exportFile } from 'helpers/excel'
 
@@ -53,6 +52,7 @@ const Table = ({
     if (sortOrder === undefined || sortOrder === undefined) {
       setSortOrder('asc')
     }
+    // eslint-disable-next-line
   }, [columns])
 
   useEffect(() => {
@@ -377,7 +377,7 @@ const Table = ({
                       className={`${cl} ${type}-header`}
                       onClick={() => handleSort(accessor)}>
                       <div>
-                        {labelParts.length == 1 ? (
+                        {labelParts.length === 1 ? (
                           <span>{label}</span>
                         ) : (
                           <span>

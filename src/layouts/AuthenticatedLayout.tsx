@@ -21,7 +21,7 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
   const [avatarUrl, setAvatarUrl] = useState('')
   const [name, setName] = useState('')
   const [role, setRole] = useState('')
-  const [emailAddress, setEmailAddress] = useState('')
+  const [, setEmailAddress] = useState('')
   const [theme, setTheme] = useState('light')
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
 

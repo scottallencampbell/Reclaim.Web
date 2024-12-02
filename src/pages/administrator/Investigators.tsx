@@ -7,7 +7,6 @@ import moment from 'moment'
 import Icon from 'components/Icon'
 import { postalCodeRegex } from 'helpers/constants'
 import React from 'react'
-import * as XLSX from 'xlsx'
 
 const Investigators = () => {
   const apiClient = useMemo(
