@@ -15,7 +15,7 @@ const AggregateBox = ({ title, data }: IAggregateBox) => {
     } else if (type === 'integer') {
       return `${value.toFixed(0).replace(numberTriplets, ',')}`
     } else {
-      return value.toString()
+      return value?.toString() ?? ''
     }
   }
 
