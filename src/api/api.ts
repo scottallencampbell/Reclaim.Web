@@ -417,11 +417,11 @@ export class AdministratorClient extends ApiBase {
     /**
      * @return Array of Claim DTOs
      */
-    getClaimsByCustomer(customerUniqueID: string): Promise<Claim[]> {
-        let url_ = this.baseUrl + "/administrator/customer/{customerUniqueID}/claim/all";
-        if (customerUniqueID === undefined || customerUniqueID === null)
-            throw new Error("The parameter 'customerUniqueID' must be defined.");
-        url_ = url_.replace("{customerUniqueID}", encodeURIComponent("" + customerUniqueID));
+    getClaimsByCustomer(customerAccountUniqueID: string): Promise<Claim[]> {
+        let url_ = this.baseUrl + "/administrator/customer/{CustomerAccountUniqueID}/claim/all";
+        if (customerAccountUniqueID === undefined || customerAccountUniqueID === null)
+            throw new Error("The parameter 'customerAccountUniqueID' must be defined.");
+        url_ = url_.replace("{CustomerAccountUniqueID}", encodeURIComponent("" + customerAccountUniqueID));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1402,7 +1402,7 @@ export class AuthenticationToken extends Base implements IAuthenticationToken {
     role!: Role;
     emailAddress!: string;
     avatarUrl!: string;
-    name!: string;
+    niceName!: string;
 
     constructor(data?: IAuthenticationToken) {
         super(data);
@@ -1417,7 +1417,7 @@ export class AuthenticationToken extends Base implements IAuthenticationToken {
             this.role = _data["role"];
             this.emailAddress = _data["emailAddress"];
             this.avatarUrl = _data["avatarUrl"];
-            this.name = _data["name"];
+            this.niceName = _data["niceName"];
         }
     }
 
@@ -1436,7 +1436,7 @@ export class AuthenticationToken extends Base implements IAuthenticationToken {
         data["role"] = this.role;
         data["emailAddress"] = this.emailAddress;
         data["avatarUrl"] = this.avatarUrl;
-        data["name"] = this.name;
+        data["niceName"] = this.niceName;
         super.toJSON(data);
         return data;
     }
@@ -1449,7 +1449,7 @@ export interface IAuthenticationToken extends IBase {
     role: Role;
     emailAddress: string;
     avatarUrl: string;
-    name: string;
+    niceName: string;
 }
 
 export enum Role {
@@ -1576,7 +1576,7 @@ export class Account extends Base implements IAccount {
     identityProvider!: IdentityProvider;
     emailAddress!: string;
     avatarUrl!: string | undefined;
-    name!: string | undefined;
+    niceName!: string | undefined;
     authenticatedTimestamp!: moment.Moment | undefined;
     sessionAuthenticatedTimestamp!: moment.Moment | undefined;
     lastActiveTimestamp!: moment.Moment | undefined;
@@ -1594,7 +1594,7 @@ export class Account extends Base implements IAccount {
             this.identityProvider = _data["identityProvider"];
             this.emailAddress = _data["emailAddress"];
             this.avatarUrl = _data["avatarUrl"];
-            this.name = _data["name"];
+            this.niceName = _data["niceName"];
             this.authenticatedTimestamp = _data["authenticatedTimestamp"] ? moment(_data["authenticatedTimestamp"].toString()) : <any>undefined;
             this.sessionAuthenticatedTimestamp = _data["sessionAuthenticatedTimestamp"] ? moment(_data["sessionAuthenticatedTimestamp"].toString()) : <any>undefined;
             this.lastActiveTimestamp = _data["lastActiveTimestamp"] ? moment(_data["lastActiveTimestamp"].toString()) : <any>undefined;
@@ -1616,7 +1616,7 @@ export class Account extends Base implements IAccount {
         data["identityProvider"] = this.identityProvider;
         data["emailAddress"] = this.emailAddress;
         data["avatarUrl"] = this.avatarUrl;
-        data["name"] = this.name;
+        data["niceName"] = this.niceName;
         data["authenticatedTimestamp"] = this.authenticatedTimestamp ? this.authenticatedTimestamp.toISOString() : <any>undefined;
         data["sessionAuthenticatedTimestamp"] = this.sessionAuthenticatedTimestamp ? this.sessionAuthenticatedTimestamp.toISOString() : <any>undefined;
         data["lastActiveTimestamp"] = this.lastActiveTimestamp ? this.lastActiveTimestamp.toISOString() : <any>undefined;
@@ -1632,7 +1632,7 @@ export interface IAccount extends IBase {
     identityProvider: IdentityProvider;
     emailAddress: string;
     avatarUrl: string | undefined;
-    name: string | undefined;
+    niceName: string | undefined;
     authenticatedTimestamp: moment.Moment | undefined;
     sessionAuthenticatedTimestamp: moment.Moment | undefined;
     lastActiveTimestamp: moment.Moment | undefined;

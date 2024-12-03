@@ -8,6 +8,7 @@ import Avatar from 'components/Avatar'
 import { Popover } from 'react-tiny-popover'
 import Icon from 'components/Icon'
 import { AuthenticationContext } from 'contexts/AuthenticationContext'
+import { Role } from 'api/api'
 
 interface IAuthenticatedLayout {
   header?: any
@@ -19,7 +20,7 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
   const [lastActiveTime, setLastActiveTime] = useState(Date.now())
   const [idleLifeRemaining, setIdleLifeRemaining] = useState(100)
   const [avatarUrl, setAvatarUrl] = useState('')
-  const [name, setName] = useState('')
+  const [niceName, setNiceName] = useState('')
   const [role, setRole] = useState('')
   const [, setEmailAddress] = useState('')
   const [theme, setTheme] = useState('light')
@@ -151,7 +152,7 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
     const identity = getIdentity()
 
     if (identity) {
-      setName(identity.name ?? '')
+      setNiceName(identity.niceName ?? '')
       setAvatarUrl(identity.avatarUrl ?? '')
     }
   }, [getIdentity])
@@ -217,7 +218,14 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
                   isOpen={isPopoverOpen}
                   content={
                     <div className={`popover-content`}>
-                      <span className="name">{name}</span>
+                      {role === Role.Administrator ? (
+                        <></>
+                      ) : (
+                        <span className="name">{niceName}</span>
+                      )}
+                      <span className="role">
+                        <span className={`role-name status ${role}`}>{role}</span>
+                      </span>
                       <hr></hr>
                       <div>
                         <Icon name="User" />
@@ -252,7 +260,7 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
                   positions={['left', 'right']}>
                   <Avatar
                     url={avatarUrl}
-                    name={name}
+                    name={niceName}
                     onClick={toggleIsPopoverOpen}></Avatar>
                 </Popover>
               </div>{' '}

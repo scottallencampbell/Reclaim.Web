@@ -138,7 +138,7 @@ export function AuthenticationProvider({ children }: { children: any }) {
           result.role,
           emailAddress,
           result.avatarUrl,
-          result.name,
+          result.niceName,
           result.validUntil.toISOString()
         )
         saveProvider('Local')
@@ -179,7 +179,7 @@ export function AuthenticationProvider({ children }: { children: any }) {
           result.role,
           item.email,
           result.avatarUrl,
-          result.role,
+          result.niceName,
           result.validUntil.toISOString()
         )
         saveProvider('Google')
@@ -219,14 +219,14 @@ export function AuthenticationProvider({ children }: { children: any }) {
     role: string,
     emailAddress: string,
     avatarUrl: string,
-    name: string,
+    niceName: string,
     validUntil: string
   ) => void = useCallback(
     (
       role: string,
       emailAddress: string,
       avatarUrl: string,
-      name: string,
+      niceName: string,
       validUntil: string
     ) => {
       const emailAddresses = emailAddress.split(':')
@@ -242,7 +242,7 @@ export function AuthenticationProvider({ children }: { children: any }) {
         role,
         emailAddresses[0],
         avatarUrl,
-        name,
+        niceName,
         null,
         validUntil
       )
@@ -269,7 +269,7 @@ export function AuthenticationProvider({ children }: { children: any }) {
             result.role,
             emailAddress,
             result.avatarUrl,
-            result.name,
+            result.niceName,
             result.validUntil.toISOString()
           )
           return result.accessToken

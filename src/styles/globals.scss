@@ -235,6 +235,17 @@ select {
     .name {
       text-align: center;
       display: block;
+      padding-bottom: 4px;
+    }
+
+    .role {
+      text-align: center;
+      display: block;
+    }
+
+    .role-name {
+      display: inline-block;
+      text-align: center;
     }
 
     div {
@@ -592,8 +603,6 @@ form.form-error .input-container {
   @media (max-width: 900px) {
     width: 48px;
     max-width: 48px;
-    position: relative;
-    xleft: -12px;
   }
 
   .nav {
@@ -609,10 +618,23 @@ form.form-error .input-container {
     margin-bottom: 6px;
     height: 53px;
     width: 100%;
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-image: url('~/public/logo.png');
+
+    @media (max-width: 900px) {
+      padding: 3px 8px 0 8px;
+    }
+
+    .logo-img {
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-image: url('~/public/logo.png');
+      width: 100%;
+      height: 100%;
+
+      @media (max-width: 900px) {
+        background-image: url('~/public/logo-favicon.png');
+      }
+    }
   }
 
   .logo img {
@@ -661,8 +683,10 @@ form.form-error .input-container {
     border-left: solid 8px transparent;
 
     @media (max-width: 900px) {
-      width: 52px;
-      border-left: solid 4px transparent;
+      width: 48px;
+      margin-left: 0;
+      border-radius: 0;
+      border-left: solid 3px transparent;
     }
 
     .icon {
@@ -751,7 +775,7 @@ form.form-error .input-container {
 
       @media (max-width: 900px) {
         box-shadow: none;
-        border-left: solid 4px var(--color-primary);
+        border-left: solid 3px var(--color-primary);
       }
     }
 
@@ -1001,6 +1025,66 @@ form.form-error .input-container {
   font-size: 14px;
 }
 
+.status {
+  border-radius: 5px;
+  padding: 2px 7px 2px 7px;
+  display: inline-block;
+  position: relative;
+  top: 0;
+  left: -2px;
+  border: solid 1px #cccccc;
+  background-color: #f0f0f0;
+  color: #333333;
+
+  &.Active,
+  &.Resolved,
+  &.NotFraudulent,
+  &.Customer,
+  &.Ready {
+    background-color: #eaf7ed;
+    border-color: #c4ddca;
+    color: #155724;
+  }
+
+  &.OnProbation,
+  &.Investigating,
+  &.Running {
+    background-color: #fff3cd;
+    border-color: #efdeaa;
+    color: #856404;
+  }
+
+  &.Terminated,
+  &.Tombstoned,
+  &.Fraudulent,
+  &.Error,
+  &.TimedOut {
+    background-color: #f8d7da;
+    border-color: #e5b6bb;
+    color: #721c24;
+  }
+
+  &.Orange,
+  &.Support {
+    background-color: #ffe5cc;
+    border-color: #f3bc89;
+    color: #995c00;
+  }
+
+  &.Adjudicated,
+  &.Investigator {
+    background-color: #e5e3f6;
+    border-color: #cabaf2;
+    color: #6b20a2;
+  }
+
+  &.Administrator {
+    background-color: #ddeafb;
+    border-color: #b3d4f7;
+    color: #0b5394;
+  }
+}
+
 .table {
   width: 100%;
   font-size: 14px;
@@ -1064,66 +1148,6 @@ form.form-error .input-container {
       p {
         margin: 0;
         padding-top: 1px;
-      }
-
-      .status {
-        border-radius: 5px;
-        padding: 2px 7px 2px 7px;
-        display: inline-block;
-        position: relative;
-        top: 0;
-        left: -2px;
-        border: solid 1px #cccccc;
-        background-color: #f0f0f0;
-        color: #333333;
-
-        &.Active,
-        &.Resolved,
-        &.NotFraudulent,
-        &.Customer,
-        &.Ready {
-          background-color: #eaf7ed;
-          border-color: #c4ddca;
-          color: #155724;
-        }
-
-        &.OnProbation,
-        &.Investigating,
-        &.Running {
-          background-color: #fff3cd;
-          border-color: #efdeaa;
-          color: #856404;
-        }
-
-        &.Terminated,
-        &.Tombstoned,
-        &.Fraudulent,
-        &.Error,
-        &.TimedOut {
-          background-color: #f8d7da;
-          border-color: #e5b6bb;
-          color: #721c24;
-        }
-
-        &.Orange,
-        &.Support {
-          background-color: #ffe5cc;
-          border-color: #f3bc89;
-          color: #995c00;
-        }
-
-        &.Adjudicated,
-        &.Investigator {
-          background-color: #e5e3f6;
-          border-color: #cabaf2;
-          color: #6b20a2;
-        }
-
-        &.Administrator {
-          background-color: #ddeafb;
-          border-color: #b3d4f7;
-          color: #0b5394;
-        }
       }
 
       .full-name,
@@ -1250,7 +1274,8 @@ form.form-error .input-container {
     background-color: var(--color-background);
 
     @media (max-width: 900px) {
-      margin-left: 0;
+      margin-left: 48px;
+      padding-left: 0px;
       position: relative;
     }
 
@@ -1261,6 +1286,10 @@ form.form-error .input-container {
       height: calc(100% - 60px);
       padding: 12px 0 20px 28px;
       min-height: calc(100vh - 110px);
+
+      @media (max-width: 900px) {
+        padding-left: 20px;
+      }
     }
 
     div.header {
@@ -1568,7 +1597,7 @@ form.form-error .input-container {
     margin-right: 20px;
     margin-bottom: 15px;
 
-    @media screen and (max-width: 1000px) {
+    @media screen and (max-width: 900px) {
       display: block;
       margin: 0 auto;
       text-align: center;
@@ -1585,7 +1614,7 @@ form.form-error .input-container {
     top: 40px;
     z-index: 100;
 
-    @media screen and (max-width: 1000px) {
+    @media screen and (max-width: 900px) {
       text-align: center;
       margin-bottom: 40px;
     }
@@ -1603,7 +1632,7 @@ form.form-error .input-container {
     right: 0;
     display: table;
 
-    @media screen and (max-width: 1000px) {
+    @media screen and (max-width: 900px) {
       height: unset;
       min-height: unset;
       margin: unset;
@@ -1628,7 +1657,7 @@ form.form-error .input-container {
       0 0 15px rgba(255, 255, 255, 0.5),
       0 0 10px rgba(255, 255, 255, 0.5);
 
-    @media screen and (max-width: 1000px) {
+    @media screen and (max-width: 900px) {
       text-align: center;
       font-size: 45px;
       letter-spacing: 5px;
@@ -1642,7 +1671,7 @@ form.form-error .input-container {
     color: #ffffff;
     letter-spacing: 1px;
 
-    @media screen and (max-width: 1000px) {
+    @media screen and (max-width: 900px) {
       text-align: center;
       font-size: 18px;
       letter-spacing: 0;
@@ -1650,7 +1679,7 @@ form.form-error .input-container {
   }
 
   .button-row {
-    @media screen and (max-width: 1000px) {
+    @media screen and (max-width: 900px) {
       text-align: center;
     }
   }
@@ -1739,7 +1768,7 @@ form.form-error .input-container {
     background-color: var(--color-primary);
     color: var(--color-white);
     text-align: center;
-    padding-top: 10px;
+    padding-top: 11px;
     font-size: 18px;
     font-weight: 600;
     position: relative;
@@ -1917,12 +1946,12 @@ form.form-error .input-container {
 }
 
 [data-theme='dark'] {
-  .nav-bar .logo {
+  .nav-bar .logo-img {
     background-image: url('~/public/logo-darkmode.png');
   }
 }
 
-[data-theme='dark'] .table table td .status {
+[data-theme='dark'] .status {
   &.Active,
   &.Resolved,
   &.NotFraudulent,
