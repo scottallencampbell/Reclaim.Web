@@ -6,6 +6,7 @@ import Avatar from './Avatar'
 import { lowerCase, upperFirst } from 'lodash'
 import { flatten } from 'helpers/json'
 import { exportFile } from 'helpers/excel'
+import PropertyTag from './PropertyTag'
 
 interface ITable {
   children?: any
@@ -414,12 +415,8 @@ const Table = ({
 
                       if (value) {
                         switch (type) {
-                          case 'status':
-                            tag = (
-                              <div className={`status ${value}`}>
-                                <div>{upperFirst(lowerCase(value))}</div>
-                              </div>
-                            )
+                          case 'propertyTag':
+                            tag = <PropertyTag name={value} />
                             break
 
                           case 'fullNameAndEmailAddress':

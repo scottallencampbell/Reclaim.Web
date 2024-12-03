@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
 import { AdministratorClient, Claim } from 'api/api'
+import { useNavigate } from 'react-router-dom'
 
 const Claims = () => {
   const apiClient = useMemo(
@@ -10,6 +11,12 @@ const Claims = () => {
 
   const [claims, setClaims] = useState<Claim[]>()
   const [isPropertyBarVisible] = useState(false)
+
+  const navigate = useNavigate()
+
+  const handleRowClick = (clickedClaim: Claim) => {
+    navigate('/administrator/claims/' + clickedClaim.uniqueID)
+  }
 
   const columns = useMemo(
     () => [
@@ -35,12 +42,12 @@ const Claims = () => {
       {
         label: 'Status',
         accessor: 'status',
-        type: 'status',
+        type: 'propertyTag',
       },
       {
         label: 'Disposition',
         accessor: 'disposition',
-        type: 'status',
+        type: 'propertyTag',
       },
     ],
     []
@@ -59,7 +66,7 @@ const Claims = () => {
 
   return (
     <>
-      <div className="header">Claims</div>
+      <div className="header">Claim</div>
       <div className="inner">
         <Table
           id="claims-table"
@@ -71,7 +78,7 @@ const Claims = () => {
           isPropertyBarVisible={isPropertyBarVisible}
           onSearchTermsChange={null}
           ignoredFields={['attachments']}
-          onRowClick={null}></Table>
+          onRowClick={handleRowClick}></Table>
       </div>
     </>
   )

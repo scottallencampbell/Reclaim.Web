@@ -25,7 +25,7 @@ const SignIns = () => {
       {
         label: 'Role',
         accessor: 'role',
-        type: 'status',
+        type: 'propertyTag',
       },
       {
         label: 'Signed in',

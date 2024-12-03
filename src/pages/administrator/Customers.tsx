@@ -37,7 +37,7 @@ const Customers = () => {
       {
         label: 'Status',
         accessor: 'status',
-        type: 'status',
+        type: 'propertyTag',
       },
       {
         label: 'Last active',

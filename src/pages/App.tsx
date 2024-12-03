@@ -12,6 +12,7 @@ import ThankYou from './public/ThankYou'
 
 import AdministratorDashboard from './administrator/Dashboard'
 import AdministratorClaims from './administrator/Claims'
+import AdministratorClaimDetail from './administrator/ClaimDetail'
 import AdministratorInvestigators from './administrator/Investigators'
 import AdministratorCustomers from './administrator/Customers'
 import AdministratorSignIns from './administrator/Signins'
@@ -48,6 +49,7 @@ const App = () => {
         <Route path="administrator" element={<AuthenticatedLayout />}>
           <Route index path="dashboard" element={<AdministratorDashboard />}></Route>
           <Route path="claims" element={<AdministratorClaims />}></Route>
+          <Route path="claims/:uniqueID" element={<AdministratorClaimDetail />}></Route>
           <Route path="investigators" element={<AdministratorInvestigators />}></Route>
           <Route path="customers" element={<AdministratorCustomers />}></Route>
           <Route path="signins" element={<AdministratorSignIns />}></Route>

@@ -591,14 +591,12 @@ form.form-error .input-container {
   width: 230px;
   height: 100%;
   flex-basis: 230px;
-  flex: 0 0 220px;
+  flex: 0 0 230px;
   z-index: 100;
   padding: 0;
   background-color: var(--color-nav-bar-background) !important;
   color: var(--color-black);
   clip-path: inset(0px -12px 0px 0px);
-  padding-top: 0;
-  padding-bottom: 30px;
 
   @media (max-width: 900px) {
     width: 48px;
@@ -1025,7 +1023,7 @@ form.form-error .input-container {
   font-size: 14px;
 }
 
-.status {
+.property-tag {
   border-radius: 5px;
   padding: 2px 7px 2px 7px;
   display: inline-block;
@@ -1040,7 +1038,8 @@ form.form-error .input-container {
   &.Resolved,
   &.NotFraudulent,
   &.Customer,
-  &.Ready {
+  &.Ready,
+  &.icon-FileExcel {
     background-color: #eaf7ed;
     border-color: #c4ddca;
     color: #155724;
@@ -1048,7 +1047,8 @@ form.form-error .input-container {
 
   &.OnProbation,
   &.Investigating,
-  &.Running {
+  &.Running,
+  &.icon-FileImage {
     background-color: #fff3cd;
     border-color: #efdeaa;
     color: #856404;
@@ -1058,14 +1058,16 @@ form.form-error .input-container {
   &.Tombstoned,
   &.Fraudulent,
   &.Error,
-  &.TimedOut {
+  &.TimedOut,
+  &.icon-FilePdf {
     background-color: #f8d7da;
     border-color: #e5b6bb;
     color: #721c24;
   }
 
   &.Orange,
-  &.Support {
+  &.Support,
+  &.icon-FileVideo {
     background-color: #ffe5cc;
     border-color: #f3bc89;
     color: #995c00;
@@ -1078,7 +1080,8 @@ form.form-error .input-container {
     color: #6b20a2;
   }
 
-  &.Administrator {
+  &.Administrator,
+  &.icon-FileWord {
     background-color: #ddeafb;
     border-color: #b3d4f7;
     color: #0b5394;
@@ -1263,7 +1266,7 @@ form.form-error .input-container {
     margin-left: 230px;
     padding-left: 10px;
     padding-top: 0;
-    padding-bottom: 15px;
+    padding-bottom: 30px;
     padding-right: 30px;
     flex-grow: 1; /* grow wider by any factor */
     flex-shrink: 1; /* grow smaller by any factor */
@@ -1284,7 +1287,7 @@ form.form-error .input-container {
       background-color: var(--color-white);
       border-radius: 8px;
       height: calc(100% - 60px);
-      padding: 12px 0 20px 28px;
+      margin: 12px 0 20px 28px;
       min-height: calc(100vh - 110px);
 
       @media (max-width: 900px) {
@@ -1947,13 +1950,133 @@ form.form-error .input-container {
   border: solid red 1px;
 }
 
+.info-box {
+  min-height: 130px;
+  margin-bottom: 30px;
+
+  .cols {
+    padding-left: 20px;
+    column-count: 2;
+    column-gap: 5px;
+  }
+
+  & > div {
+    border: solid 1px var(--color-black);
+    padding: 0 15px 15px 15px;
+    border-radius: 4px;
+    position: relative;
+
+    span.header {
+      color: var(--color-light-gray);
+      text-transform: uppercase;
+      font-size: 13px;
+      font-weight: 700;
+      padding-left: 0;
+      padding-top: 12px;
+      padding-bottom: 15px;
+      display: inline-block;
+    }
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    padding-bottom: 12px;
+
+    div {
+      font-size: 15px;
+      line-height: 19px;
+    }
+
+    span {
+      font-weight: 300;
+      color: var(--color-gray);
+      display: block;
+      width: 140px;
+      font-size: 13px;
+      padding-bottom: 2px;
+    }
+  }
+
+  .attachments,
+  .statuses {
+    margin-left: 20px;
+    font-size: 15px;
+    font-weight: 700;
+
+    & > div {
+      padding: 5px 0 15px 0;
+
+      &:last-child {
+        padding-bottom: 10px;
+      }
+    }
+
+    .icon {
+      vertical-align: top;
+      font-size: 20px;
+      display: inline-block;
+      margin-right: 10px;
+      width: 35px;
+      height: 35px;
+      text-align: center;
+
+      &.icon-Gears {
+        font-size: 18px;
+        position: relative;
+        top: 3px;
+        left: -3px;
+      }
+    }
+
+    div.details {
+      vertical-align: top;
+      display: inline-block;
+      line-height: 18px;
+      transition: color 0.2s;
+
+      &:hover {
+        color: var(--color-primary);
+        cursor: pointer;
+      }
+
+      span {
+        font-weight: 300;
+        font-size: 12px;
+        color: var(--color-gray);
+        display: inline-block;
+      }
+
+      label {
+        color: var(--color-gray);
+        font-weight: 300;
+      }
+    }
+  }
+
+  .statuses {
+    font-size: 14px;
+    margin-left: 20px;
+    width: 100%;
+
+    tr {
+      td:nth-child(2) {
+        width: 14px;
+        padding-right: 5px;
+        text-align: center;
+      }
+    }
+  }
+}
+
 [data-theme='dark'] {
   .nav-bar .logo-img {
     background-image: url('~/public/logo-darkmode.png');
   }
 }
 
-[data-theme='dark'] .status {
+[data-theme='dark'] .property-tag {
   border: solid 1px #cccccc;
   background-color: #e0e0e0;
   color: #333333;
@@ -1962,7 +2085,8 @@ form.form-error .input-container {
   &.Resolved,
   &.NotFraudulent,
   &.Customer,
-  &.Pending {
+  &.Pending,
+  &.icon-FileExcel {
     background-color: #a3e4b8;
     border-color: #7ccf8e;
     color: #0b3d1b;
@@ -1970,7 +2094,8 @@ form.form-error .input-container {
 
   &.OnProbation,
   &.Investigating,
-  &.Running {
+  &.Running,
+  &.icon-FileImage {
     background-color: #ffdd99;
     border-color: #ffcc66;
     color: #664400;
@@ -1980,14 +2105,16 @@ form.form-error .input-container {
   &.Tombstoned,
   &.Fraudulent,
   &.Error,
-  &.TimedOut {
+  &.TimedOut,
+  &.icon-FilePdf {
     background-color: #d09599;
     border-color: #f08085;
     color: #4a0d12;
   }
 
   &.Orange,
-  &.Support {
+  &.Support,
+  &.icon-FileVideo {
     background-color: #ffb366;
     border-color: #ff9933;
     color: #663300;
@@ -2000,7 +2127,8 @@ form.form-error .input-container {
     color: #330066;
   }
 
-  &.Administrator {
+  &.Administrator,
+  &.icon-FileWord {
     background-color: #99ccff;
     border-color: #66b2ff;
     color: #003366;

@@ -415,13 +415,55 @@ export class AdministratorClient extends ApiBase {
     }
 
     /**
+     * @return Claim DTO
+     */
+    getClaim(uniqueID: string): Promise<Claim> {
+        let url_ = this.baseUrl + "/administrator/claim/{uniqueID}";
+        if (uniqueID === undefined || uniqueID === null)
+            throw new Error("The parameter 'uniqueID' must be defined.");
+        url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetClaim(_response);
+        });
+    }
+
+    protected processGetClaim(response: Response): Promise<Claim> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Claim.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Claim>(null as any);
+    }
+
+    /**
      * @return Array of Claim DTOs
      */
-    getClaimsByCustomer(customerAccountUniqueID: string): Promise<Claim[]> {
-        let url_ = this.baseUrl + "/administrator/customer/{CustomerAccountUniqueID}/claim/all";
-        if (customerAccountUniqueID === undefined || customerAccountUniqueID === null)
-            throw new Error("The parameter 'customerAccountUniqueID' must be defined.");
-        url_ = url_.replace("{CustomerAccountUniqueID}", encodeURIComponent("" + customerAccountUniqueID));
+    getClaimsByCustomer(uniqueID: string): Promise<Claim[]> {
+        let url_ = this.baseUrl + "/administrator/customer/{uniqueID}/claim/all";
+        if (uniqueID === undefined || uniqueID === null)
+            throw new Error("The parameter 'uniqueID' must be defined.");
+        url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -960,7 +1002,7 @@ export class AdministratorClient extends ApiBase {
     }
 
     /**
-     * Get all scheduled jobs
+     * Retrieve all scheduled jobs
      * @return List of all jobs
      */
     getAllJobs(): Promise<Job[]> {
@@ -1055,7 +1097,7 @@ export class ContentClient extends ApiBase {
     }
 
     /**
-     * Receives a notification when an email is opened (and image downloads are enabled)
+     * Retrieves a notification when an email is opened (and image downloads are enabled)
      * @param uniqueID A system-wide unique ID for the given email message
      */
     setEmailReceived(uniqueID: string): Promise<FileResponse> {

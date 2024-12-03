@@ -21,7 +21,7 @@ const Jobs = () => {
       {
         label: 'Status',
         accessor: 'status',
-        type: 'status',
+        type: 'propertyTag',
       },
       {
         label: 'Interval',
