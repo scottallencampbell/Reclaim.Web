@@ -1774,21 +1774,15 @@ export class AdministratorDashboard extends Base implements IAdministratorDashbo
             this.newOrders = data.newOrders && !(<any>data.newOrders).toJSON ? new DashboardAggregate(data.newOrders) : <DashboardAggregate>this.newOrders;
             this.monthlyRevenue = data.monthlyRevenue && !(<any>data.monthlyRevenue).toJSON ? new DashboardAggregate(data.monthlyRevenue) : <DashboardAggregate>this.monthlyRevenue;
         }
-        if (!data) {
-            this.uniqueSignins = new DashboardAggregate();
-            this.claimsValueUnderInvestigation = new DashboardAggregate();
-            this.newOrders = new DashboardAggregate();
-            this.monthlyRevenue = new DashboardAggregate();
-        }
     }
 
     init(_data?: any) {
         super.init(_data);
         if (_data) {
-            this.uniqueSignins = _data["uniqueSignins"] ? DashboardAggregate.fromJS(_data["uniqueSignins"]) : new DashboardAggregate();
-            this.claimsValueUnderInvestigation = _data["claimsValueUnderInvestigation"] ? DashboardAggregate.fromJS(_data["claimsValueUnderInvestigation"]) : new DashboardAggregate();
-            this.newOrders = _data["newOrders"] ? DashboardAggregate.fromJS(_data["newOrders"]) : new DashboardAggregate();
-            this.monthlyRevenue = _data["monthlyRevenue"] ? DashboardAggregate.fromJS(_data["monthlyRevenue"]) : new DashboardAggregate();
+            this.uniqueSignins = _data["uniqueSignins"] ? DashboardAggregate.fromJS(_data["uniqueSignins"]) : <any>undefined;
+            this.claimsValueUnderInvestigation = _data["claimsValueUnderInvestigation"] ? DashboardAggregate.fromJS(_data["claimsValueUnderInvestigation"]) : <any>undefined;
+            this.newOrders = _data["newOrders"] ? DashboardAggregate.fromJS(_data["newOrders"]) : <any>undefined;
+            this.monthlyRevenue = _data["monthlyRevenue"] ? DashboardAggregate.fromJS(_data["monthlyRevenue"]) : <any>undefined;
             if (_data["claimsByState"]) {
                 this.claimsByState = {} as any;
                 for (let key in _data["claimsByState"]) {

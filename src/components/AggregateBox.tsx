@@ -33,11 +33,11 @@ const AggregateBox = ({ title, data }: IAggregateBox) => {
             )
           ) : null}
           <>
-            <span className={data.percentChange >= 0 ? 'trendUp' : 'trendDown'}>
-              {data?.percentChange.toString()}%
+            <span className={(data?.percentChange ?? 0) >= 0 ? 'trendUp' : 'trendDown'}>
+              {data?.percentChange?.toString()}%
             </span>
             {' over previous '}
-            {data?.comparisonPeriod.toLowerCase()}
+            {data?.comparisonPeriod?.toLowerCase()}
           </>
         </p>
       </div>
