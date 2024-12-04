@@ -27,7 +27,7 @@ export class AccountClient extends ApiBase {
      * @return Account retrieved
      */
     authenticate(authentication: AccountAuthentication): Promise<AuthenticationToken> {
-        let url_ = this.baseUrl + "/account/authenticate";
+        let url_ = this.baseUrl + "/accounts/authenticate";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(authentication);
@@ -71,7 +71,7 @@ export class AccountClient extends ApiBase {
      * @return Account retrieved
      */
     authenticateRefresh(authentication: AccountAuthenticationRefresh): Promise<AuthenticationToken> {
-        let url_ = this.baseUrl + "/account/authenticate/refresh";
+        let url_ = this.baseUrl + "/accounts/authenticate/refresh";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(authentication);
@@ -115,7 +115,7 @@ export class AccountClient extends ApiBase {
      * @return Account retrieved
      */
     authenticateGoogle(authentication: GoogleAccountAuthentication): Promise<AuthenticationToken> {
-        let url_ = this.baseUrl + "/account/authenticate/google";
+        let url_ = this.baseUrl + "/accounts/authenticate/google";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(authentication);
@@ -159,7 +159,7 @@ export class AccountClient extends ApiBase {
      * @return Account retrieved
      */
     me(): Promise<Account> {
-        let url_ = this.baseUrl + "/account/me";
+        let url_ = this.baseUrl + "/accounts/me";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -200,7 +200,7 @@ export class AccountClient extends ApiBase {
      * @return Account confirmed
      */
     confirm(dto: AccountConfirmation): Promise<void> {
-        let url_ = this.baseUrl + "/account/confirm";
+        let url_ = this.baseUrl + "/accounts/confirm";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(dto);
@@ -241,7 +241,7 @@ export class AccountClient extends ApiBase {
      * @return Account confirmed
      */
     requestResetPassword(dto: PasswordResetRequest): Promise<void> {
-        let url_ = this.baseUrl + "/account/password/reset";
+        let url_ = this.baseUrl + "/accounts/password/reset";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(dto);
@@ -282,7 +282,7 @@ export class AccountClient extends ApiBase {
      * @return Account confirmed
      */
     resetPassword(dto: PasswordReset): Promise<void> {
-        let url_ = this.baseUrl + "/account/password";
+        let url_ = this.baseUrl + "/accounts/password";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(dto);
@@ -372,7 +372,7 @@ export class AdministratorClient extends ApiBase {
      * @return Array of Claim DTOs
      */
     getClaims(): Promise<Claim[]> {
-        let url_ = this.baseUrl + "/administrator/claim/all";
+        let url_ = this.baseUrl + "/administrator/claims";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -418,7 +418,7 @@ export class AdministratorClient extends ApiBase {
      * @return Claim DTO
      */
     getClaim(uniqueID: string): Promise<Claim> {
-        let url_ = this.baseUrl + "/administrator/claim/{uniqueID}";
+        let url_ = this.baseUrl + "/administrator/claims/{uniqueID}";
         if (uniqueID === undefined || uniqueID === null)
             throw new Error("The parameter 'uniqueID' must be defined.");
         url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
@@ -460,7 +460,7 @@ export class AdministratorClient extends ApiBase {
      * @return Array of Claim DTOs
      */
     getClaimsByCustomer(uniqueID: string): Promise<Claim[]> {
-        let url_ = this.baseUrl + "/administrator/customer/{uniqueID}/claim/all";
+        let url_ = this.baseUrl + "/administrator/customers/{uniqueID}/claims";
         if (uniqueID === undefined || uniqueID === null)
             throw new Error("The parameter 'uniqueID' must be defined.");
         url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
@@ -509,7 +509,7 @@ export class AdministratorClient extends ApiBase {
      * @return Array of Customer DTOs
      */
     getCustomers(): Promise<Customer[]> {
-        let url_ = this.baseUrl + "/administrator/customer/all";
+        let url_ = this.baseUrl + "/administrator/customers";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -552,10 +552,54 @@ export class AdministratorClient extends ApiBase {
     }
 
     /**
+     * Create a new customer
+     * @param dto A Customer DTO
+     */
+    createCustomer(dto: CustomerCreateOrUpdate): Promise<Customer> {
+        let url_ = this.baseUrl + "/administrator/customers";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(dto);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreateCustomer(_response);
+        });
+    }
+
+    protected processCreateCustomer(response: Response): Promise<Customer> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Customer.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Customer>(null as any);
+    }
+
+    /**
      * @return Customer DTO
      */
     getCustomer(uniqueID: string): Promise<Customer> {
-        let url_ = this.baseUrl + "/administrator/customer/{uniqueID}";
+        let url_ = this.baseUrl + "/administrator/customers/{uniqueID}";
         if (uniqueID === undefined || uniqueID === null)
             throw new Error("The parameter 'uniqueID' must be defined.");
         url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
@@ -599,7 +643,7 @@ export class AdministratorClient extends ApiBase {
      * @param dto A Customer DTO
      */
     updateCustomer(uniqueID: string, dto: CustomerCreateOrUpdate): Promise<Customer> {
-        let url_ = this.baseUrl + "/administrator/customer/{uniqueID}";
+        let url_ = this.baseUrl + "/administrator/customers/{uniqueID}";
         if (uniqueID === undefined || uniqueID === null)
             throw new Error("The parameter 'uniqueID' must be defined.");
         url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
@@ -642,54 +686,10 @@ export class AdministratorClient extends ApiBase {
     }
 
     /**
-     * Create a new customer
-     * @param dto A Customer DTO
-     */
-    createCustomer(dto: CustomerCreateOrUpdate): Promise<Customer> {
-        let url_ = this.baseUrl + "/administrator/customer";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(dto);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processCreateCustomer(_response);
-        });
-    }
-
-    protected processCreateCustomer(response: Response): Promise<Customer> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Customer.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Customer>(null as any);
-    }
-
-    /**
      * @return Array of Investigator DTOs
      */
     getInvestigators(): Promise<Investigator[]> {
-        let url_ = this.baseUrl + "/administrator/investigator/all";
+        let url_ = this.baseUrl + "/administrator/investigators";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -732,10 +732,54 @@ export class AdministratorClient extends ApiBase {
     }
 
     /**
+     * Create a new investigator
+     * @param dto An Investigator DTO
+     */
+    createInvestigator(dto: InvestigatorCreateOrUpdate): Promise<Investigator> {
+        let url_ = this.baseUrl + "/administrator/investigators";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(dto);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreateInvestigator(_response);
+        });
+    }
+
+    protected processCreateInvestigator(response: Response): Promise<Investigator> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Investigator.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Investigator>(null as any);
+    }
+
+    /**
      * @return Investigator DTO
      */
     getInvestigator(uniqueID: string): Promise<Investigator> {
-        let url_ = this.baseUrl + "/administrator/investigator/{uniqueID}";
+        let url_ = this.baseUrl + "/administrator/investigators/{uniqueID}";
         if (uniqueID === undefined || uniqueID === null)
             throw new Error("The parameter 'uniqueID' must be defined.");
         url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
@@ -779,7 +823,7 @@ export class AdministratorClient extends ApiBase {
      * @param dto An Investigator DTO
      */
     updateInvestigator(uniqueID: string, dto: InvestigatorCreateOrUpdate): Promise<Investigator> {
-        let url_ = this.baseUrl + "/administrator/investigator/{uniqueID}";
+        let url_ = this.baseUrl + "/administrator/investigators/{uniqueID}";
         if (uniqueID === undefined || uniqueID === null)
             throw new Error("The parameter 'uniqueID' must be defined.");
         url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
@@ -822,56 +866,12 @@ export class AdministratorClient extends ApiBase {
     }
 
     /**
-     * Create a new investigator
-     * @param dto An Investigator DTO
-     */
-    createInvestigator(dto: InvestigatorCreateOrUpdate): Promise<Investigator> {
-        let url_ = this.baseUrl + "/administrator/investigator";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(dto);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processCreateInvestigator(_response);
-        });
-    }
-
-    protected processCreateInvestigator(response: Response): Promise<Investigator> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Investigator.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Investigator>(null as any);
-    }
-
-    /**
      * Retrieve a specific account by unique id
      * @param uniqueID The account's public unique ID
      * @return Account retrieved
      */
     get(uniqueID: string): Promise<Account> {
-        let url_ = this.baseUrl + "/administrator/account/{uniqueID}";
+        let url_ = this.baseUrl + "/administrator/accounts/{uniqueID}";
         if (uniqueID === undefined || uniqueID === null)
             throw new Error("The parameter 'uniqueID' must be defined.");
         url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
@@ -915,7 +915,7 @@ export class AdministratorClient extends ApiBase {
      * @return Account retrieved
      */
     getByEmailAddress(emailAddress?: string | undefined): Promise<Account> {
-        let url_ = this.baseUrl + "/administrator/account?";
+        let url_ = this.baseUrl + "/administrator/accounts?";
         if (emailAddress === null)
             throw new Error("The parameter 'emailAddress' cannot be null.");
         else if (emailAddress !== undefined)
@@ -959,7 +959,7 @@ export class AdministratorClient extends ApiBase {
      * @return Account list
      */
     authenticated(): Promise<Account[]> {
-        let url_ = this.baseUrl + "/administrator/account/authenticated";
+        let url_ = this.baseUrl + "/administrator/accounts/authenticated";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1006,7 +1006,7 @@ export class AdministratorClient extends ApiBase {
      * @return List of all jobs
      */
     getAllJobs(): Promise<Job[]> {
-        let url_ = this.baseUrl + "/administrator/job/all";
+        let url_ = this.baseUrl + "/administrator/jobs";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1053,7 +1053,7 @@ export class AdministratorClient extends ApiBase {
      * @return All jobs were run, successfully or not
      */
     runPendingJobs(): Promise<void> {
-        let url_ = this.baseUrl + "/administrator/job/runpending";
+        let url_ = this.baseUrl + "/administrator/jobs/runpending";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1097,11 +1097,11 @@ export class ContentClient extends ApiBase {
     }
 
     /**
-     * Retrieves a notification when an email is opened (and image downloads are enabled)
+     * Receives a notification when an email is opened (and image downloads are enabled)
      * @param uniqueID A system-wide unique ID for the given email message
      */
     setEmailReceived(uniqueID: string): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/content/email/{uniqueID}/received";
+        let url_ = this.baseUrl + "/content/emails/{uniqueID}/received";
         if (uniqueID === undefined || uniqueID === null)
             throw new Error("The parameter 'uniqueID' must be defined.");
         url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
@@ -1159,7 +1159,7 @@ export class CustomerClient extends ApiBase {
      * @return Array of Claim DTOs
      */
     getClaims(): Promise<Claim[]> {
-        let url_ = this.baseUrl + "/customer/claim/all";
+        let url_ = this.baseUrl + "/customer/claims";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1207,7 +1207,7 @@ export class CustomerClient extends ApiBase {
      * @return Account retrieved
      */
     register(dto: CustomerRegistration): Promise<Customer> {
-        let url_ = this.baseUrl + "/customer/register";
+        let url_ = this.baseUrl + "/customer/registration";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(dto);
@@ -1296,8 +1296,8 @@ export class StatusClient extends ApiBase {
     /**
      * Generate a list of error codes
      */
-    errorCode(): Promise<ErrorCode> {
-        let url_ = this.baseUrl + "/status/errorcode";
+    errorCodes(): Promise<ErrorCode> {
+        let url_ = this.baseUrl + "/status/errorcodes";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -1310,11 +1310,11 @@ export class StatusClient extends ApiBase {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.processErrorCode(_response);
+            return this.processErrorCodes(_response);
         });
     }
 
-    protected processErrorCode(response: Response): Promise<ErrorCode> {
+    protected processErrorCodes(response: Response): Promise<ErrorCode> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
