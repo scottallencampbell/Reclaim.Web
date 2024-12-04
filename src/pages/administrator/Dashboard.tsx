@@ -37,12 +37,10 @@ const Dashboard = () => {
           <AggregateBox title={'New orders'} data={dashboard?.newOrders} />
           <AggregateBox title={'Unique signins'} data={dashboard?.uniqueSignins} />
         </div>
-        <div className="row dashboard-spacer"></div>
         <div className="dashboard-chart">
           <span className="header">Monthly Investigations</span>
           <StackedBarChart data={dashboard?.claimsByMonth} />
         </div>
-        <div className="row dashboard-spacer"></div>
         <div className="row no-gutter">
           <div className="col-lg-6">
             <div className="dashboard-news">

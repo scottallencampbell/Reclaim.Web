@@ -24,7 +24,6 @@ export class AccountClient extends ApiBase {
 
     /**
      * Authenticate and receive a JWT bearer token
-     * @return Account retrieved
      */
     authenticate(authentication: AccountAuthentication): Promise<AuthenticationToken> {
         let url_ = this.baseUrl + "/accounts/authenticate";
@@ -67,52 +66,7 @@ export class AccountClient extends ApiBase {
     }
 
     /**
-     * Reauthenticate to the local database using a refresh token instead of a password
-     * @return Account retrieved
-     */
-    authenticateRefresh(authentication: AccountAuthenticationRefresh): Promise<AuthenticationToken> {
-        let url_ = this.baseUrl + "/accounts/authenticate/refresh";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(authentication);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processAuthenticateRefresh(_response);
-        });
-    }
-
-    protected processAuthenticateRefresh(response: Response): Promise<AuthenticationToken> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AuthenticationToken.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<AuthenticationToken>(null as any);
-    }
-
-    /**
      * Authorize access to API resources by authenticating to Google using OAuth 2.0
-     * @return Account retrieved
      */
     authenticateGoogle(authentication: GoogleAccountAuthentication): Promise<AuthenticationToken> {
         let url_ = this.baseUrl + "/accounts/authenticate/google";
@@ -155,16 +109,19 @@ export class AccountClient extends ApiBase {
     }
 
     /**
-     * Retrieve the account associated with the current JWT access token
-     * @return Account retrieved
+     * Reauthenticate to the local database using a refresh token instead of a password
      */
-    me(): Promise<Account> {
-        let url_ = this.baseUrl + "/accounts/me";
+    authenticateRefresh(authentication: AccountAuthenticationRefresh): Promise<AuthenticationToken> {
+        let url_ = this.baseUrl + "/accounts/authenticate/refresh";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(authentication);
+
         let options_: RequestInit = {
-            method: "GET",
+            body: content_,
+            method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
@@ -172,18 +129,18 @@ export class AccountClient extends ApiBase {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.processMe(_response);
+            return this.processAuthenticateRefresh(_response);
         });
     }
 
-    protected processMe(response: Response): Promise<Account> {
+    protected processAuthenticateRefresh(response: Response): Promise<AuthenticationToken> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Account.fromJS(resultData200);
+            result200 = AuthenticationToken.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -191,13 +148,12 @@ export class AccountClient extends ApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<Account>(null as any);
+        return Promise.resolve<AuthenticationToken>(null as any);
     }
 
     /**
      * Confirm an account via the welcome email workflow
      * @param dto An account confirmation DTO
-     * @return Account confirmed
      */
     confirm(dto: AccountConfirmation): Promise<void> {
         let url_ = this.baseUrl + "/accounts/confirm";
@@ -236,50 +192,47 @@ export class AccountClient extends ApiBase {
     }
 
     /**
-     * Request an URL to be sent to the email address on record, allowing a password reset
-     * @param dto A PasswordResetRequest dto containing the account's email address
-     * @return Account confirmed
+     * Retrieve the account associated with the current JWT access token
      */
-    requestResetPassword(dto: PasswordResetRequest): Promise<void> {
-        let url_ = this.baseUrl + "/accounts/password/reset";
+    me(): Promise<Account> {
+        let url_ = this.baseUrl + "/accounts/me";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(dto);
-
         let options_: RequestInit = {
-            body: content_,
-            method: "POST",
+            method: "GET",
             headers: {
-                "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         };
 
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.processRequestResetPassword(_response);
+            return this.processMe(_response);
         });
     }
 
-    protected processRequestResetPassword(response: Response): Promise<void> {
+    protected processMe(response: Response): Promise<Account> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Account.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<Account>(null as any);
     }
 
     /**
      * Accept magic URL token and new password for password reset workflow
      * @param dto A PasswordReset DTO
-     * @return Account confirmed
      */
     resetPassword(dto: PasswordReset): Promise<void> {
         let url_ = this.baseUrl + "/accounts/password";
@@ -316,6 +269,46 @@ export class AccountClient extends ApiBase {
         }
         return Promise.resolve<void>(null as any);
     }
+
+    /**
+     * Request an URL to be sent to the email address on record, allowing a password reset
+     * @param dto A PasswordResetRequest dto containing the account's email address
+     */
+    requestResetPassword(dto: PasswordResetRequest): Promise<void> {
+        let url_ = this.baseUrl + "/accounts/password/reset";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(dto);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processRequestResetPassword(_response);
+        });
+    }
+
+    protected processRequestResetPassword(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
 }
 
 export class AdministratorClient extends ApiBase {
@@ -330,10 +323,15 @@ export class AdministratorClient extends ApiBase {
     }
 
     /**
-     * @return Administrator dashboard DTO
+     * Retrieve a specific account by email address
+     * @param emailAddress (optional) The account's email address
      */
-    getDashboard(): Promise<AdministratorDashboard> {
-        let url_ = this.baseUrl + "/administrator/dashboard";
+    getByEmailAddress(emailAddress?: string | undefined): Promise<Account> {
+        let url_ = this.baseUrl + "/administrator/accounts?";
+        if (emailAddress === null)
+            throw new Error("The parameter 'emailAddress' cannot be null.");
+        else if (emailAddress !== undefined)
+            url_ += "emailAddress=" + encodeURIComponent("" + emailAddress) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -346,18 +344,18 @@ export class AdministratorClient extends ApiBase {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.processGetDashboard(_response);
+            return this.processGetByEmailAddress(_response);
         });
     }
 
-    protected processGetDashboard(response: Response): Promise<AdministratorDashboard> {
+    protected processGetByEmailAddress(response: Response): Promise<Account> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = AdministratorDashboard.fromJS(resultData200);
+            result200 = Account.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -365,11 +363,100 @@ export class AdministratorClient extends ApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<AdministratorDashboard>(null as any);
+        return Promise.resolve<Account>(null as any);
     }
 
     /**
-     * @return Array of Claim DTOs
+     * View a list of currently logged-in accounts
+     */
+    authenticated(): Promise<Account[]> {
+        let url_ = this.baseUrl + "/administrator/accounts/authenticated";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processAuthenticated(_response);
+        });
+    }
+
+    protected processAuthenticated(response: Response): Promise<Account[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Account.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Account[]>(null as any);
+    }
+
+    /**
+     * Retrieve a specific account by unique id
+     * @param uniqueID The account's public unique ID
+     */
+    get(uniqueID: string): Promise<Account> {
+        let url_ = this.baseUrl + "/administrator/accounts/{uniqueID}";
+        if (uniqueID === undefined || uniqueID === null)
+            throw new Error("The parameter 'uniqueID' must be defined.");
+        url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGet(_response);
+        });
+    }
+
+    protected processGet(response: Response): Promise<Account> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Account.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Account>(null as any);
+    }
+
+    /**
+     * Retrieve all claims in the system, currently not paged or limited
      */
     getClaims(): Promise<Claim[]> {
         let url_ = this.baseUrl + "/administrator/claims";
@@ -415,7 +502,7 @@ export class AdministratorClient extends ApiBase {
     }
 
     /**
-     * @return Claim DTO
+     * Retrieve a given claim
      */
     getClaim(uniqueID: string): Promise<Claim> {
         let url_ = this.baseUrl + "/administrator/claims/{uniqueID}";
@@ -457,56 +544,7 @@ export class AdministratorClient extends ApiBase {
     }
 
     /**
-     * @return Array of Claim DTOs
-     */
-    getClaimsByCustomer(uniqueID: string): Promise<Claim[]> {
-        let url_ = this.baseUrl + "/administrator/customers/{uniqueID}/claims";
-        if (uniqueID === undefined || uniqueID === null)
-            throw new Error("The parameter 'uniqueID' must be defined.");
-        url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetClaimsByCustomer(_response);
-        });
-    }
-
-    protected processGetClaimsByCustomer(response: Response): Promise<Claim[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(Claim.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Claim[]>(null as any);
-    }
-
-    /**
-     * @return Array of Customer DTOs
+     * Retrieve all customers in the system, currently not paged or limited
      */
     getCustomers(): Promise<Customer[]> {
         let url_ = this.baseUrl + "/administrator/customers";
@@ -553,7 +591,6 @@ export class AdministratorClient extends ApiBase {
 
     /**
      * Create a new customer
-     * @param dto A Customer DTO
      */
     createCustomer(dto: CustomerCreateOrUpdate): Promise<Customer> {
         let url_ = this.baseUrl + "/administrator/customers";
@@ -596,7 +633,7 @@ export class AdministratorClient extends ApiBase {
     }
 
     /**
-     * @return Customer DTO
+     * Retrieve a particular customer in the system
      */
     getCustomer(uniqueID: string): Promise<Customer> {
         let url_ = this.baseUrl + "/administrator/customers/{uniqueID}";
@@ -686,7 +723,95 @@ export class AdministratorClient extends ApiBase {
     }
 
     /**
-     * @return Array of Investigator DTOs
+     * Retrieve all claims by customer, currently not paged or limited
+     */
+    getClaimsByCustomer(uniqueID: string): Promise<Claim[]> {
+        let url_ = this.baseUrl + "/administrator/customers/{uniqueID}/claims";
+        if (uniqueID === undefined || uniqueID === null)
+            throw new Error("The parameter 'uniqueID' must be defined.");
+        url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetClaimsByCustomer(_response);
+        });
+    }
+
+    protected processGetClaimsByCustomer(response: Response): Promise<Claim[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Claim.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Claim[]>(null as any);
+    }
+
+    /**
+     * Retrieve an object containing aggregate values to populate the administrator landing page
+     */
+    getDashboard(): Promise<AdministratorDashboard> {
+        let url_ = this.baseUrl + "/administrator/dashboard";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetDashboard(_response);
+        });
+    }
+
+    protected processGetDashboard(response: Response): Promise<AdministratorDashboard> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AdministratorDashboard.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AdministratorDashboard>(null as any);
+    }
+
+    /**
+     * Retrieve all investigators in the system, currently not paged or limited
      */
     getInvestigators(): Promise<Investigator[]> {
         let url_ = this.baseUrl + "/administrator/investigators";
@@ -776,7 +901,7 @@ export class AdministratorClient extends ApiBase {
     }
 
     /**
-     * @return Investigator DTO
+     * Retrieve a particular investigator in the system
      */
     getInvestigator(uniqueID: string): Promise<Investigator> {
         let url_ = this.baseUrl + "/administrator/investigators/{uniqueID}";
@@ -866,144 +991,7 @@ export class AdministratorClient extends ApiBase {
     }
 
     /**
-     * Retrieve a specific account by unique id
-     * @param uniqueID The account's public unique ID
-     * @return Account retrieved
-     */
-    get(uniqueID: string): Promise<Account> {
-        let url_ = this.baseUrl + "/administrator/accounts/{uniqueID}";
-        if (uniqueID === undefined || uniqueID === null)
-            throw new Error("The parameter 'uniqueID' must be defined.");
-        url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGet(_response);
-        });
-    }
-
-    protected processGet(response: Response): Promise<Account> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Account.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Account>(null as any);
-    }
-
-    /**
-     * Retrieve a specific account by email address
-     * @param emailAddress (optional) The account's email address
-     * @return Account retrieved
-     */
-    getByEmailAddress(emailAddress?: string | undefined): Promise<Account> {
-        let url_ = this.baseUrl + "/administrator/accounts?";
-        if (emailAddress === null)
-            throw new Error("The parameter 'emailAddress' cannot be null.");
-        else if (emailAddress !== undefined)
-            url_ += "emailAddress=" + encodeURIComponent("" + emailAddress) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetByEmailAddress(_response);
-        });
-    }
-
-    protected processGetByEmailAddress(response: Response): Promise<Account> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Account.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Account>(null as any);
-    }
-
-    /**
-     * View a list of currently logged-in accounts
-     * @return Account list
-     */
-    authenticated(): Promise<Account[]> {
-        let url_ = this.baseUrl + "/administrator/accounts/authenticated";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processAuthenticated(_response);
-        });
-    }
-
-    protected processAuthenticated(response: Response): Promise<Account[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(Account.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<Account[]>(null as any);
-    }
-
-    /**
      * Retrieve all scheduled jobs
-     * @return List of all jobs
      */
     getAllJobs(): Promise<Job[]> {
         let url_ = this.baseUrl + "/administrator/jobs";
@@ -1156,7 +1144,7 @@ export class CustomerClient extends ApiBase {
     }
 
     /**
-     * @return Array of Claim DTOs
+     * Retrieve all claims by customer, currently not paged or limited
      */
     getClaims(): Promise<Claim[]> {
         let url_ = this.baseUrl + "/customer/claims";
@@ -1204,7 +1192,6 @@ export class CustomerClient extends ApiBase {
     /**
      * Create a new customer, via the self-service registration workflow
      * @param dto A CustomerRegistration DTO
-     * @return Account retrieved
      */
     register(dto: CustomerRegistration): Promise<Customer> {
         let url_ = this.baseUrl + "/customer/registration";
@@ -1256,6 +1243,41 @@ export class StatusClient extends ApiBase {
         super();
         this.http = http ? http : window as any;
         this.baseUrl = baseUrl ?? "http://localhost:50000";
+    }
+
+    /**
+     * Generate an unhandled exception
+     */
+    clearCache(): Promise<void> {
+        let url_ = this.baseUrl + "/status/cache";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processClearCache(_response);
+        });
+    }
+
+    protected processClearCache(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
     }
 
     /**
@@ -1371,41 +1393,6 @@ export class StatusClient extends ApiBase {
             });
         }
         return Promise.resolve<boolean>(null as any);
-    }
-
-    /**
-     * Generate an unhandled exception
-     */
-    clearCache(): Promise<void> {
-        let url_ = this.baseUrl + "/status/cache";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "DELETE",
-            headers: {
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processClearCache(_response);
-        });
-    }
-
-    protected processClearCache(response: Response): Promise<void> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            return;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<void>(null as any);
     }
 }
 
@@ -1538,6 +1525,43 @@ export interface IAccountAuthentication extends IBase {
     password: string;
 }
 
+export class GoogleAccountAuthentication extends Base implements IGoogleAccountAuthentication {
+    emailAddress!: string;
+    googleJwt!: string;
+
+    constructor(data?: IGoogleAccountAuthentication) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.emailAddress = _data["emailAddress"];
+            this.googleJwt = _data["googleJwt"];
+        }
+    }
+
+    static fromJS(data: any): GoogleAccountAuthentication {
+        data = typeof data === 'object' ? data : {};
+        let result = new GoogleAccountAuthentication();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["emailAddress"] = this.emailAddress;
+        data["googleJwt"] = this.googleJwt;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IGoogleAccountAuthentication extends IBase {
+    emailAddress: string;
+    googleJwt: string;
+}
+
 export class AccountAuthenticationRefresh extends Base implements IAccountAuthenticationRefresh {
     emailAddress!: string;
     refreshToken!: string;
@@ -1575,11 +1599,11 @@ export interface IAccountAuthenticationRefresh extends IBase {
     refreshToken: string;
 }
 
-export class GoogleAccountAuthentication extends Base implements IGoogleAccountAuthentication {
+export class AccountConfirmation extends Base implements IAccountConfirmation {
     emailAddress!: string;
-    googleJwt!: string;
+    token!: string;
 
-    constructor(data?: IGoogleAccountAuthentication) {
+    constructor(data?: IAccountConfirmation) {
         super(data);
     }
 
@@ -1587,13 +1611,13 @@ export class GoogleAccountAuthentication extends Base implements IGoogleAccountA
         super.init(_data);
         if (_data) {
             this.emailAddress = _data["emailAddress"];
-            this.googleJwt = _data["googleJwt"];
+            this.token = _data["token"];
         }
     }
 
-    static fromJS(data: any): GoogleAccountAuthentication {
+    static fromJS(data: any): AccountConfirmation {
         data = typeof data === 'object' ? data : {};
-        let result = new GoogleAccountAuthentication();
+        let result = new AccountConfirmation();
         result.init(data);
         return result;
     }
@@ -1601,15 +1625,15 @@ export class GoogleAccountAuthentication extends Base implements IGoogleAccountA
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["emailAddress"] = this.emailAddress;
-        data["googleJwt"] = this.googleJwt;
+        data["token"] = this.token;
         super.toJSON(data);
         return data;
     }
 }
 
-export interface IGoogleAccountAuthentication extends IBase {
+export interface IAccountConfirmation extends IBase {
     emailAddress: string;
-    googleJwt: string;
+    token: string;
 }
 
 export class Account extends Base implements IAccount {
@@ -1686,79 +1710,6 @@ export enum IdentityProvider {
     Google = "Google",
 }
 
-export class AccountConfirmation extends Base implements IAccountConfirmation {
-    emailAddress!: string;
-    token!: string;
-
-    constructor(data?: IAccountConfirmation) {
-        super(data);
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.emailAddress = _data["emailAddress"];
-            this.token = _data["token"];
-        }
-    }
-
-    static fromJS(data: any): AccountConfirmation {
-        data = typeof data === 'object' ? data : {};
-        let result = new AccountConfirmation();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["emailAddress"] = this.emailAddress;
-        data["token"] = this.token;
-        super.toJSON(data);
-        return data;
-    }
-}
-
-export interface IAccountConfirmation extends IBase {
-    emailAddress: string;
-    token: string;
-}
-
-export class PasswordResetRequest implements IPasswordResetRequest {
-    emailAddress!: string;
-
-    constructor(data?: IPasswordResetRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.emailAddress = _data["emailAddress"];
-        }
-    }
-
-    static fromJS(data: any): PasswordResetRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new PasswordResetRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["emailAddress"] = this.emailAddress;
-        return data;
-    }
-}
-
-export interface IPasswordResetRequest {
-    emailAddress: string;
-}
-
 export class PasswordReset extends Base implements IPasswordReset {
     emailAddress!: string;
     newPassword!: string;
@@ -1800,156 +1751,10 @@ export interface IPasswordReset extends IBase {
     token: string;
 }
 
-export class AdministratorDashboard extends Base implements IAdministratorDashboard {
-    uniqueSignins!: DashboardAggregate;
-    claimsValueUnderInvestigation!: DashboardAggregate;
-    newOrders!: DashboardAggregate;
-    monthlyRevenue!: DashboardAggregate;
-    claimsByState!: { [key: string]: number; };
-    claimsByMonth!: { [key: string]: ClaimStatusValue[]; };
+export class PasswordResetRequest implements IPasswordResetRequest {
+    emailAddress!: string;
 
-    constructor(data?: IAdministratorDashboard) {
-        super(data);
-        if (data) {
-            this.uniqueSignins = data.uniqueSignins && !(<any>data.uniqueSignins).toJSON ? new DashboardAggregate(data.uniqueSignins) : <DashboardAggregate>this.uniqueSignins;
-            this.claimsValueUnderInvestigation = data.claimsValueUnderInvestigation && !(<any>data.claimsValueUnderInvestigation).toJSON ? new DashboardAggregate(data.claimsValueUnderInvestigation) : <DashboardAggregate>this.claimsValueUnderInvestigation;
-            this.newOrders = data.newOrders && !(<any>data.newOrders).toJSON ? new DashboardAggregate(data.newOrders) : <DashboardAggregate>this.newOrders;
-            this.monthlyRevenue = data.monthlyRevenue && !(<any>data.monthlyRevenue).toJSON ? new DashboardAggregate(data.monthlyRevenue) : <DashboardAggregate>this.monthlyRevenue;
-        }
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.uniqueSignins = _data["uniqueSignins"] ? DashboardAggregate.fromJS(_data["uniqueSignins"]) : <any>undefined;
-            this.claimsValueUnderInvestigation = _data["claimsValueUnderInvestigation"] ? DashboardAggregate.fromJS(_data["claimsValueUnderInvestigation"]) : <any>undefined;
-            this.newOrders = _data["newOrders"] ? DashboardAggregate.fromJS(_data["newOrders"]) : <any>undefined;
-            this.monthlyRevenue = _data["monthlyRevenue"] ? DashboardAggregate.fromJS(_data["monthlyRevenue"]) : <any>undefined;
-            if (_data["claimsByState"]) {
-                this.claimsByState = {} as any;
-                for (let key in _data["claimsByState"]) {
-                    if (_data["claimsByState"].hasOwnProperty(key))
-                        (<any>this.claimsByState)![key] = _data["claimsByState"][key];
-                }
-            }
-            if (_data["claimsByMonth"]) {
-                this.claimsByMonth = {} as any;
-                for (let key in _data["claimsByMonth"]) {
-                    if (_data["claimsByMonth"].hasOwnProperty(key))
-                        (<any>this.claimsByMonth)![key] = _data["claimsByMonth"][key] ? _data["claimsByMonth"][key].map((i: any) => ClaimStatusValue.fromJS(i)) : [];
-                }
-            }
-        }
-    }
-
-    static fromJS(data: any): AdministratorDashboard {
-        data = typeof data === 'object' ? data : {};
-        let result = new AdministratorDashboard();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["uniqueSignins"] = this.uniqueSignins ? this.uniqueSignins.toJSON() : <any>undefined;
-        data["claimsValueUnderInvestigation"] = this.claimsValueUnderInvestigation ? this.claimsValueUnderInvestigation.toJSON() : <any>undefined;
-        data["newOrders"] = this.newOrders ? this.newOrders.toJSON() : <any>undefined;
-        data["monthlyRevenue"] = this.monthlyRevenue ? this.monthlyRevenue.toJSON() : <any>undefined;
-        if (this.claimsByState) {
-            data["claimsByState"] = {};
-            for (let key in this.claimsByState) {
-                if (this.claimsByState.hasOwnProperty(key))
-                    (<any>data["claimsByState"])[key] = (<any>this.claimsByState)[key];
-            }
-        }
-        if (this.claimsByMonth) {
-            data["claimsByMonth"] = {};
-            for (let key in this.claimsByMonth) {
-                if (this.claimsByMonth.hasOwnProperty(key))
-                    (<any>data["claimsByMonth"])[key] = (<any>this.claimsByMonth)[key];
-            }
-        }
-        super.toJSON(data);
-        return data;
-    }
-}
-
-export interface IAdministratorDashboard extends IBase {
-    uniqueSignins: IDashboardAggregate;
-    claimsValueUnderInvestigation: IDashboardAggregate;
-    newOrders: IDashboardAggregate;
-    monthlyRevenue: IDashboardAggregate;
-    claimsByState: { [key: string]: number; };
-    claimsByMonth: { [key: string]: ClaimStatusValue[]; };
-}
-
-export class DashboardAggregate extends Base implements IDashboardAggregate {
-    currentValue!: number;
-    previousValue!: number;
-    valueType!: Type;
-    comparisonPeriod!: Period;
-    percentChange!: number;
-
-    constructor(data?: IDashboardAggregate) {
-        super(data);
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.currentValue = _data["currentValue"];
-            this.previousValue = _data["previousValue"];
-            this.valueType = _data["valueType"];
-            this.comparisonPeriod = _data["comparisonPeriod"];
-            this.percentChange = _data["percentChange"];
-        }
-    }
-
-    static fromJS(data: any): DashboardAggregate {
-        data = typeof data === 'object' ? data : {};
-        let result = new DashboardAggregate();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["currentValue"] = this.currentValue;
-        data["previousValue"] = this.previousValue;
-        data["valueType"] = this.valueType;
-        data["comparisonPeriod"] = this.comparisonPeriod;
-        data["percentChange"] = this.percentChange;
-        super.toJSON(data);
-        return data;
-    }
-}
-
-export interface IDashboardAggregate extends IBase {
-    currentValue: number;
-    previousValue: number;
-    valueType: Type;
-    comparisonPeriod: Period;
-    percentChange: number;
-}
-
-export enum Type {
-    Integer = "Integer",
-    Money = "Money",
-}
-
-export enum Period {
-    Hour = "Hour",
-    Day = "Day",
-    Week = "Week",
-    Month = "Month",
-    Year = "Year",
-}
-
-export class ClaimStatusValue implements IClaimStatusValue {
-    status!: ClaimStatus;
-    value!: number;
-
-    constructor(data?: IClaimStatusValue) {
+    constructor(data?: IPasswordResetRequest) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1960,37 +1765,26 @@ export class ClaimStatusValue implements IClaimStatusValue {
 
     init(_data?: any) {
         if (_data) {
-            this.status = _data["status"];
-            this.value = _data["value"];
+            this.emailAddress = _data["emailAddress"];
         }
     }
 
-    static fromJS(data: any): ClaimStatusValue {
+    static fromJS(data: any): PasswordResetRequest {
         data = typeof data === 'object' ? data : {};
-        let result = new ClaimStatusValue();
+        let result = new PasswordResetRequest();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["status"] = this.status;
-        data["value"] = this.value;
+        data["emailAddress"] = this.emailAddress;
         return data;
     }
 }
 
-export interface IClaimStatusValue {
-    status: ClaimStatus;
-    value: number;
-}
-
-export enum ClaimStatus {
-    Unassigned = "Unassigned",
-    Investigating = "Investigating",
-    Adjudicated = "Adjudicated",
-    Resolved = "Resolved",
-    Tombstoned = "Tombstoned",
+export interface IPasswordResetRequest {
+    emailAddress: string;
 }
 
 export class Claim implements IClaim {
@@ -2119,6 +1913,14 @@ export enum ClaimType {
     Mold = "Mold",
     Hail = "Hail",
     Other = "Other",
+}
+
+export enum ClaimStatus {
+    Unassigned = "Unassigned",
+    Investigating = "Investigating",
+    Adjudicated = "Adjudicated",
+    Resolved = "Resolved",
+    Tombstoned = "Tombstoned",
 }
 
 export enum ClaimDisposition {
@@ -2615,6 +2417,191 @@ export interface ICustomerCreateOrUpdate extends IBase {
     postalCode: string;
     emailAddress: string;
     telephone: string;
+}
+
+export class AdministratorDashboard extends Base implements IAdministratorDashboard {
+    uniqueSignins!: DashboardAggregate;
+    claimsValueUnderInvestigation!: DashboardAggregate;
+    newOrders!: DashboardAggregate;
+    monthlyRevenue!: DashboardAggregate;
+    claimsByState!: { [key: string]: number; };
+    claimsByMonth!: { [key: string]: ClaimStatusValue[]; };
+
+    constructor(data?: IAdministratorDashboard) {
+        super(data);
+        if (data) {
+            this.uniqueSignins = data.uniqueSignins && !(<any>data.uniqueSignins).toJSON ? new DashboardAggregate(data.uniqueSignins) : <DashboardAggregate>this.uniqueSignins;
+            this.claimsValueUnderInvestigation = data.claimsValueUnderInvestigation && !(<any>data.claimsValueUnderInvestigation).toJSON ? new DashboardAggregate(data.claimsValueUnderInvestigation) : <DashboardAggregate>this.claimsValueUnderInvestigation;
+            this.newOrders = data.newOrders && !(<any>data.newOrders).toJSON ? new DashboardAggregate(data.newOrders) : <DashboardAggregate>this.newOrders;
+            this.monthlyRevenue = data.monthlyRevenue && !(<any>data.monthlyRevenue).toJSON ? new DashboardAggregate(data.monthlyRevenue) : <DashboardAggregate>this.monthlyRevenue;
+        }
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.uniqueSignins = _data["uniqueSignins"] ? DashboardAggregate.fromJS(_data["uniqueSignins"]) : <any>undefined;
+            this.claimsValueUnderInvestigation = _data["claimsValueUnderInvestigation"] ? DashboardAggregate.fromJS(_data["claimsValueUnderInvestigation"]) : <any>undefined;
+            this.newOrders = _data["newOrders"] ? DashboardAggregate.fromJS(_data["newOrders"]) : <any>undefined;
+            this.monthlyRevenue = _data["monthlyRevenue"] ? DashboardAggregate.fromJS(_data["monthlyRevenue"]) : <any>undefined;
+            if (_data["claimsByState"]) {
+                this.claimsByState = {} as any;
+                for (let key in _data["claimsByState"]) {
+                    if (_data["claimsByState"].hasOwnProperty(key))
+                        (<any>this.claimsByState)![key] = _data["claimsByState"][key];
+                }
+            }
+            if (_data["claimsByMonth"]) {
+                this.claimsByMonth = {} as any;
+                for (let key in _data["claimsByMonth"]) {
+                    if (_data["claimsByMonth"].hasOwnProperty(key))
+                        (<any>this.claimsByMonth)![key] = _data["claimsByMonth"][key] ? _data["claimsByMonth"][key].map((i: any) => ClaimStatusValue.fromJS(i)) : [];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): AdministratorDashboard {
+        data = typeof data === 'object' ? data : {};
+        let result = new AdministratorDashboard();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uniqueSignins"] = this.uniqueSignins ? this.uniqueSignins.toJSON() : <any>undefined;
+        data["claimsValueUnderInvestigation"] = this.claimsValueUnderInvestigation ? this.claimsValueUnderInvestigation.toJSON() : <any>undefined;
+        data["newOrders"] = this.newOrders ? this.newOrders.toJSON() : <any>undefined;
+        data["monthlyRevenue"] = this.monthlyRevenue ? this.monthlyRevenue.toJSON() : <any>undefined;
+        if (this.claimsByState) {
+            data["claimsByState"] = {};
+            for (let key in this.claimsByState) {
+                if (this.claimsByState.hasOwnProperty(key))
+                    (<any>data["claimsByState"])[key] = (<any>this.claimsByState)[key];
+            }
+        }
+        if (this.claimsByMonth) {
+            data["claimsByMonth"] = {};
+            for (let key in this.claimsByMonth) {
+                if (this.claimsByMonth.hasOwnProperty(key))
+                    (<any>data["claimsByMonth"])[key] = (<any>this.claimsByMonth)[key];
+            }
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IAdministratorDashboard extends IBase {
+    uniqueSignins: IDashboardAggregate;
+    claimsValueUnderInvestigation: IDashboardAggregate;
+    newOrders: IDashboardAggregate;
+    monthlyRevenue: IDashboardAggregate;
+    claimsByState: { [key: string]: number; };
+    claimsByMonth: { [key: string]: ClaimStatusValue[]; };
+}
+
+export class DashboardAggregate extends Base implements IDashboardAggregate {
+    currentValue!: number;
+    previousValue!: number;
+    valueType!: Type;
+    comparisonPeriod!: Period;
+    percentChange!: number;
+
+    constructor(data?: IDashboardAggregate) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.currentValue = _data["currentValue"];
+            this.previousValue = _data["previousValue"];
+            this.valueType = _data["valueType"];
+            this.comparisonPeriod = _data["comparisonPeriod"];
+            this.percentChange = _data["percentChange"];
+        }
+    }
+
+    static fromJS(data: any): DashboardAggregate {
+        data = typeof data === 'object' ? data : {};
+        let result = new DashboardAggregate();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["currentValue"] = this.currentValue;
+        data["previousValue"] = this.previousValue;
+        data["valueType"] = this.valueType;
+        data["comparisonPeriod"] = this.comparisonPeriod;
+        data["percentChange"] = this.percentChange;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IDashboardAggregate extends IBase {
+    currentValue: number;
+    previousValue: number;
+    valueType: Type;
+    comparisonPeriod: Period;
+    percentChange: number;
+}
+
+export enum Type {
+    Integer = "Integer",
+    Money = "Money",
+}
+
+export enum Period {
+    Hour = "Hour",
+    Day = "Day",
+    Week = "Week",
+    Month = "Month",
+    Year = "Year",
+}
+
+export class ClaimStatusValue implements IClaimStatusValue {
+    status!: ClaimStatus;
+    value!: number;
+
+    constructor(data?: IClaimStatusValue) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.status = _data["status"];
+            this.value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): ClaimStatusValue {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClaimStatusValue();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["status"] = this.status;
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface IClaimStatusValue {
+    status: ClaimStatus;
+    value: number;
 }
 
 export class InvestigatorCreateOrUpdate extends Base implements IInvestigatorCreateOrUpdate {
