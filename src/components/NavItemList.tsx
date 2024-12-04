@@ -16,12 +16,10 @@ const NavItemList = ({ role }: INavItemList) => {
           <NavItem
             label="Claims"
             icon="FolderOpen"
-            iconStyle="regular"
             href="/administrator/claims"></NavItem>
           <NavItem
             label="Investigators"
             icon="Clipboard"
-            iconStyle="regular"
             href="/administrator/investigators"></NavItem>
           <NavItem
             label="Customers"

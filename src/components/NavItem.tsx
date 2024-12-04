@@ -9,7 +9,7 @@ interface INavItem {
   href?: string
 }
 
-const NavItem = ({ label, icon, iconStyle = '', href = '' }: INavItem) => {
+const NavItem = ({ label, icon, href = '' }: INavItem) => {
   const [isActive, setIsActive] = useState(false)
 
   const { pathname } = useLocation()
@@ -23,7 +23,7 @@ const NavItem = ({ label, icon, iconStyle = '', href = '' }: INavItem) => {
       <Link
         className={`nav-item-link${isActive ? ' active' : ''}${href === '' ? ' disabled-links' : ''}`}
         to={href}>
-        <Icon name={icon} style={iconStyle} />
+        <Icon name={icon} />
         <span className="nav-item-label">{label}</span>
       </Link>
     </li>

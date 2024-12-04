@@ -1,4 +1,4 @@
-import { lowerCase, startCase, upperFirst } from 'lodash'
+import { lowerCase, upperFirst } from 'lodash'
 
 interface IPropertyTag {
   name?: string

@@ -1767,7 +1767,6 @@ form.form-error .input-container {
   .initials {
     width: 100%;
     height: 100%;
-    border-radius: 40px;
     background-color: var(--color-primary);
     color: var(--color-white);
     text-align: center;
@@ -1775,6 +1774,7 @@ form.form-error .input-container {
     font-size: 18px;
     font-weight: 600;
     position: relative;
+    border-radius: 42px;
     line-height: 19px;
   }
 
@@ -1783,6 +1783,19 @@ form.form-error .input-container {
     height: 100%;
     border-radius: 42px;
     border: solid 1px var(--color-light-line);
+  }
+
+  &.extra-large {
+    width: 140px;
+    height: 140px;
+
+    .initials {
+      border-radius: 140px;
+    }
+
+    img {
+      border-radius: 140px;
+    }
   }
 }
 
@@ -1954,9 +1967,15 @@ form.form-error .input-container {
   min-height: 130px;
   margin-bottom: 30px;
 
-  .cols {
+  .cols-2 {
     padding-left: 20px;
     column-count: 2;
+    column-gap: 5px;
+  }
+
+  .cols-3 {
+    padding-left: 20px;
+    column-count: 3;
     column-gap: 5px;
   }
 
@@ -1974,7 +1993,7 @@ form.form-error .input-container {
       padding-left: 0;
       padding-top: 12px;
       padding-bottom: 15px;
-      display: inline-block;
+      display: block;
     }
   }
 
@@ -1983,6 +2002,7 @@ form.form-error .input-container {
     font-size: 14px;
     font-weight: 700;
     padding-bottom: 12px;
+    break-inside: avoid-column;
 
     div {
       font-size: 15px;
@@ -2068,6 +2088,20 @@ form.form-error .input-container {
       }
     }
   }
+}
+
+.claim-detail-avatar {
+  display: inline-block;
+  vertical-align: top;
+  padding-left: 15px;
+  padding-bottom: 10px;
+}
+
+.claim-detail-avatar-detail {
+  display: inline-block;
+  vertical-align: top;
+  width: calc(100% - 250px);
+  margin-left: 20px;
 }
 
 [data-theme='dark'] {

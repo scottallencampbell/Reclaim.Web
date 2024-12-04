@@ -5,10 +5,11 @@ interface IAvatar {
   id?: string
   url: string
   name: string
+  className?: string
   onClick?: () => void
 }
 
-const Avatar = ({ id, url, name, onClick }: IAvatar) => {
+const Avatar = ({ id, url, name, className, onClick }: IAvatar) => {
   const [initials, setInitials] = useState('??')
 
   useEffect(() => {
@@ -26,7 +27,7 @@ const Avatar = ({ id, url, name, onClick }: IAvatar) => {
   }, [name])
 
   return (
-    <div id={id} className="avatar" onClick={onClick}>
+    <div id={id} className={`avatar ${className}`} onClick={onClick}>
       {url.length === 0 ? (
         name.length === 0 ? (
           <div className="name">

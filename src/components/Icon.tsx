@@ -7,25 +7,32 @@ library.add(fas, far)
 interface IIcon {
   name: any
   className?: string
-  style?: string
   toolTip?: string
   onClick?: any
   children?: any
 }
 
-const Icon = ({
-  name,
-  className = '',
-  style = '',
-  toolTip,
-  onClick,
-  children,
-}: IIcon) => {
+const notSolidIcons = [
+  'Claims',
+  'Clipboard',
+  'SquarePlus',
+  'FileWord',
+  'FilePdf',
+  'FileImage',
+  'FileExcel',
+  'FileVideo',
+  'FileImage',
+  'Bell',
+]
+
+const Icon = ({ name, className = '', toolTip, onClick, children }: IIcon) => {
+  const isNotSolid = notSolidIcons.includes(name)
+
   return (
     <span className={`icon ${className} icon-${name}`}>
       <FontAwesomeIcon
         title={toolTip}
-        icon={style === 'regular' ? far['fa' + name] : fas['fa' + name]}
+        icon={isNotSolid ? far['fa' + name] : fas['fa' + name]}
         onClick={onClick}
       />
       {children}
