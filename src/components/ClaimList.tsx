@@ -1,13 +1,13 @@
-import * as Api from '@/api/api'
+import { Claim } from '@/api/api'
 import { useMemo } from 'react'
 import Table from './Table'
 
 interface IClaimList {
-  claims: Api.Claim[] | undefined
-  handleRowClick: (clickedClaim: Api.Claim) => void
+  claims: Claim[] | undefined
+  handleRowClick: (clickedClaim: Claim) => void
 }
 
-const Claims = ({ claims, handleRowClick }: IClaimList) => {
+const ClaimList = ({ claims, handleRowClick }: IClaimList) => {
   const columns = useMemo(
     () => [
       {
@@ -63,4 +63,4 @@ const Claims = ({ claims, handleRowClick }: IClaimList) => {
   )
 }
 
-export default Claims
+export default ClaimList

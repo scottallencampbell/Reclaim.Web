@@ -41,6 +41,10 @@ const NavItemList = ({ role }: INavItemList) => {
         <ul className="nav flex-column">
           <NavItem label="Dashboard" icon="Home" href="/investigator/dashboard"></NavItem>
           <NavItem label="Claims" icon="FolderOpen" href="/investigator/claims"></NavItem>
+          <NavItem
+            label="Customers"
+            icon="University"
+            href="/investigator/customers"></NavItem>
         </ul>
       )
 
@@ -49,6 +53,10 @@ const NavItemList = ({ role }: INavItemList) => {
         <ul className="nav flex-column">
           <NavItem label="Dashboard" icon="Home" href="/customer/dashboard"></NavItem>
           <NavItem label="Claims" icon="FolderOpen" href="/customer/claims"></NavItem>
+          <NavItem
+            label="Investigators"
+            icon="Clipboard"
+            href="/customer/investigators"></NavItem>
         </ul>
       )
 

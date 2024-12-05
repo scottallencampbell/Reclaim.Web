@@ -1122,6 +1122,16 @@ form.form-error .input-container {
   }
 
   table {
+    &.clickable {
+      tr:hover td {
+        background-color: var(--color-highlight);
+      }
+
+      tbody tr {
+        cursor: pointer;
+      }
+    }
+
     width: 100%;
 
     tr {
@@ -1132,10 +1142,6 @@ form.form-error .input-container {
 
     thead tr {
       height: 40px;
-    }
-
-    tr:hover td {
-      background-color: var(--color-highlight);
     }
 
     td {
@@ -1214,10 +1220,6 @@ form.form-error .input-container {
 
     tbody tr:nth-child(even) {
       background-color: var(--color-background);
-    }
-
-    tbody tr {
-      cursor: pointer;
     }
 
     .thumbnail {

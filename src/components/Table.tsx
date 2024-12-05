@@ -368,7 +368,7 @@ const Table = ({
               {children}
             </div>
           </div>
-          <table id={id}>
+          <table id={id} className={onRowClick ? 'clickable' : ''}>
             <thead>
               <tr>
                 {columns.map(({ label, accessor, sortable, type }) => {
