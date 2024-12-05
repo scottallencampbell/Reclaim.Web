@@ -224,7 +224,7 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
                         <span className="name">{niceName}</span>
                       )}
                       <span className="role">
-                        <span className={`role-name status ${role}`}>{role}</span>
+                        <span className={`role-name property-tag ${role}`}>{role}</span>
                       </span>
                       <hr></hr>
                       <div>

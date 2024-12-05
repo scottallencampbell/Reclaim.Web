@@ -40,7 +40,7 @@ const Table = ({
 }: ITable) => {
   const [sortColumn, setSortColumn] = useState(initialSortColumn)
   const [sortOrder, setSortOrder] = useState(initialSortOrder)
-  const [data, setData] = useState<any>([])
+  const [data, setData] = useState<any[] | undefined>(undefined)
   const [isHoverable, setIsHoverable] = useState(true)
   const [searchTerms, setSearchTerms] = useState('')
 
@@ -63,7 +63,7 @@ const Table = ({
     const column = columns.find((x) => x.accessor === sortColumn)
     const sorted = sort(sourceData, sortColumn, sortOrder, column.type)
 
-    setData(sorted)
+    setData(sorted!)
   }, [sourceData, columns, sortColumn, sortOrder])
 
   const unselectAllRows = () => {
@@ -105,6 +105,10 @@ const Table = ({
   }
 
   const handleSearchTermsChange = (terms: string) => {
+    if (data === undefined) {
+      return
+    }
+
     setSearchTerms(terms)
 
     if (onSearchTermsChange != null) {
@@ -151,9 +155,14 @@ const Table = ({
   }
 
   const handleExport = (name: string, ignoredFields: string[] | undefined) => {
+    if (data === undefined) {
+      return
+    }
+
     if (!ignoredFields) {
       ignoredFields = []
     }
+
     ignoredFields.push('avatarUrl', 'uniqueID')
     const flattenedData = flatten(data, ignoredFields)
     exportFile(name, flattenedData)
@@ -332,13 +341,14 @@ const Table = ({
     return [value, obj]
   }
 
-  return (
+  return data === undefined ? (
+    <></>
+  ) : (
     <>
-      {sourceData?.length === 0 ? (
+      {data.length === 0 ? (
         <div className="no-data">No {type} were found</div>
       ) : (
-        <div
-          className={`table${isHoverable ? ' is-hoverable' : ''} ${sourceData === undefined ? 'element-loading' : 'element-loaded'}`}>
+        <div className={`table${isHoverable ? ' is-hoverable' : ''}`}>
           <div className="table-controls">
             <div className="search-bar">
               <div className="search-bar-buttons">

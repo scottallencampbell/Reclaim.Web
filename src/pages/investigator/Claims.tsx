@@ -1,20 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Claim, AdministratorClient } from 'api/api'
+import { Claim, InvestigatorClient } from 'api/api'
 import { useNavigate } from 'react-router-dom'
 import ClaimsList from 'components/ClaimList'
 
 const Claims = () => {
   const apiClient = useMemo(
-    () => new AdministratorClient(process.env.REACT_APP_API_URL),
+    () => new InvestigatorClient(process.env.REACT_APP_API_URL),
     []
   )
 
-  const [claims, setClaims] = useState<Claim[]>()
+  const [claims, setClaims] = useState<Claim[] | undefined>(undefined)
 
   const navigate = useNavigate()
 
   const handleRowClick = (clickedClaim: Claim) => {
-    navigate('/administrator/claims/' + clickedClaim.uniqueID)
+    navigate('/investigator/claims/' + clickedClaim.uniqueID)
   }
 
   useEffect(() => {

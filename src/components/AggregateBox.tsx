@@ -1,5 +1,6 @@
 import { DashboardAggregate } from 'api/api'
 import Icon from './Icon'
+import HTMLReactParser from 'html-react-parser'
 
 interface IAggregateBox {
   title: string
@@ -12,8 +13,10 @@ const AggregateBox = ({ title, data }: IAggregateBox) => {
   const formatNumber = (value: number, type: string) => {
     if (type === 'Money') {
       return `$${value.toFixed(2).replace(numberTriplets, ',')}`
-    } else if (type === 'integer') {
+    } else if (type === 'Integer') {
       return `${value.toFixed(0).replace(numberTriplets, ',')}`
+    } else if (type === 'Percentage') {
+      return `${value.toFixed(1).replace(numberTriplets, ',')}%`
     } else {
       return value?.toString() ?? ''
     }
@@ -25,16 +28,18 @@ const AggregateBox = ({ title, data }: IAggregateBox) => {
         <span className="header">{title}</span>
         <p>{formatNumber(data?.currentValue, data.valueType)}</p>
         <p>
-          {data.percentChange ? (
-            data.percentChange >= 0 ? (
-              <Icon name="ArrowTrendUp" />
-            ) : (
-              <Icon name="ArrowTrendDown" />
-            )
-          ) : null}
+          {data.percentChange >= 0 ? (
+            <Icon name="ArrowTrendUp" />
+          ) : (
+            <Icon name="ArrowTrendDown" />
+          )}
           <>
             <span className={(data?.percentChange ?? 0) >= 0 ? 'trendUp' : 'trendDown'}>
-              {data?.percentChange?.toString()}%
+              {HTMLReactParser(
+                data?.percentChange?.toFixed(1).toString() ??
+                  '<span className="infinity">&infin;</span>'
+              )}
+              %
             </span>
             {' over previous '}
             {data?.comparisonPeriod?.toLowerCase()}

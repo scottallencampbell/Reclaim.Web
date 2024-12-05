@@ -12,15 +12,19 @@ import ThankYou from './public/ThankYou'
 
 import AdministratorDashboard from './administrator/Dashboard'
 import AdministratorClaims from './administrator/Claims'
-import AdministratorClaimDetail from './administrator/ClaimDetail'
+import AdministratorClaim from './administrator/Claim'
 import AdministratorInvestigators from './administrator/Investigators'
 import AdministratorCustomers from './administrator/Customers'
 import AdministratorSignIns from './administrator/Signins'
 import AdministratorJobs from './administrator/Jobs'
 
 import CustomerDashboard from './customer/Dashboard'
+import CustomerClaims from './customer/Claims'
+import CustomerClaim from './customer/Claim'
 
 import InvestigatorDashboard from './investigator/Dashboard'
+import InvestigatorClaims from './investigator/Claims'
+import InvestigatorClaim from './investigator/Claim'
 
 import Privacy from './public/Privacy'
 import { AuthenticatedLayout } from '../layouts/AuthenticatedLayout'
@@ -40,16 +44,20 @@ const App = () => {
 
         <Route path="customer" element={<AuthenticatedLayout />}>
           <Route index path="dashboard" element={<CustomerDashboard />}></Route>
+          <Route path="claims" element={<CustomerClaims />}></Route>
+          <Route path="claims/:uniqueID" element={<CustomerClaim />}></Route>
         </Route>
 
         <Route path="investigator" element={<AuthenticatedLayout />}>
           <Route index path="dashboard" element={<InvestigatorDashboard />}></Route>
+          <Route path="claims" element={<InvestigatorClaims />}></Route>
+          <Route path="claims/:uniqueID" element={<InvestigatorClaim />}></Route>
         </Route>
 
         <Route path="administrator" element={<AuthenticatedLayout />}>
           <Route index path="dashboard" element={<AdministratorDashboard />}></Route>
           <Route path="claims" element={<AdministratorClaims />}></Route>
-          <Route path="claims/:uniqueID" element={<AdministratorClaimDetail />}></Route>
+          <Route path="claims/:uniqueID" element={<AdministratorClaim />}></Route>
           <Route path="investigators" element={<AdministratorInvestigators />}></Route>
           <Route path="customers" element={<AdministratorCustomers />}></Route>
           <Route path="signins" element={<AdministratorSignIns />}></Route>

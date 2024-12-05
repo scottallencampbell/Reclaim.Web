@@ -1190,6 +1190,87 @@ export class CustomerClient extends ApiBase {
     }
 
     /**
+     * Retrieve a given claim
+     */
+    getClaim(uniqueID: string): Promise<Claim> {
+        let url_ = this.baseUrl + "/customer/claims/{uniqueID}";
+        if (uniqueID === undefined || uniqueID === null)
+            throw new Error("The parameter 'uniqueID' must be defined.");
+        url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetClaim(_response);
+        });
+    }
+
+    protected processGetClaim(response: Response): Promise<Claim> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Claim.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Claim>(null as any);
+    }
+
+    /**
+     * Retrieve an object containing aggregate values to populate the customer landing page
+     */
+    getDashboard(): Promise<CustomerDashboard> {
+        let url_ = this.baseUrl + "/customer/dashboard";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetDashboard(_response);
+        });
+    }
+
+    protected processGetDashboard(response: Response): Promise<CustomerDashboard> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CustomerDashboard.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CustomerDashboard>(null as any);
+    }
+
+    /**
      * Create a new customer, via the self-service registration workflow
      * @param dto A CustomerRegistration DTO
      */
@@ -1231,6 +1312,145 @@ export class CustomerClient extends ApiBase {
             });
         }
         return Promise.resolve<Customer>(null as any);
+    }
+}
+
+export class InvestigatorClient extends ApiBase {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl ?? "http://localhost:50000";
+    }
+
+    /**
+     * Retrieve all claims by investigator, currently not paged or limited
+     */
+    getClaims(): Promise<Claim[]> {
+        let url_ = this.baseUrl + "/investigator/claims";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetClaims(_response);
+        });
+    }
+
+    protected processGetClaims(response: Response): Promise<Claim[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Claim.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Claim[]>(null as any);
+    }
+
+    /**
+     * Retrieve a given claim
+     */
+    getClaim(uniqueID: string): Promise<Claim> {
+        let url_ = this.baseUrl + "/investigator/claims/{uniqueID}";
+        if (uniqueID === undefined || uniqueID === null)
+            throw new Error("The parameter 'uniqueID' must be defined.");
+        url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetClaim(_response);
+        });
+    }
+
+    protected processGetClaim(response: Response): Promise<Claim> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Claim.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Claim>(null as any);
+    }
+
+    /**
+     * Retrieve an object containing aggregate values to populate the investigator landing page
+     */
+    getDashboard(): Promise<InvestigatorDashboard> {
+        let url_ = this.baseUrl + "/investigator/dashboard";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetDashboard(_response);
+        });
+    }
+
+    protected processGetDashboard(response: Response): Promise<InvestigatorDashboard> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = InvestigatorDashboard.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<InvestigatorDashboard>(null as any);
     }
 }
 
@@ -1288,7 +1508,7 @@ export class StatusClient extends ApiBase {
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
-            method: "POST",
+            method: "GET",
             headers: {
             }
         };
@@ -1316,7 +1536,7 @@ export class StatusClient extends ApiBase {
     }
 
     /**
-     * Generate a list of error codes
+     * Return an error code, used to automatically generate all error codes for the frontend
      */
     errorCodes(): Promise<ErrorCode> {
         let url_ = this.baseUrl + "/status/errorcodes";
@@ -2554,6 +2774,7 @@ export interface IDashboardAggregate extends IBase {
 export enum Type {
     Integer = "Integer",
     Money = "Money",
+    Percentage = "Percentage",
 }
 
 export enum Period {
@@ -2743,6 +2964,129 @@ export enum JobStatus {
     Disabled = "Disabled",
 }
 
+export class CustomerDashboard extends Base implements ICustomerDashboard {
+    lifetimeSavings!: DashboardAggregate;
+    recoveryRate!: DashboardAggregate;
+    newOrders!: DashboardAggregate;
+    claimsValueUnderInvestigation!: DashboardAggregate;
+    claimsByState!: { [key: string]: number; };
+    claimsByMonth!: { [key: string]: ClaimStatusValue2[]; };
+
+    constructor(data?: ICustomerDashboard) {
+        super(data);
+        if (data) {
+            this.lifetimeSavings = data.lifetimeSavings && !(<any>data.lifetimeSavings).toJSON ? new DashboardAggregate(data.lifetimeSavings) : <DashboardAggregate>this.lifetimeSavings;
+            this.recoveryRate = data.recoveryRate && !(<any>data.recoveryRate).toJSON ? new DashboardAggregate(data.recoveryRate) : <DashboardAggregate>this.recoveryRate;
+            this.newOrders = data.newOrders && !(<any>data.newOrders).toJSON ? new DashboardAggregate(data.newOrders) : <DashboardAggregate>this.newOrders;
+            this.claimsValueUnderInvestigation = data.claimsValueUnderInvestigation && !(<any>data.claimsValueUnderInvestigation).toJSON ? new DashboardAggregate(data.claimsValueUnderInvestigation) : <DashboardAggregate>this.claimsValueUnderInvestigation;
+        }
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.lifetimeSavings = _data["lifetimeSavings"] ? DashboardAggregate.fromJS(_data["lifetimeSavings"]) : <any>undefined;
+            this.recoveryRate = _data["recoveryRate"] ? DashboardAggregate.fromJS(_data["recoveryRate"]) : <any>undefined;
+            this.newOrders = _data["newOrders"] ? DashboardAggregate.fromJS(_data["newOrders"]) : <any>undefined;
+            this.claimsValueUnderInvestigation = _data["claimsValueUnderInvestigation"] ? DashboardAggregate.fromJS(_data["claimsValueUnderInvestigation"]) : <any>undefined;
+            if (_data["claimsByState"]) {
+                this.claimsByState = {} as any;
+                for (let key in _data["claimsByState"]) {
+                    if (_data["claimsByState"].hasOwnProperty(key))
+                        (<any>this.claimsByState)![key] = _data["claimsByState"][key];
+                }
+            }
+            if (_data["claimsByMonth"]) {
+                this.claimsByMonth = {} as any;
+                for (let key in _data["claimsByMonth"]) {
+                    if (_data["claimsByMonth"].hasOwnProperty(key))
+                        (<any>this.claimsByMonth)![key] = _data["claimsByMonth"][key] ? _data["claimsByMonth"][key].map((i: any) => ClaimStatusValue2.fromJS(i)) : [];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): CustomerDashboard {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerDashboard();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["lifetimeSavings"] = this.lifetimeSavings ? this.lifetimeSavings.toJSON() : <any>undefined;
+        data["recoveryRate"] = this.recoveryRate ? this.recoveryRate.toJSON() : <any>undefined;
+        data["newOrders"] = this.newOrders ? this.newOrders.toJSON() : <any>undefined;
+        data["claimsValueUnderInvestigation"] = this.claimsValueUnderInvestigation ? this.claimsValueUnderInvestigation.toJSON() : <any>undefined;
+        if (this.claimsByState) {
+            data["claimsByState"] = {};
+            for (let key in this.claimsByState) {
+                if (this.claimsByState.hasOwnProperty(key))
+                    (<any>data["claimsByState"])[key] = (<any>this.claimsByState)[key];
+            }
+        }
+        if (this.claimsByMonth) {
+            data["claimsByMonth"] = {};
+            for (let key in this.claimsByMonth) {
+                if (this.claimsByMonth.hasOwnProperty(key))
+                    (<any>data["claimsByMonth"])[key] = (<any>this.claimsByMonth)[key];
+            }
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ICustomerDashboard extends IBase {
+    lifetimeSavings: IDashboardAggregate;
+    recoveryRate: IDashboardAggregate;
+    newOrders: IDashboardAggregate;
+    claimsValueUnderInvestigation: IDashboardAggregate;
+    claimsByState: { [key: string]: number; };
+    claimsByMonth: { [key: string]: ClaimStatusValue2[]; };
+}
+
+export class ClaimStatusValue2 implements IClaimStatusValue2 {
+    status!: ClaimStatus;
+    value!: number;
+
+    constructor(data?: IClaimStatusValue2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.status = _data["status"];
+            this.value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): ClaimStatusValue2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClaimStatusValue2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["status"] = this.status;
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface IClaimStatusValue2 {
+    status: ClaimStatus;
+    value: number;
+}
+
 export class CustomerRegistration extends Base implements ICustomerRegistration {
     name!: string;
     firstName!: string;
@@ -2820,6 +3164,129 @@ export interface ICustomerRegistration extends IBase {
     googleCredential: string | undefined;
 }
 
+export class InvestigatorDashboard extends Base implements IInvestigatorDashboard {
+    lifetimeEarnings!: DashboardAggregate;
+    recoveryRate!: DashboardAggregate;
+    newOrders!: DashboardAggregate;
+    claimsValueUnderInvestigation!: DashboardAggregate;
+    claimsByState!: { [key: string]: number; };
+    claimsByMonth!: { [key: string]: ClaimStatusValue3[]; };
+
+    constructor(data?: IInvestigatorDashboard) {
+        super(data);
+        if (data) {
+            this.lifetimeEarnings = data.lifetimeEarnings && !(<any>data.lifetimeEarnings).toJSON ? new DashboardAggregate(data.lifetimeEarnings) : <DashboardAggregate>this.lifetimeEarnings;
+            this.recoveryRate = data.recoveryRate && !(<any>data.recoveryRate).toJSON ? new DashboardAggregate(data.recoveryRate) : <DashboardAggregate>this.recoveryRate;
+            this.newOrders = data.newOrders && !(<any>data.newOrders).toJSON ? new DashboardAggregate(data.newOrders) : <DashboardAggregate>this.newOrders;
+            this.claimsValueUnderInvestigation = data.claimsValueUnderInvestigation && !(<any>data.claimsValueUnderInvestigation).toJSON ? new DashboardAggregate(data.claimsValueUnderInvestigation) : <DashboardAggregate>this.claimsValueUnderInvestigation;
+        }
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.lifetimeEarnings = _data["lifetimeEarnings"] ? DashboardAggregate.fromJS(_data["lifetimeEarnings"]) : <any>undefined;
+            this.recoveryRate = _data["recoveryRate"] ? DashboardAggregate.fromJS(_data["recoveryRate"]) : <any>undefined;
+            this.newOrders = _data["newOrders"] ? DashboardAggregate.fromJS(_data["newOrders"]) : <any>undefined;
+            this.claimsValueUnderInvestigation = _data["claimsValueUnderInvestigation"] ? DashboardAggregate.fromJS(_data["claimsValueUnderInvestigation"]) : <any>undefined;
+            if (_data["claimsByState"]) {
+                this.claimsByState = {} as any;
+                for (let key in _data["claimsByState"]) {
+                    if (_data["claimsByState"].hasOwnProperty(key))
+                        (<any>this.claimsByState)![key] = _data["claimsByState"][key];
+                }
+            }
+            if (_data["claimsByMonth"]) {
+                this.claimsByMonth = {} as any;
+                for (let key in _data["claimsByMonth"]) {
+                    if (_data["claimsByMonth"].hasOwnProperty(key))
+                        (<any>this.claimsByMonth)![key] = _data["claimsByMonth"][key] ? _data["claimsByMonth"][key].map((i: any) => ClaimStatusValue3.fromJS(i)) : [];
+                }
+            }
+        }
+    }
+
+    static fromJS(data: any): InvestigatorDashboard {
+        data = typeof data === 'object' ? data : {};
+        let result = new InvestigatorDashboard();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["lifetimeEarnings"] = this.lifetimeEarnings ? this.lifetimeEarnings.toJSON() : <any>undefined;
+        data["recoveryRate"] = this.recoveryRate ? this.recoveryRate.toJSON() : <any>undefined;
+        data["newOrders"] = this.newOrders ? this.newOrders.toJSON() : <any>undefined;
+        data["claimsValueUnderInvestigation"] = this.claimsValueUnderInvestigation ? this.claimsValueUnderInvestigation.toJSON() : <any>undefined;
+        if (this.claimsByState) {
+            data["claimsByState"] = {};
+            for (let key in this.claimsByState) {
+                if (this.claimsByState.hasOwnProperty(key))
+                    (<any>data["claimsByState"])[key] = (<any>this.claimsByState)[key];
+            }
+        }
+        if (this.claimsByMonth) {
+            data["claimsByMonth"] = {};
+            for (let key in this.claimsByMonth) {
+                if (this.claimsByMonth.hasOwnProperty(key))
+                    (<any>data["claimsByMonth"])[key] = (<any>this.claimsByMonth)[key];
+            }
+        }
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IInvestigatorDashboard extends IBase {
+    lifetimeEarnings: IDashboardAggregate;
+    recoveryRate: IDashboardAggregate;
+    newOrders: IDashboardAggregate;
+    claimsValueUnderInvestigation: IDashboardAggregate;
+    claimsByState: { [key: string]: number; };
+    claimsByMonth: { [key: string]: ClaimStatusValue3[]; };
+}
+
+export class ClaimStatusValue3 implements IClaimStatusValue3 {
+    status!: ClaimStatus;
+    value!: number;
+
+    constructor(data?: IClaimStatusValue3) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.status = _data["status"];
+            this.value = _data["value"];
+        }
+    }
+
+    static fromJS(data: any): ClaimStatusValue3 {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClaimStatusValue3();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["status"] = this.status;
+        data["value"] = this.value;
+        return data;
+    }
+}
+
+export interface IClaimStatusValue3 {
+    status: ClaimStatus;
+    value: number;
+}
+
 export enum ErrorCode {
     Unknown = "Unknown",
     Unhandled = "Unhandled",
@@ -2884,7 +3351,9 @@ export enum ErrorCode {
     CustomerInvalid = "CustomerInvalid",
     CustomerCodeAlreadyExists = "CustomerCodeAlreadyExists",
     CustomerCodeGenerationFailed = "CustomerCodeGenerationFailed",
+    CustomerClaimDoesNotExist = "CustomerClaimDoesNotExist",
     InvestigatorDoesNotExist = "InvestigatorDoesNotExist",
+    InvestigatorClaimDoesNotExist = "InvestigatorClaimDoesNotExist",
 }
 
 export interface FileResponse {
