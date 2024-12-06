@@ -218,11 +218,7 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
                   isOpen={isPopoverOpen}
                   content={
                     <div className={`popover-content`}>
-                      {role === Role.Administrator ? (
-                        <></>
-                      ) : (
-                        <span className="name">{niceName}</span>
-                      )}
+                      <span className="name">{niceName}</span>
                       <span className="role">
                         <span className={`role-name property-tag ${role}`}>{role}</span>
                       </span>
