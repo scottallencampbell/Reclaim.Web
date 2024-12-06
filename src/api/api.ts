@@ -458,6 +458,52 @@ export class AdministratorClient extends ApiBase {
     /**
      * Retrieve all claims in the system, currently not paged or limited
      */
+    getAdministrators(): Promise<Administrator[]> {
+        let url_ = this.baseUrl + "/administrator/administrators";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetAdministrators(_response);
+        });
+    }
+
+    protected processGetAdministrators(response: Response): Promise<Administrator[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Administrator.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Administrator[]>(null as any);
+    }
+
+    /**
+     * Retrieve all claims in the system, currently not paged or limited
+     */
     getClaims(): Promise<Claim[]> {
         let url_ = this.baseUrl + "/administrator/claims";
         url_ = url_.replace(/[?&]$/, "");
@@ -2099,6 +2145,62 @@ export interface IPasswordResetRequest {
     emailAddress: string;
 }
 
+export class Administrator implements IAdministrator {
+    uniqueID!: string;
+    firstName!: string;
+    lastName!: string;
+    emailAddress!: string;
+    avatarUrl!: string | undefined;
+    lastActiveTimestamp!: moment.Moment | undefined;
+
+    constructor(data?: IAdministrator) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.uniqueID = _data["uniqueID"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.emailAddress = _data["emailAddress"];
+            this.avatarUrl = _data["avatarUrl"];
+            this.lastActiveTimestamp = _data["lastActiveTimestamp"] ? moment(_data["lastActiveTimestamp"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Administrator {
+        data = typeof data === 'object' ? data : {};
+        let result = new Administrator();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uniqueID"] = this.uniqueID;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["emailAddress"] = this.emailAddress;
+        data["avatarUrl"] = this.avatarUrl;
+        data["lastActiveTimestamp"] = this.lastActiveTimestamp ? this.lastActiveTimestamp.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IAdministrator {
+    uniqueID: string;
+    firstName: string;
+    lastName: string;
+    emailAddress: string;
+    avatarUrl: string | undefined;
+    lastActiveTimestamp: moment.Moment | undefined;
+}
+
 export class Claim implements IClaim {
     uniqueID!: string;
     type!: ClaimType;
@@ -2493,6 +2595,7 @@ export class Customer implements ICustomer {
     telephone!: string;
     emailAddress!: string;
     avatarUrl!: string | undefined;
+    lastActiveTimestamp!: moment.Moment | undefined;
 
     constructor(data?: ICustomer) {
         if (data) {
@@ -2519,6 +2622,7 @@ export class Customer implements ICustomer {
             this.telephone = _data["telephone"];
             this.emailAddress = _data["emailAddress"];
             this.avatarUrl = _data["avatarUrl"];
+            this.lastActiveTimestamp = _data["lastActiveTimestamp"] ? moment(_data["lastActiveTimestamp"].toString()) : <any>undefined;
         }
     }
 
@@ -2545,6 +2649,7 @@ export class Customer implements ICustomer {
         data["telephone"] = this.telephone;
         data["emailAddress"] = this.emailAddress;
         data["avatarUrl"] = this.avatarUrl;
+        data["lastActiveTimestamp"] = this.lastActiveTimestamp ? this.lastActiveTimestamp.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -2564,6 +2669,7 @@ export interface ICustomer {
     telephone: string;
     emailAddress: string;
     avatarUrl: string | undefined;
+    lastActiveTimestamp: moment.Moment | undefined;
 }
 
 export enum CustomerStatus {
@@ -2585,6 +2691,7 @@ export class Investigator implements IInvestigator {
     telephone!: string;
     emailAddress!: string;
     avatarUrl!: string;
+    lastActiveTimestamp!: moment.Moment | undefined;
 
     constructor(data?: IInvestigator) {
         if (data) {
@@ -2609,6 +2716,7 @@ export class Investigator implements IInvestigator {
             this.telephone = _data["telephone"];
             this.emailAddress = _data["emailAddress"];
             this.avatarUrl = _data["avatarUrl"];
+            this.lastActiveTimestamp = _data["lastActiveTimestamp"] ? moment(_data["lastActiveTimestamp"].toString()) : <any>undefined;
         }
     }
 
@@ -2633,6 +2741,7 @@ export class Investigator implements IInvestigator {
         data["telephone"] = this.telephone;
         data["emailAddress"] = this.emailAddress;
         data["avatarUrl"] = this.avatarUrl;
+        data["lastActiveTimestamp"] = this.lastActiveTimestamp ? this.lastActiveTimestamp.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -2650,6 +2759,7 @@ export interface IInvestigator {
     telephone: string;
     emailAddress: string;
     avatarUrl: string;
+    lastActiveTimestamp: moment.Moment | undefined;
 }
 
 export enum InvestigatorStatus {

@@ -1,4 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.css'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
 
 const ThankYou = () => {

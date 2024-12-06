@@ -1,17 +1,18 @@
 {
-    "git.ignoreLimitWarning": true,
-    "cSpell.words": [
-        "confirmaccount",
-        "forgotpassword",
-        "onreconnected",
-        "onreconnecting",
-        "setpassword",
-        "SIGNALR",
-        "signin",
-        "Signins"
-    ],
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "[javascript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }   
+  "git.ignoreLimitWarning": true,
+  "cSpell.words": [
+    "confirmaccount",
+    "forgotpassword",
+    "onreconnected",
+    "onreconnecting",
+    "setpassword",
+    "SIGNALR",
+    "signin",
+    "Signins",
+    "timeago"
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

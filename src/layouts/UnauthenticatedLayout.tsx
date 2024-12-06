@@ -1,6 +1,7 @@
 import HTMLReactParser from 'html-react-parser'
 import { HelmetProvider } from 'react-helmet-async'
 import { useEffect, useState } from 'react'
+import 'bootstrap/dist/css/bootstrap.css'
 
 interface IUnauthenticatedLayout {
   children: any

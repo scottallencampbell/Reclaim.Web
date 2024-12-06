@@ -1,4 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.css'
 import TextInput from 'components/TextInput'
 import { useEffect, useState } from 'react'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'

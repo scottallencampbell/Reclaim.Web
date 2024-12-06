@@ -10,6 +10,7 @@ import SetPassword from './public/SetPassword'
 import SignIn from './public/SignIn'
 import ThankYou from './public/ThankYou'
 
+import AdministratorAdministrators from './administrator/Administrators'
 import AdministratorDashboard from './administrator/Dashboard'
 import AdministratorClaims from './administrator/Claims'
 import AdministratorClaim from './administrator/Claim'
@@ -50,6 +51,7 @@ const App = () => {
           <Route path="claims/:uniqueID" element={<AdministratorClaim />}></Route>
           <Route path="investigators" element={<AdministratorInvestigators />}></Route>
           <Route path="customers" element={<AdministratorCustomers />}></Route>
+          <Route path="administrators" element={<AdministratorAdministrators />}></Route>
           <Route path="signins" element={<AdministratorSignIns />}></Route>
           <Route path="jobs" element={<AdministratorJobs />}></Route>
         </Route>

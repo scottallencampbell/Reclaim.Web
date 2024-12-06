@@ -36,7 +36,7 @@ const Jobs = () => {
       {
         label: 'Next run',
         accessor: 'nextEvent',
-        type: 'datetime',
+        type: 'timeAgo',
       },
     ],
     []

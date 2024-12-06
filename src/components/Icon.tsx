@@ -23,6 +23,7 @@ const notSolidIcons = [
   'FileVideo',
   'FileImage',
   'Bell',
+  'ChessKing',
 ]
 
 const Icon = ({ name, className = '', toolTip, onClick, children }: IIcon) => {

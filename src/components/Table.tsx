@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import Icon from './Icon'
-import moment from 'moment'
+import moment, { RelativeTimeFuturePastVal } from 'moment'
 import React from 'react'
 import Avatar from './Avatar'
 import { flatten } from 'helpers/json'
 import { exportFile } from 'helpers/excel'
 import PropertyTag from './PropertyTag'
+import TimeAgo from 'react-timeago'
 
 interface ITable {
   children?: any
@@ -297,6 +298,10 @@ const Table = ({
           value = `${obj['firstName']} ${obj['lastName']} ${obj['emailAddress']}`
           break
 
+        case 'niceNameAndEmailAddress':
+          value = `${obj['niceName']} ${obj['emailAddress']}`
+          break
+
         case 'claimExternalIDAndValue':
           value = `${obj['externalID']} ${obj['amountSubmitted']}`
           break
@@ -314,11 +319,15 @@ const Table = ({
           break
 
         case 'date':
-          value = moment.utc(value).format('MMM DD, YYYY')
+          if (value) {
+            value = moment.utc(value).format('MMM DD, YYYY')
+          }
           break
 
         case 'datetime':
-          value = moment(value).format('MMM DD, YYYY [at] hh:mma')
+          if (value) {
+            value = moment(value).format('MMM DD, YYYY [at] hh:mma')
+          }
           break
 
         case 'fileSize':
@@ -334,6 +343,19 @@ const Table = ({
 
         case 'interval':
           value = formatDuration(value * 1000) ?? ''
+          break
+
+        case 'timeAgo':
+          if (value) {
+            value = value.fromNow()
+
+            if (value === 'a few seconds ago') {
+              value = 'just now'
+            }
+
+            value = value[0].toUpperCase() + value.slice(1)
+          }
+
           break
       }
     }
@@ -434,6 +456,15 @@ const Table = ({
                                 <div>
                                   {obj['firstName']} {obj['lastName']}
                                 </div>
+                                <div>{obj['emailAddress']}</div>
+                              </div>
+                            )
+                            break
+
+                          case 'niceNameAndEmailAddress':
+                            tag = (
+                              <div className="full-name">
+                                <div>{obj['niceName']}</div>
                                 <div>{obj['emailAddress']}</div>
                               </div>
                             )

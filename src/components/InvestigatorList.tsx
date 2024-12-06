@@ -50,7 +50,7 @@ const InvestigatorList = ({
       {
         label: 'Last active',
         accessor: 'lastActiveTimestamp',
-        type: 'datetime',
+        type: 'timeAgo',
       },
     ],
     []

@@ -1,4 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.css'
 import { useEffect } from 'react'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
 const Privacy = () => {

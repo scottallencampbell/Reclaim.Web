@@ -733,6 +733,12 @@ form.form-error .input-container {
       left: 1px;
     }
 
+    .icon-ChessKing {
+      font-size: 17px;
+      top: -2px;
+      left: -1px;
+    }
+
     .icon-University {
       font-size: 16px;
       left: -1px;
@@ -2145,7 +2151,7 @@ form.form-error .input-container {
   &.Resolved,
   &.NotFraudulent,
   &.Customer,
-  &.Pending,
+  &.Ready,
   &.icon-FileExcel {
     background-color: #a3e4b8;
     border-color: #7ccf8e;

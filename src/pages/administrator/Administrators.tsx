@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
-import { Account, AdministratorClient } from 'api/api'
+import { Administrator, AdministratorClient } from 'api/api'
 
-const SignIns = () => {
+const Administrators = () => {
   const apiClient = useMemo(
     () => new AdministratorClient(process.env.REACT_APP_API_URL),
     []
   )
 
-  const [accounts, setAccounts] = useState<Account[]>()
+  const [administrators, setAdministrators] = useState<Administrator[]>()
 
   const columns = useMemo(
     () => [
@@ -19,18 +19,8 @@ const SignIns = () => {
       },
       {
         label: 'Name / Email',
-        accessor: 'niceName',
-        type: 'niceNameAndEmailAddress',
-      },
-      {
-        label: 'Role',
-        accessor: 'role',
-        type: 'propertyTag',
-      },
-      {
-        label: 'Signed in',
-        accessor: 'sessionAuthenticatedTimestamp',
-        type: 'timeAgo',
+        accessor: 'lastName',
+        type: 'fullNameAndEmailAddress',
       },
       {
         label: 'Last active',
@@ -44,8 +34,8 @@ const SignIns = () => {
   useEffect(() => {
     ;(async () => {
       try {
-        const result = await apiClient.authenticated()
-        setAccounts(result)
+        const result = await apiClient.getAdministrators()
+        setAdministrators(result)
       } catch (error) {
         console.log(JSON.stringify(error))
       }
@@ -54,19 +44,19 @@ const SignIns = () => {
 
   return (
     <>
-      <div className="header">Sign-ins</div>
+      <div className="header">Administrators</div>
       <div className="inner">
         <Table
-          id="sign-in-table"
-          name="Sign-Ins"
-          type="current sign-ins"
-          keyField="emailAddress"
+          id="administrator-table"
+          name="Administrators"
+          type="administrators"
+          keyField="lastName"
           columns={columns}
-          sourceData={accounts}
+          sourceData={administrators}
           isPropertyBarVisible={false}
           onSearchTermsChange={null}
           onRowClick={null}
-          initialSortColumn={'lastActiveTimestamp'}
+          initialSortColumn={'lastName'}
           children={undefined}
         />
       </div>
@@ -74,4 +64,4 @@ const SignIns = () => {
   )
 }
 
-export default SignIns
+export default Administrators

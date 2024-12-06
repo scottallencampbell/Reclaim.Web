@@ -41,7 +41,7 @@ const CustomerList = ({ customers, handleUpdateCustomer }: ICustomerList) => {
       {
         label: 'Last active',
         accessor: 'lastActiveTimestamp',
-        type: 'datetime',
+        type: 'timeAgo',
       },
     ],
     []

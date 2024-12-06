@@ -26,6 +26,10 @@ const NavItemList = ({ role }: INavItemList) => {
             icon="University"
             href="/administrator/customers"></NavItem>
           <NavItem
+            label="Administrators"
+            icon="ChessKing"
+            href="/administrator/administrators"></NavItem>
+          <NavItem
             label="Current sign-ins"
             icon="NetworkWired"
             href="/administrator/signins"></NavItem>

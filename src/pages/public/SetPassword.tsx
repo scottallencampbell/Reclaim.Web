@@ -1,4 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.css'
 import TextInput from 'components/TextInput'
 import { useEffect, useMemo, useState } from 'react'
 import { passwordRegex } from 'helpers/constants'
