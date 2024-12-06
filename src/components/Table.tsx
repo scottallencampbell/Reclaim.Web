@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
 import Icon from './Icon'
-import moment, { RelativeTimeFuturePastVal } from 'moment'
+import moment from 'moment'
 import React from 'react'
 import Avatar from './Avatar'
 import { flatten } from 'helpers/json'
 import { exportFile } from 'helpers/excel'
 import PropertyTag from './PropertyTag'
-import TimeAgo from 'react-timeago'
 
 interface ITable {
   children?: any
