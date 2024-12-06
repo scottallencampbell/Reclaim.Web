@@ -348,7 +348,7 @@ const Table = ({
           if (value) {
             value = value.fromNow()
 
-            if (value === 'a few seconds ago') {
+            if (value === 'a few seconds ago' || value === 'in a few seconds') {
               value = 'just now'
             }
 
