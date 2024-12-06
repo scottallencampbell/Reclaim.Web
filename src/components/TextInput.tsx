@@ -16,6 +16,7 @@ interface ITextInput {
   regex?: RegExp
   columnSpec?: string
   onChange: any
+  formatting?: string
 }
 
 const TextInput = ({
@@ -31,6 +32,7 @@ const TextInput = ({
   regex,
   columnSpec,
   onChange,
+  formatting,
 }: ITextInput) => {
   const [text, setText] = useState('')
   const [isValid, setIsValid] = useState(true)
@@ -75,14 +77,22 @@ const TextInput = ({
   }, [group, text, groupError])
 
   const handleChange = (e: any) => {
-    setText(e.target.value)
+    let value = e.target.value
+
+    switch (formatting) {
+      case 'uppercase':
+        value = value.toUpperCase()
+        break
+    }
+
+    setText(value)
 
     if (!regex) {
-      setIsValid(!required || e.target.value.length > 0)
+      setIsValid(!required || value.length > 0)
     }
 
     if (typeof onChange === 'function') {
-      onChange(e.target.value)
+      onChange(value)
     }
   }
 

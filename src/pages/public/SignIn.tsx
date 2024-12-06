@@ -110,7 +110,7 @@ const SignIn = () => {
         navigate(`/${identity!.role.toLowerCase()}/dashboard`)
       }
     } catch (error: any) {
-      console.log('error', error)
+      console.log(JSON.stringify(error))
 
       if (error instanceof TypeError && error.message === 'Failed to fetch') {
         setErrorMessage(

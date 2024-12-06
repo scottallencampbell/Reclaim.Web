@@ -236,25 +236,23 @@ const Register = () => {
             required={true}
             onChange={(value: string) => setCompanyName(value)}></TextInput>
         </div>
-        <div className="row">
-          <div className="col-lg-6">
-            <TextInput
-              type="text"
-              label="Address"
-              name="address"
-              value={address}
-              required={true}
-              onChange={(value: string) => setAddress(value)}></TextInput>
-          </div>
-          <div className="col-lg-6">
-            <TextInput
-              type="text"
-              label="Suite"
-              name="address2"
-              value={address2}
-              required={false}
-              onChange={(value: string) => setAddress2(value)}></TextInput>
-          </div>
+        <div className="mb-3">
+          <TextInput
+            type="text"
+            label="Address"
+            name="address"
+            value={address}
+            required={true}
+            onChange={(value: string) => setAddress(value)}></TextInput>
+        </div>
+        <div className="mb-3">
+          <TextInput
+            type="text"
+            label="Apartment, suite, etc."
+            name="address2"
+            value={address2}
+            required={false}
+            onChange={(value: string) => setAddress2(value)}></TextInput>
         </div>
         <div className="mb-3">
           <TextInput

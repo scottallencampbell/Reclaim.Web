@@ -15,7 +15,7 @@ const SignIns = () => {
     () => [
       {
         label: '',
-        accessor: 'avatarUrlx',
+        accessor: 'avatarUrl',
         type: 'avatar',
       },
       {

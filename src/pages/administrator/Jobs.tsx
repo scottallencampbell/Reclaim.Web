@@ -56,15 +56,15 @@ const Jobs = () => {
   hubConnection.start().catch((err) => console.log(err))
 
   hubConnection.onreconnected((connectionId) => {
-    console.log('Connection reconnected')
+    //console.log('Connection reconnected')
   })
 
   hubConnection.onreconnecting((error) => {
-    console.log('Connection reconnecting', error)
+    //console.log('Connection reconnecting', error)
   })
 
   hubConnection.onclose((e) => {
-    console.log('Connection closed', e)
+    //console.log('Connection closed', e)
   })
 
   hubConnection.on('SetJobStatus', (id: number, status: string, nextEvent: string) => {

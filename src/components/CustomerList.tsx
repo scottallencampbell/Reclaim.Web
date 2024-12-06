@@ -60,6 +60,7 @@ const CustomerList = ({ customers, handleUpdateCustomer }: ICustomerList) => {
         accessor: 'code',
         type: 'text',
         required: true,
+        formatting: 'uppercase',
       },
       {
         label: 'Contact first name',
@@ -196,6 +197,7 @@ const CustomerList = ({ customers, handleUpdateCustomer }: ICustomerList) => {
                   required={o.required ?? false}
                   regex={o.regex}
                   columnSpec={o.columnSpec}
+                  formatting={o.formatting}
                   onChange={(value: string) =>
                     updateCustomerProperty(o.accessor, value, o.type)
                   }
