@@ -42,8 +42,6 @@ const Jobs = () => {
     []
   )
 
-  const handleRowClick = (clickedJob: Job) => {}
-
   const hubConnection = new signalR.HubConnectionBuilder()
     .withUrl(process.env.REACT_APP_SIGNALR_URL + '/hub/job', {
       transport: signalR.HttpTransportType.WebSockets,
@@ -110,7 +108,7 @@ const Jobs = () => {
           columns={columns}
           sourceData={jobs}
           isPropertyBarVisible={false}
-          onRowClick={handleRowClick}
+          onRowClick={}
           onSearchTermsChange={null}
           children={undefined}
         />
