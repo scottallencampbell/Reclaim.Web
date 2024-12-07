@@ -1,5 +1,4 @@
 import * as Api from '@/api/api'
-import { fileTypes } from 'models/constants'
 import PropertyTag from './PropertyTag'
 import Icon from './Icon'
 import Avatar from './Avatar'
