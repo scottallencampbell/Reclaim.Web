@@ -32,11 +32,6 @@ export const UnauthenticatedLayout = ({
         <title>Reclaim SIU</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-          rel="prefetch stylesheet"
-        />
       </HelmetProvider>
       <div id={id} className={`unauth-container`}>
         <div className="container-fluid">
@@ -48,7 +43,7 @@ export const UnauthenticatedLayout = ({
                 className="col-md-lg-6 d-none d-md-flex bg-image"
                 style={{
                   filter: `hue-rotate(${randomColor}deg)`,
-                  backgroundImage: `url("/unauthenticated/${id}.jpg")`,
+                  backgroundImage: `url("/images/unauthenticated/${id}.jpg")`,
                 }}></div>
             )}
             <div className="col-md-lg-6 bg-light-ex">
@@ -72,7 +67,7 @@ export const UnauthenticatedLayout = ({
                 className="col-md-lg-6 d-none d-md-flex bg-image"
                 style={{
                   filter: `hue-rotate(${randomColor}deg)`,
-                  background: `url("/unauthenticated/${id}.jpg")`,
+                  background: `url("/assets/images/unauthenticated/${id}.jpg")`,
                 }}></div>
             )}
           </div>

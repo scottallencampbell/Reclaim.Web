@@ -108,10 +108,9 @@ const ClaimDetail = ({ claim }: IClaimDetail) => {
                   <div className="attachments">
                     {claim.attachments.map((attachment, index) => (
                       <div>
-                        <Icon
-                          className="property-tag"
-                          name={fileTypes[attachment.type]}
-                        />
+                        <img
+                          className="attachment-icon"
+                          src={`/images/filetypes/${attachment.type.toLowerCase()}.svg`}></img>
                         <div className="details">
                           {attachment.description}
                           <br></br>

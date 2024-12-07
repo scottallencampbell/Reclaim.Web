@@ -544,7 +544,7 @@ const Table = ({
                               tag = (
                                 <div
                                   style={{
-                                    backgroundImage: `url(/filetypes/${item['extension'].split('.').pop()}.png)`,
+                                    backgroundImage: `url(/filetypes/${item['extension'].split('.').pop()})`,
                                   }}
                                   className="thumbnail-icon"></div>
                               )

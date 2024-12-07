@@ -185,11 +185,7 @@ export const AuthenticatedLayout = ({ header }: IAuthenticatedLayout) => {
         <title>Reclaim</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-          rel="prefetch stylesheet"
-        />
+        <link rel="stylesheet" type="text/css" href="/styles/global.scss" />
       </HelmetProvider>
       <div
         data-theme={theme}

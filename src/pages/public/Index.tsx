@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 
 const Index = () => {
   return (
-    <LandingLayout id="index" image="landing.jpg">
+    <LandingLayout id="index" image="images/landing.jpg">
       <div className="logo-container">
-        <img className="logo" src="logo-white.png" alt="Logo"></img>
+        <img className="logo" src="images/logo-white.png" alt="Logo"></img>
         <Link className="styled-button signin-button" to={'/signin'}>
           Sign in
         </Link>

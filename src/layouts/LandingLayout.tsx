@@ -13,11 +13,6 @@ export const LandingLayout = ({ children, id, image }: ILandingLayout) => {
         <title>Reclaim SIU</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-          rel="prefetch stylesheet"
-        />
       </HelmetProvider>
       <div id={id} className="landing" style={{ backgroundImage: 'url(' + image + ')' }}>
         <main>{children}</main>

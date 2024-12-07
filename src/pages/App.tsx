@@ -1,4 +1,6 @@
-import 'styles/globals.scss'
+import 'assets/styles/globals.scss'
+import 'assets/styles/fonts.scss'
+
 import { AuthenticationProvider } from '../contexts/AuthenticationContext'
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
