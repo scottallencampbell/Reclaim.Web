@@ -10,7 +10,7 @@ import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
 import { v4 } from 'uuid'
 import { Link, useNavigate } from 'react-router-dom'
 import { GoogleLogin } from '@react-oauth/google'
-import { CustomerClient, CustomerRegistration, ErrorCode } from 'api/api'
+import { CustomerClient, CustomerRegistration, ErrorCode } from 'api/model'
 
 const Register = () => {
   const apiClient = useMemo(() => new CustomerClient(process.env.REACT_APP_API_URL), [])

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
 import { emailAddressRegex } from 'helpers/constants'
 import { Link, useNavigate } from 'react-router-dom'
-import { AccountClient, PasswordResetRequest } from 'api/api'
+import { AccountClient, PasswordResetRequest } from 'api/model'
 
 const ForgotPassword = () => {
   const apiClient = useMemo(() => new AccountClient(process.env.REACT_APP_API_URL), [])

@@ -23,6 +23,10 @@
   --color-control: #333333;
   --color-control-background: #ffffff;
   --color-control-label: #bbbbbb;
+  --color-button-label: #ffffff;
+  --color-button-background: #0f75bc;
+  --color-cancel-button-label: #0f75bc;
+  --color-cancel-button-background: #ffffff;
 }
 
 [data-theme='dark'] {
@@ -40,6 +44,10 @@
   --color-control: #ffffff;
   --color-control-background: #333333;
   --color-control-label: #777777;
+  --color-button-label: #ffffff;
+  --color-button-background: #0f75bc;
+  --color-cancel-button-label: #999999;
+  --color-cancel-button-background: #666666;
 }
 
 * {
@@ -1449,19 +1457,19 @@ form.form-error .input-container {
   }
 
   .styled-button {
-    color: var(--color-white);
-    background-color: var(--color-primary);
+    color: var(--color-button-label);
+    background-color: var(--color-button-background);
     padding: 1em 2.4em;
     width: 100%;
 
     &:hover {
-      background-color: var(--color-white);
+      background-color: #ffffff;
       color: var(--color-primary);
     }
 
     &.cancel {
-      background-color: var(--color-white);
-      color: var(--color-primary);
+      background-color: var(--color-cancel-button-background);
+      color: var(--color-cancel-button-label);
       padding: 1em 2.4em;
       width: 100%;
     }
@@ -2048,7 +2056,7 @@ form.form-error .input-container {
     }
   }
 
-  .attachments,
+  .documents,
   .statuses {
     margin-left: 20px;
     font-size: 15px;
@@ -2106,7 +2114,7 @@ form.form-error .input-container {
       }
     }
 
-    .attachment-icon {
+    .document-icon {
       width: 47px;
       height: 47px;
       padding-right: 10px;

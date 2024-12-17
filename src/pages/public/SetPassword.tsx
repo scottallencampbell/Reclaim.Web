@@ -2,7 +2,7 @@ import TextInput from 'components/TextInput'
 import { useEffect, useMemo, useState } from 'react'
 import { passwordRegex } from 'helpers/constants'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
-import { AccountClient, ErrorCode, PasswordReset } from 'api/api'
+import { AccountClient, ErrorCode, PasswordReset } from 'api/model'
 import { useNavigate } from 'react-router-dom'
 
 const SetPassword = () => {

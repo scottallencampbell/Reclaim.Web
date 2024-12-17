@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Claim, CustomerClient } from 'api/api'
+import { Claim, CustomerClient } from 'api/model'
 import { useNavigate } from 'react-router-dom'
 import ClaimsList from 'components/ClaimList'
 

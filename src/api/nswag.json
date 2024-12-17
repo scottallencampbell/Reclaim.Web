@@ -17,6 +17,7 @@
       "namespace": "",
       "typeScriptVersion": 2.7,
       "template": "Fetch",
+      "templateDirectory": "./templates",
       "promiseType": "Promise",
       "httpClass": "HttpClient",
       "withCredentials": true,
@@ -63,10 +64,9 @@
       "inlineNamedDictionaries": false,
       "inlineNamedAny": false,
       "includeHttpContext": true,
-      "templateDirectory": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "src/api/api.ts",
+      "output": "model.ts",
       "newLineBehavior": "Auto"
     }
   }

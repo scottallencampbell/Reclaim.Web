@@ -1,1 +1,1 @@
-run 'zsh nswag.sh' to rebuild ts model
+run 'zsh /src/api/nswag.sh' to rebuild the ts model

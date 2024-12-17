@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
-import { AdministratorClient, Job, JobStatus } from 'api/api'
+import { AdministratorClient, Job, JobStatus } from 'api/model'
 import * as signalR from '@microsoft/signalr'
 import moment from 'moment'
 
@@ -108,7 +108,7 @@ const Jobs = () => {
           columns={columns}
           sourceData={jobs}
           isPropertyBarVisible={false}
-          onRowClick={}
+          onRowClick={null}
           onSearchTermsChange={null}
           children={undefined}
         />

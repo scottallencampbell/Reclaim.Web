@@ -9,7 +9,7 @@ import {
 import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
 import * as jwtDecode from 'jwt-decode'
-import { ErrorCode } from 'api/api'
+import { ErrorCode } from 'api/model'
 import { Identity } from 'models/Identity'
 import configSettings from 'settings/config.json'
 import {
@@ -17,7 +17,7 @@ import {
   AccountAuthenticationRefresh,
   AccountClient,
   GoogleAccountAuthentication,
-} from 'api/api'
+} from 'api/model'
 import { max } from 'lodash'
 
 const identityCookieName = 'reclaim_identity'

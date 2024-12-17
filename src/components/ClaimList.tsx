@@ -1,4 +1,4 @@
-import { Claim } from '@/api/api'
+import { Claim } from '@/api/model'
 import { useMemo } from 'react'
 import Table from './Table'
 
@@ -56,7 +56,7 @@ const ClaimList = ({ claims, handleRowClick }: IClaimList) => {
           sourceData={claims}
           isPropertyBarVisible={false}
           onSearchTermsChange={null}
-          ignoredFields={['attachments']}
+          ignoredFields={['documents']}
           onRowClick={handleRowClick}></Table>
       </div>
     </>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { AdministratorClient, Investigator, InvestigatorCreateOrUpdate } from 'api/api'
+import { AdministratorClient, Investigator, InvestigatorCreateOrUpdate } from 'api/model'
 import React from 'react'
 import InvestigatorList from 'components/InvestigatorList'
 

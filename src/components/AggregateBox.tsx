@@ -1,4 +1,4 @@
-import { DashboardAggregate } from 'api/api'
+import { DashboardAggregate } from 'api/model'
 import Icon from './Icon'
 import HTMLReactParser from 'html-react-parser'
 

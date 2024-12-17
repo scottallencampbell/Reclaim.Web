@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import * as Api from 'api/api'
+import * as Api from 'api/model'
 import { useParams } from 'react-router-dom'
 import ClaimDetail from 'components/ClaimDetail'
 

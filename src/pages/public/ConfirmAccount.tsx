@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { UnauthenticatedLayout } from 'layouts/UnauthenticatedLayout'
-import { AccountClient, AccountConfirmation, ErrorCode } from 'api/api'
+import { AccountClient, AccountConfirmation, ErrorCode } from 'api/model'
 import { Link } from 'react-router-dom'
 
 const ConfirmAccount = () => {

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { CustomerClient, CustomerDashboard } from 'api/api'
+import { CustomerClient, CustomerDashboard } from 'api/model'
 import AggregateBox from 'components/AggregateBox'
 import Map from 'components/Map'
 import News from 'components/News'

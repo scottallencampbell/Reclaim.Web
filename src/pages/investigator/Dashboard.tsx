@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { InvestigatorClient, InvestigatorDashboard } from 'api/api'
+import { InvestigatorClient, InvestigatorDashboard } from 'api/model'
 import AggregateBox from 'components/AggregateBox'
 import News from 'components/News'
 import StackedBarChart from 'components/StackedBarChart'

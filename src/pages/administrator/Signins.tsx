@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import Table from 'components/Table'
-import { Account, AdministratorClient } from 'api/api'
+import { Account, AdministratorClient } from 'api/model'
 
 const SignIns = () => {
   const apiClient = useMemo(

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { AdministratorClient, AdministratorDashboard } from 'api/api'
+import { AdministratorClient, AdministratorDashboard } from 'api/model'
 import AggregateBox from 'components/AggregateBox'
 import Map from 'components/Map'
 import News from 'components/News'

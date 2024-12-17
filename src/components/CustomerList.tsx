@@ -1,4 +1,4 @@
-import { Customer } from 'api/api'
+import { Customer } from 'api/model'
 import { useMemo, useState } from 'react'
 import Table from './Table'
 import PropertyBar from './PropertyBar'

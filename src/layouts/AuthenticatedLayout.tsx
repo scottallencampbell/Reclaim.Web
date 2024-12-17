@@ -8,7 +8,7 @@ import Avatar from 'components/Avatar'
 import { Popover } from 'react-tiny-popover'
 import Icon from 'components/Icon'
 import { AuthenticationContext } from 'contexts/AuthenticationContext'
-import { Role } from 'api/api'
+import { Role } from 'api/model'
 
 interface IAuthenticatedLayout {
   header?: any

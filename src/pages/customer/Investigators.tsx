@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { CustomerClient, Investigator } from 'api/api'
+import { CustomerClient, Investigator } from 'api/model'
 import React from 'react'
 import InvestigatorList from 'components/InvestigatorList'
 

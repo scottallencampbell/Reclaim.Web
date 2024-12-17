@@ -1,4 +1,4 @@
-import { ClaimStatusValue } from 'api/api'
+import { ClaimStatusValue } from 'api/model'
 import { useEffect, useState } from 'react'
 import {
   BarChart,

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Claim, AdministratorClient } from 'api/api'
+import { Claim, AdministratorClient } from 'api/model'
 import { useNavigate } from 'react-router-dom'
 import ClaimsList from 'components/ClaimList'
 

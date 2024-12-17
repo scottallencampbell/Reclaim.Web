@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Customer, CustomerCreateOrUpdate, InvestigatorClient } from 'api/api'
+import { Customer, CustomerCreateOrUpdate, InvestigatorClient } from 'api/model'
 import CustomerList from 'components/CustomerList'
 
 const Customers = () => {

@@ -22,9 +22,200 @@ export class AccountClient extends ApiBase {
         this.baseUrl = baseUrl ?? "http://localhost:50000";
     }
 
-    /**
-     * Authenticate and receive a JWT bearer token
-     */
+    /*
+    Upload a claim document to blob storage
+
+    ErrorCode.DocumentHashAlreadyExists
+    ErrorCode.DocumentUploadToAzureFailed
+    ErrorCode.DocumentEnumerationFromAzureFailed
+    ErrorCode.DocumentTypeNotSupported
+    */
+    upload(): Promise<ClaimDocument> {
+        let url_ = this.baseUrl + "/test/upload";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUpload(_response);
+        });
+    }
+
+    protected processUpload(response: Response): Promise<ClaimDocument> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ClaimDocument.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ClaimDocument>(null as any);
+    }
+
+    list(code?: string | undefined): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/test/list?";
+        if (code === null)
+            throw new Error("The parameter 'code' cannot be null.");
+        else if (code !== undefined)
+            url_ += "code=" + encodeURIComponent("" + code) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processList(_response);
+        });
+    }
+
+    protected processList(response: Response): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse>(null as any);
+    }
+
+    download(code?: string | undefined, fileName?: string | undefined): Promise<MemoryStream> {
+        let url_ = this.baseUrl + "/test/download?";
+        if (code === null)
+            throw new Error("The parameter 'code' cannot be null.");
+        else if (code !== undefined)
+            url_ += "code=" + encodeURIComponent("" + code) + "&";
+        if (fileName === null)
+            throw new Error("The parameter 'fileName' cannot be null.");
+        else if (fileName !== undefined)
+            url_ += "fileName=" + encodeURIComponent("" + fileName) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDownload(_response);
+        });
+    }
+
+    protected processDownload(response: Response): Promise<MemoryStream> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MemoryStream.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<MemoryStream>(null as any);
+    }
+
+    query(question?: string | undefined): Promise<string> {
+        let url_ = this.baseUrl + "/test/query?";
+        if (question === null)
+            throw new Error("The parameter 'question' cannot be null.");
+        else if (question !== undefined)
+            url_ += "question=" + encodeURIComponent("" + question) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processQuery(_response);
+        });
+    }
+
+    protected processQuery(response: Response): Promise<string> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string>(null as any);
+    }
+
+    /*
+    Authenticate and receive a JWT bearer token
+
+    This endpoint returns a JWT bearer token that the caller may use to authorize requests to other API endpoints.  
+
+    A token received from this endpoint should be added to the request header as:
+
+        Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjZmNzI1NDEwMW ...
+
+    This Swagger document will automatically add the required authorization header to subsequent calls following a successful authentication.
+
+    The refesh token GUID returned by this endpoint may be used to generate a new access token by calling the /account/authenticate/refresh endpoint with a valid access token in the header, and a valid refresh token in the body.
+            
+    ErrorCode.AccountCredentialsInvalid
+    ErrorCode.AccountTombstoned
+    ErrorCode.AccountLockedOutOverride
+    ErrorCode.AccountLockedOut
+    ErrorCode.AccountCredentialsExpired
+    ErrorCode.AccountEmailAddressNotConfirmed
+    ErrorCode.AccountRequiresIdentityProviderLocal
+    */
     authenticate(authentication: AccountAuthentication): Promise<AuthenticationToken> {
         let url_ = this.baseUrl + "/accounts/authenticate";
         url_ = url_.replace(/[?&]$/, "");
@@ -65,9 +256,19 @@ export class AccountClient extends ApiBase {
         return Promise.resolve<AuthenticationToken>(null as any);
     }
 
-    /**
-     * Authorize access to API resources by authenticating to Google using OAuth 2.0
-     */
+    /*
+    Authorize access to API resources by authenticating to Google using OAuth 2.0
+
+    This Swagger document will automatically add the required authorization header to subsequent calls following a successful authentication.
+            
+    ErrorCode.GoogleJwtBearerTokenInvalid
+    ErrorCode.AccountExternalCredentialsInvalid
+    ErrorCode.AccountLockedOutOverride
+    ErrorCode.AccountLockedOut
+    ErrorCode.AccountCredentialsExpired
+    ErrorCode.AccountEmailAddressNotConfirmed
+    ErrorCode.AccountRequiresIdentityProviderGoogle
+    */
     authenticateGoogle(authentication: GoogleAccountAuthentication): Promise<AuthenticationToken> {
         let url_ = this.baseUrl + "/accounts/authenticate/google";
         url_ = url_.replace(/[?&]$/, "");
@@ -108,9 +309,19 @@ export class AccountClient extends ApiBase {
         return Promise.resolve<AuthenticationToken>(null as any);
     }
 
-    /**
-     * Reauthenticate to the local database using a refresh token instead of a password
-     */
+    /*
+    Reauthenticate to the local database using a refresh token instead of a password
+
+    This endpoint returns a JWT bearer token that a caller may use to authorize requests to other API endpoints, but unlike /account/authenticate, this endpoint does not accept a password but rather a refresh token.
+
+    A token received from this endpoint should be added to the request header as normal.
+
+    This Swagger document will automatically add the required authorization header to subsequent calls following a successful authentication.
+
+    ErrorCode.JwtBearerTokenInvalid
+    ErrorCode.AccountDoesNotExist
+    ErrorCode.AccountStatusInvalidForOperation
+    */
     authenticateRefresh(authentication: AccountAuthenticationRefresh): Promise<AuthenticationToken> {
         let url_ = this.baseUrl + "/accounts/authenticate/refresh";
         url_ = url_.replace(/[?&]$/, "");
@@ -151,10 +362,17 @@ export class AccountClient extends ApiBase {
         return Promise.resolve<AuthenticationToken>(null as any);
     }
 
-    /**
-     * Confirm an account via the welcome email workflow
-     * @param dto An account confirmation DTO
-     */
+    /*
+    Confirm an account via the welcome email workflow
+
+    ErrorCode.AccountCredentialsInvalid
+    ErrorCode.AccountAlreadyConfirmed
+    ErrorCode.AccountAlreadyConfirmed
+    ErrorCode.AccountMagicUrlTokenInvalid
+    ErrorCode.AccountMagicUrlTokenExpired
+
+    @param dto An account confirmation DTO
+    */
     confirm(dto: AccountConfirmation): Promise<void> {
         let url_ = this.baseUrl + "/accounts/confirm";
         url_ = url_.replace(/[?&]$/, "");
@@ -191,9 +409,11 @@ export class AccountClient extends ApiBase {
         return Promise.resolve<void>(null as any);
     }
 
-    /**
-     * Retrieve the account associated with the current JWT access token
-     */
+    /*
+    Retrieve the account associated with the current JWT access token
+
+    ErrorCode.AccountDoesNotExist
+    */
     me(): Promise<Account> {
         let url_ = this.baseUrl + "/accounts/me";
         url_ = url_.replace(/[?&]$/, "");
@@ -230,10 +450,20 @@ export class AccountClient extends ApiBase {
         return Promise.resolve<Account>(null as any);
     }
 
-    /**
-     * Accept magic URL token and new password for password reset workflow
-     * @param dto A PasswordReset DTO
-     */
+    /*
+    Accept magic URL token and new password for password reset workflow
+
+    ErrorCode.AccountDoesNotExist
+    ErrorCode.AccountRoleInvalidForOperation
+    ErrorCode.AccountRequiresIdentityProviderLocal
+    ErrorCode.AccountStatusInvalidForOperation
+    ErrorCode.AccountMagicUrlTokenInvalid
+    ErrorCode.AccountMagicUrlTokenExpired
+    ErrorCode.AccountPasswordDoesNotMeetMinimumComplexity
+    ErrorCode.AccountPasswordUsedPreviously
+
+    @param dto A PasswordReset DTO
+    */
     resetPassword(dto: PasswordReset): Promise<void> {
         let url_ = this.baseUrl + "/accounts/password";
         url_ = url_.replace(/[?&]$/, "");
@@ -270,10 +500,16 @@ export class AccountClient extends ApiBase {
         return Promise.resolve<void>(null as any);
     }
 
-    /**
-     * Request an URL to be sent to the email address on record, allowing a password reset
-     * @param dto A PasswordResetRequest dto containing the account's email address
-     */
+    /*
+    Request an URL to be sent to the email address on record, allowing a password reset
+
+    ErrorCode.AccountDoesNotExist
+    ErrorCode.AccountRoleInvalidForOperation
+    ErrorCode.AccountRequiresIdentityProviderLocal
+    ErrorCode.AccountRoleInvalidForOperation
+
+    @param dto A PasswordResetRequest dto containing the account's email address
+    */
     requestResetPassword(dto: PasswordResetRequest): Promise<void> {
         let url_ = this.baseUrl + "/accounts/password/reset";
         url_ = url_.replace(/[?&]$/, "");
@@ -322,10 +558,11 @@ export class AdministratorClient extends ApiBase {
         this.baseUrl = baseUrl ?? "http://localhost:50000";
     }
 
-    /**
-     * Retrieve a specific account by email address
-     * @param emailAddress (optional) The account's email address
-     */
+    /*
+    Retrieve a specific account by email address
+
+    @param emailAddress (optional) The account's email address
+    */
     getByEmailAddress(emailAddress?: string | undefined): Promise<Account> {
         let url_ = this.baseUrl + "/administrator/accounts?";
         if (emailAddress === null)
@@ -366,9 +603,10 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Account>(null as any);
     }
 
-    /**
-     * View a list of currently logged-in accounts
-     */
+    /*
+    View a list of currently logged-in accounts
+
+    */
     authenticated(): Promise<Account[]> {
         let url_ = this.baseUrl + "/administrator/accounts/authenticated";
         url_ = url_.replace(/[?&]$/, "");
@@ -412,10 +650,11 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Account[]>(null as any);
     }
 
-    /**
-     * Retrieve a specific account by unique id
-     * @param uniqueID The account's public unique ID
-     */
+    /*
+    Retrieve a specific account by unique id
+
+    @param uniqueID The account's public unique ID
+    */
     get(uniqueID: string): Promise<Account> {
         let url_ = this.baseUrl + "/administrator/accounts/{uniqueID}";
         if (uniqueID === undefined || uniqueID === null)
@@ -455,9 +694,10 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Account>(null as any);
     }
 
-    /**
-     * Retrieve all claims in the system, currently not paged or limited
-     */
+    /*
+    Retrieve all claims in the system, currently not paged or limited
+
+    */
     getAdministrators(): Promise<Administrator[]> {
         let url_ = this.baseUrl + "/administrator/administrators";
         url_ = url_.replace(/[?&]$/, "");
@@ -501,9 +741,10 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Administrator[]>(null as any);
     }
 
-    /**
-     * Retrieve all claims in the system, currently not paged or limited
-     */
+    /*
+    Retrieve all claims in the system, currently not paged or limited
+
+    */
     getClaims(): Promise<Claim[]> {
         let url_ = this.baseUrl + "/administrator/claims";
         url_ = url_.replace(/[?&]$/, "");
@@ -547,9 +788,10 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Claim[]>(null as any);
     }
 
-    /**
-     * Retrieve a given claim
-     */
+    /*
+    Retrieve a given claim
+
+    */
     getClaim(uniqueID: string): Promise<Claim> {
         let url_ = this.baseUrl + "/administrator/claims/{uniqueID}";
         if (uniqueID === undefined || uniqueID === null)
@@ -589,9 +831,10 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Claim>(null as any);
     }
 
-    /**
-     * Retrieve all customers in the system, currently not paged or limited
-     */
+    /*
+    Retrieve all customers in the system, currently not paged or limited
+
+    */
     getCustomers(): Promise<Customer[]> {
         let url_ = this.baseUrl + "/administrator/customers";
         url_ = url_.replace(/[?&]$/, "");
@@ -635,9 +878,10 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Customer[]>(null as any);
     }
 
-    /**
-     * Create a new customer
-     */
+    /*
+    Create a new customer
+
+    */
     createCustomer(dto: CustomerCreateOrUpdate): Promise<Customer> {
         let url_ = this.baseUrl + "/administrator/customers";
         url_ = url_.replace(/[?&]$/, "");
@@ -678,9 +922,10 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Customer>(null as any);
     }
 
-    /**
-     * Retrieve a particular customer in the system
-     */
+    /*
+    Retrieve a particular customer in the system
+
+    */
     getCustomer(uniqueID: string): Promise<Customer> {
         let url_ = this.baseUrl + "/administrator/customers/{uniqueID}";
         if (uniqueID === undefined || uniqueID === null)
@@ -720,11 +965,13 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Customer>(null as any);
     }
 
-    /**
-     * Update an existing customer
-     * @param uniqueID The customer's unique public ID
-     * @param dto A Customer DTO
-     */
+    /*
+    Update an existing customer
+
+    @param uniqueID The customer's unique public ID
+
+    @param dto A Customer DTO
+    */
     updateCustomer(uniqueID: string, dto: CustomerCreateOrUpdate): Promise<Customer> {
         let url_ = this.baseUrl + "/administrator/customers/{uniqueID}";
         if (uniqueID === undefined || uniqueID === null)
@@ -768,9 +1015,10 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Customer>(null as any);
     }
 
-    /**
-     * Retrieve all claims by customer, currently not paged or limited
-     */
+    /*
+    Retrieve all claims by customer, currently not paged or limited
+
+    */
     getClaimsByCustomer(uniqueID: string): Promise<Claim[]> {
         let url_ = this.baseUrl + "/administrator/customers/{uniqueID}/claims";
         if (uniqueID === undefined || uniqueID === null)
@@ -817,9 +1065,10 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Claim[]>(null as any);
     }
 
-    /**
-     * Retrieve an object containing aggregate values to populate the administrator landing page
-     */
+    /*
+    Retrieve an object containing aggregate values to populate the administrator landing page
+
+    */
     getDashboard(): Promise<AdministratorDashboard> {
         let url_ = this.baseUrl + "/administrator/dashboard";
         url_ = url_.replace(/[?&]$/, "");
@@ -856,9 +1105,10 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<AdministratorDashboard>(null as any);
     }
 
-    /**
-     * Retrieve all investigators in the system, currently not paged or limited
-     */
+    /*
+    Retrieve all investigators in the system, currently not paged or limited
+
+    */
     getInvestigators(): Promise<Investigator[]> {
         let url_ = this.baseUrl + "/administrator/investigators";
         url_ = url_.replace(/[?&]$/, "");
@@ -902,10 +1152,11 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Investigator[]>(null as any);
     }
 
-    /**
-     * Create a new investigator
-     * @param dto An Investigator DTO
-     */
+    /*
+    Create a new investigator
+
+    @param dto An Investigator DTO
+    */
     createInvestigator(dto: InvestigatorCreateOrUpdate): Promise<Investigator> {
         let url_ = this.baseUrl + "/administrator/investigators";
         url_ = url_.replace(/[?&]$/, "");
@@ -946,9 +1197,10 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Investigator>(null as any);
     }
 
-    /**
-     * Retrieve a particular investigator in the system
-     */
+    /*
+    Retrieve a particular investigator in the system
+
+    */
     getInvestigator(uniqueID: string): Promise<Investigator> {
         let url_ = this.baseUrl + "/administrator/investigators/{uniqueID}";
         if (uniqueID === undefined || uniqueID === null)
@@ -988,11 +1240,13 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Investigator>(null as any);
     }
 
-    /**
-     * Update an existing investigator
-     * @param uniqueID The investigator's unique public ID
-     * @param dto An Investigator DTO
-     */
+    /*
+    Update an existing investigator
+
+    @param uniqueID The investigator's unique public ID
+
+    @param dto An Investigator DTO
+    */
     updateInvestigator(uniqueID: string, dto: InvestigatorCreateOrUpdate): Promise<Investigator> {
         let url_ = this.baseUrl + "/administrator/investigators/{uniqueID}";
         if (uniqueID === undefined || uniqueID === null)
@@ -1036,9 +1290,10 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Investigator>(null as any);
     }
 
-    /**
-     * Retrieve all scheduled jobs
-     */
+    /*
+    Retrieve all scheduled jobs
+
+    */
     getAllJobs(): Promise<Job[]> {
         let url_ = this.baseUrl + "/administrator/jobs";
         url_ = url_.replace(/[?&]$/, "");
@@ -1082,10 +1337,11 @@ export class AdministratorClient extends ApiBase {
         return Promise.resolve<Job[]>(null as any);
     }
 
-    /**
-     * Run all pending jobs
-     * @return All jobs were run, successfully or not
-     */
+    /*
+    Run all pending jobs
+
+    @return All jobs were run, successfully or not
+    */
     runPendingJobs(): Promise<void> {
         let url_ = this.baseUrl + "/administrator/jobs/runpending";
         url_ = url_.replace(/[?&]$/, "");
@@ -1130,12 +1386,13 @@ export class ContentClient extends ApiBase {
         this.baseUrl = baseUrl ?? "http://localhost:50000";
     }
 
-    /**
-     * Receives a notification when an email is opened (and image downloads are enabled)
-     * @param uniqueID A system-wide unique ID for the given email message
-     */
+    /*
+    Receives a notification when an email is opened (and image downloads are enabled)
+
+    @param uniqueID A system-wide unique ID for the given email message
+    */
     setEmailReceived(uniqueID: string): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/content/emails/{uniqueID}/received";
+        let url_ = this.baseUrl + "/content/emails/{uniqueID}/received.png";
         if (uniqueID === undefined || uniqueID === null)
             throw new Error("The parameter 'uniqueID' must be defined.");
         url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
@@ -1189,9 +1446,10 @@ export class CustomerClient extends ApiBase {
         this.baseUrl = baseUrl ?? "http://localhost:50000";
     }
 
-    /**
-     * Retrieve all claims by customer, currently not paged or limited
-     */
+    /*
+    Retrieve all claims by customer, currently not paged or limited
+
+    */
     getClaims(): Promise<Claim[]> {
         let url_ = this.baseUrl + "/customer/claims";
         url_ = url_.replace(/[?&]$/, "");
@@ -1235,9 +1493,10 @@ export class CustomerClient extends ApiBase {
         return Promise.resolve<Claim[]>(null as any);
     }
 
-    /**
-     * Retrieve a given claim
-     */
+    /*
+    Retrieve a given claim
+
+    */
     getClaim(uniqueID: string): Promise<Claim> {
         let url_ = this.baseUrl + "/customer/claims/{uniqueID}";
         if (uniqueID === undefined || uniqueID === null)
@@ -1277,9 +1536,10 @@ export class CustomerClient extends ApiBase {
         return Promise.resolve<Claim>(null as any);
     }
 
-    /**
-     * Retrieve an object containing aggregate values to populate the customer landing page
-     */
+    /*
+    Retrieve an object containing aggregate values to populate the customer landing page
+
+    */
     getDashboard(): Promise<CustomerDashboard> {
         let url_ = this.baseUrl + "/customer/dashboard";
         url_ = url_.replace(/[?&]$/, "");
@@ -1316,9 +1576,10 @@ export class CustomerClient extends ApiBase {
         return Promise.resolve<CustomerDashboard>(null as any);
     }
 
-    /**
-     * Retrieve investigators whom this customer has interacted with
-     */
+    /*
+    Retrieve investigators whom this customer has interacted with
+
+    */
     getInvestigators(): Promise<Investigator[]> {
         let url_ = this.baseUrl + "/customer/investigators";
         url_ = url_.replace(/[?&]$/, "");
@@ -1362,10 +1623,11 @@ export class CustomerClient extends ApiBase {
         return Promise.resolve<Investigator[]>(null as any);
     }
 
-    /**
-     * Create a new customer, via the self-service registration workflow
-     * @param dto A CustomerRegistration DTO
-     */
+    /*
+    Create a new customer, via the self-service registration workflow
+
+    @param dto A CustomerRegistration DTO
+    */
     register(dto: CustomerRegistration): Promise<Customer> {
         let url_ = this.baseUrl + "/customer/registration";
         url_ = url_.replace(/[?&]$/, "");
@@ -1418,9 +1680,10 @@ export class InvestigatorClient extends ApiBase {
         this.baseUrl = baseUrl ?? "http://localhost:50000";
     }
 
-    /**
-     * Retrieve all claims by investigator, currently not paged or limited
-     */
+    /*
+    Retrieve all claims by investigator, currently not paged or limited
+
+    */
     getClaims(): Promise<Claim[]> {
         let url_ = this.baseUrl + "/investigator/claims";
         url_ = url_.replace(/[?&]$/, "");
@@ -1464,9 +1727,10 @@ export class InvestigatorClient extends ApiBase {
         return Promise.resolve<Claim[]>(null as any);
     }
 
-    /**
-     * Retrieve a given claim
-     */
+    /*
+    Retrieve a given claim
+
+    */
     getClaim(uniqueID: string): Promise<Claim> {
         let url_ = this.baseUrl + "/investigator/claims/{uniqueID}";
         if (uniqueID === undefined || uniqueID === null)
@@ -1506,9 +1770,10 @@ export class InvestigatorClient extends ApiBase {
         return Promise.resolve<Claim>(null as any);
     }
 
-    /**
-     * Retrieve customers whom this investigator has interacted with
-     */
+    /*
+    Retrieve customers whom this investigator has interacted with
+
+    */
     getCustomers(): Promise<Customer[]> {
         let url_ = this.baseUrl + "/investigator/customers";
         url_ = url_.replace(/[?&]$/, "");
@@ -1552,9 +1817,10 @@ export class InvestigatorClient extends ApiBase {
         return Promise.resolve<Customer[]>(null as any);
     }
 
-    /**
-     * Retrieve an object containing aggregate values to populate the investigator landing page
-     */
+    /*
+    Retrieve an object containing aggregate values to populate the investigator landing page
+
+    */
     getDashboard(): Promise<InvestigatorDashboard> {
         let url_ = this.baseUrl + "/investigator/dashboard";
         url_ = url_.replace(/[?&]$/, "");
@@ -1603,9 +1869,10 @@ export class StatusClient extends ApiBase {
         this.baseUrl = baseUrl ?? "http://localhost:50000";
     }
 
-    /**
-     * Generate an unhandled exception
-     */
+    /*
+    Clear the cache
+
+    */
     clearCache(): Promise<void> {
         let url_ = this.baseUrl + "/status/cache";
         url_ = url_.replace(/[?&]$/, "");
@@ -1638,9 +1905,10 @@ export class StatusClient extends ApiBase {
         return Promise.resolve<void>(null as any);
     }
 
-    /**
-     * Generate an unhandled exception
-     */
+    /*
+    Generate an unhandled exception
+
+    */
     error(): Promise<void> {
         let url_ = this.baseUrl + "/status/error";
         url_ = url_.replace(/[?&]$/, "");
@@ -1673,9 +1941,10 @@ export class StatusClient extends ApiBase {
         return Promise.resolve<void>(null as any);
     }
 
-    /**
-     * Return an error code, used to automatically generate all error codes for the frontend
-     */
+    /*
+    Return an error code, used to automatically generate all error codes for the frontend
+
+    */
     errorCodes(): Promise<ErrorCode> {
         let url_ = this.baseUrl + "/status/errorcodes";
         url_ = url_.replace(/[?&]$/, "");
@@ -1713,9 +1982,10 @@ export class StatusClient extends ApiBase {
         return Promise.resolve<ErrorCode>(null as any);
     }
 
-    /**
-     * Determine if the API is alive
-     */
+    /*
+    Determine if the API is alive
+
+    */
     ping(): Promise<boolean> {
         let url_ = this.baseUrl + "/status/ping";
         url_ = url_.replace(/[?&]$/, "");
@@ -1752,6 +2022,227 @@ export class StatusClient extends ApiBase {
         }
         return Promise.resolve<boolean>(null as any);
     }
+}
+
+export class ClaimDocument implements IClaimDocument {
+    uniqueID!: string;
+    type!: ClaimDocumentType;
+    fileName!: string;
+    hash!: string;
+    description!: string;
+    summary!: string | undefined;
+    originatedTimestamp!: moment.Moment | undefined;
+    uploadedTimestamp!: moment.Moment;
+    summarizedTimestamp!: moment.Moment | undefined;
+    tombstonedTimestamp!: moment.Moment | undefined;
+
+    constructor(data?: IClaimDocument) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.uniqueID = _data["uniqueID"];
+            this.type = _data["type"];
+            this.fileName = _data["fileName"];
+            this.hash = _data["hash"];
+            this.description = _data["description"];
+            this.summary = _data["summary"];
+            this.originatedTimestamp = _data["originatedTimestamp"] ? moment(_data["originatedTimestamp"].toString()) : <any>undefined;
+            this.uploadedTimestamp = _data["uploadedTimestamp"] ? moment(_data["uploadedTimestamp"].toString()) : <any>undefined;
+            this.summarizedTimestamp = _data["summarizedTimestamp"] ? moment(_data["summarizedTimestamp"].toString()) : <any>undefined;
+            this.tombstonedTimestamp = _data["tombstonedTimestamp"] ? moment(_data["tombstonedTimestamp"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ClaimDocument {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClaimDocument();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uniqueID"] = this.uniqueID;
+        data["type"] = this.type;
+        data["fileName"] = this.fileName;
+        data["hash"] = this.hash;
+        data["description"] = this.description;
+        data["summary"] = this.summary;
+        data["originatedTimestamp"] = this.originatedTimestamp ? this.originatedTimestamp.toISOString() : <any>undefined;
+        data["uploadedTimestamp"] = this.uploadedTimestamp ? this.uploadedTimestamp.toISOString() : <any>undefined;
+        data["summarizedTimestamp"] = this.summarizedTimestamp ? this.summarizedTimestamp.toISOString() : <any>undefined;
+        data["tombstonedTimestamp"] = this.tombstonedTimestamp ? this.tombstonedTimestamp.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IClaimDocument {
+    uniqueID: string;
+    type: ClaimDocumentType;
+    fileName: string;
+    hash: string;
+    description: string;
+    summary: string | undefined;
+    originatedTimestamp: moment.Moment | undefined;
+    uploadedTimestamp: moment.Moment;
+    summarizedTimestamp: moment.Moment | undefined;
+    tombstonedTimestamp: moment.Moment | undefined;
+}
+
+export enum ClaimDocumentType {
+    PDF = "PDF",
+    MP4 = "MP4",
+    JPG = "JPG",
+    PNG = "PNG",
+    DOCX = "DOCX",
+    XLSX = "XLSX",
+}
+
+export abstract class MarshalByRefObject implements IMarshalByRefObject {
+
+    constructor(data?: IMarshalByRefObject) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): MarshalByRefObject {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'MarshalByRefObject' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IMarshalByRefObject {
+}
+
+export abstract class Stream extends MarshalByRefObject implements IStream {
+    canRead!: boolean;
+    canWrite!: boolean;
+    canSeek!: boolean;
+    canTimeout!: boolean;
+    length!: number;
+    position!: number;
+    readTimeout!: number;
+    writeTimeout!: number;
+
+    constructor(data?: IStream) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.canRead = _data["canRead"];
+            this.canWrite = _data["canWrite"];
+            this.canSeek = _data["canSeek"];
+            this.canTimeout = _data["canTimeout"];
+            this.length = _data["length"];
+            this.position = _data["position"];
+            this.readTimeout = _data["readTimeout"];
+            this.writeTimeout = _data["writeTimeout"];
+        }
+    }
+
+    static fromJS(data: any): Stream {
+        data = typeof data === 'object' ? data : {};
+        throw new Error("The abstract class 'Stream' cannot be instantiated.");
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["canRead"] = this.canRead;
+        data["canWrite"] = this.canWrite;
+        data["canSeek"] = this.canSeek;
+        data["canTimeout"] = this.canTimeout;
+        data["length"] = this.length;
+        data["position"] = this.position;
+        data["readTimeout"] = this.readTimeout;
+        data["writeTimeout"] = this.writeTimeout;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IStream extends IMarshalByRefObject {
+    canRead: boolean;
+    canWrite: boolean;
+    canSeek: boolean;
+    canTimeout: boolean;
+    length: number;
+    position: number;
+    readTimeout: number;
+    writeTimeout: number;
+}
+
+export class MemoryStream extends Stream implements IMemoryStream {
+    canRead!: boolean;
+    canSeek!: boolean;
+    canWrite!: boolean;
+    capacity!: number;
+    length!: number;
+    position!: number;
+
+    constructor(data?: IMemoryStream) {
+        super(data);
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.canRead = _data["canRead"];
+            this.canSeek = _data["canSeek"];
+            this.canWrite = _data["canWrite"];
+            this.capacity = _data["capacity"];
+            this.length = _data["length"];
+            this.position = _data["position"];
+        }
+    }
+
+    static fromJS(data: any): MemoryStream {
+        data = typeof data === 'object' ? data : {};
+        let result = new MemoryStream();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["canRead"] = this.canRead;
+        data["canSeek"] = this.canSeek;
+        data["canWrite"] = this.canWrite;
+        data["capacity"] = this.capacity;
+        data["length"] = this.length;
+        data["position"] = this.position;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IMemoryStream extends IStream {
+    canRead: boolean;
+    canSeek: boolean;
+    canWrite: boolean;
+    capacity: number;
+    length: number;
+    position: number;
 }
 
 export abstract class Base implements IBase {
@@ -2215,7 +2706,7 @@ export class Claim implements IClaim {
     ingestedTimestamp!: moment.Moment | undefined;
     adjudicatedTimestamp!: moment.Moment | undefined;
     tombstonedTimestamp!: moment.Moment | undefined;
-    attachments!: ClaimAttachment[];
+    documents!: ClaimDocument[];
     policy!: Policy;
     investigator!: Investigator | undefined;
 
@@ -2225,18 +2716,18 @@ export class Claim implements IClaim {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
-            if (data.attachments) {
-                this.attachments = [];
-                for (let i = 0; i < data.attachments.length; i++) {
-                    let item = data.attachments[i];
-                    this.attachments[i] = item && !(<any>item).toJSON ? new ClaimAttachment(item) : <ClaimAttachment>item;
+            if (data.documents) {
+                this.documents = [];
+                for (let i = 0; i < data.documents.length; i++) {
+                    let item = data.documents[i];
+                    this.documents[i] = item && !(<any>item).toJSON ? new ClaimDocument(item) : <ClaimDocument>item;
                 }
             }
             this.policy = data.policy && !(<any>data.policy).toJSON ? new Policy(data.policy) : <Policy>this.policy;
             this.investigator = data.investigator && !(<any>data.investigator).toJSON ? new Investigator(data.investigator) : <Investigator>this.investigator;
         }
         if (!data) {
-            this.attachments = [];
+            this.documents = [];
             this.policy = new Policy();
         }
     }
@@ -2256,10 +2747,10 @@ export class Claim implements IClaim {
             this.ingestedTimestamp = _data["ingestedTimestamp"] ? moment(_data["ingestedTimestamp"].toString()) : <any>undefined;
             this.adjudicatedTimestamp = _data["adjudicatedTimestamp"] ? moment(_data["adjudicatedTimestamp"].toString()) : <any>undefined;
             this.tombstonedTimestamp = _data["tombstonedTimestamp"] ? moment(_data["tombstonedTimestamp"].toString()) : <any>undefined;
-            if (Array.isArray(_data["attachments"])) {
-                this.attachments = [] as any;
-                for (let item of _data["attachments"])
-                    this.attachments!.push(ClaimAttachment.fromJS(item));
+            if (Array.isArray(_data["documents"])) {
+                this.documents = [] as any;
+                for (let item of _data["documents"])
+                    this.documents!.push(ClaimDocument.fromJS(item));
             }
             this.policy = _data["policy"] ? Policy.fromJS(_data["policy"]) : new Policy();
             this.investigator = _data["investigator"] ? Investigator.fromJS(_data["investigator"]) : <any>undefined;
@@ -2288,10 +2779,10 @@ export class Claim implements IClaim {
         data["ingestedTimestamp"] = this.ingestedTimestamp ? this.ingestedTimestamp.toISOString() : <any>undefined;
         data["adjudicatedTimestamp"] = this.adjudicatedTimestamp ? this.adjudicatedTimestamp.toISOString() : <any>undefined;
         data["tombstonedTimestamp"] = this.tombstonedTimestamp ? this.tombstonedTimestamp.toISOString() : <any>undefined;
-        if (Array.isArray(this.attachments)) {
-            data["attachments"] = [];
-            for (let item of this.attachments)
-                data["attachments"].push(item.toJSON());
+        if (Array.isArray(this.documents)) {
+            data["documents"] = [];
+            for (let item of this.documents)
+                data["documents"].push(item.toJSON());
         }
         data["policy"] = this.policy ? this.policy.toJSON() : <any>undefined;
         data["investigator"] = this.investigator ? this.investigator.toJSON() : <any>undefined;
@@ -2313,7 +2804,7 @@ export interface IClaim {
     ingestedTimestamp: moment.Moment | undefined;
     adjudicatedTimestamp: moment.Moment | undefined;
     tombstonedTimestamp: moment.Moment | undefined;
-    attachments: IClaimAttachment[];
+    documents: IClaimDocument[];
     policy: IPolicy;
     investigator: IInvestigator | undefined;
 }
@@ -2341,83 +2832,6 @@ export enum ClaimDisposition {
     Undecided = "Undecided",
     NotFraudulent = "NotFraudulent",
     Fraudulent = "Fraudulent",
-}
-
-export class ClaimAttachment implements IClaimAttachment {
-    uniqueID!: string;
-    type!: ClaimAttachmentType;
-    path!: string;
-    description!: string;
-    summary!: string | undefined;
-    originatedTimestamp!: moment.Moment | undefined;
-    uploadedTimestamp!: moment.Moment;
-    summarizedTimestamp!: moment.Moment | undefined;
-    tombstonedTimestamp!: moment.Moment | undefined;
-
-    constructor(data?: IClaimAttachment) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.uniqueID = _data["uniqueID"];
-            this.type = _data["type"];
-            this.path = _data["path"];
-            this.description = _data["description"];
-            this.summary = _data["summary"];
-            this.originatedTimestamp = _data["originatedTimestamp"] ? moment(_data["originatedTimestamp"].toString()) : <any>undefined;
-            this.uploadedTimestamp = _data["uploadedTimestamp"] ? moment(_data["uploadedTimestamp"].toString()) : <any>undefined;
-            this.summarizedTimestamp = _data["summarizedTimestamp"] ? moment(_data["summarizedTimestamp"].toString()) : <any>undefined;
-            this.tombstonedTimestamp = _data["tombstonedTimestamp"] ? moment(_data["tombstonedTimestamp"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): ClaimAttachment {
-        data = typeof data === 'object' ? data : {};
-        let result = new ClaimAttachment();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["uniqueID"] = this.uniqueID;
-        data["type"] = this.type;
-        data["path"] = this.path;
-        data["description"] = this.description;
-        data["summary"] = this.summary;
-        data["originatedTimestamp"] = this.originatedTimestamp ? this.originatedTimestamp.toISOString() : <any>undefined;
-        data["uploadedTimestamp"] = this.uploadedTimestamp ? this.uploadedTimestamp.toISOString() : <any>undefined;
-        data["summarizedTimestamp"] = this.summarizedTimestamp ? this.summarizedTimestamp.toISOString() : <any>undefined;
-        data["tombstonedTimestamp"] = this.tombstonedTimestamp ? this.tombstonedTimestamp.toISOString() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IClaimAttachment {
-    uniqueID: string;
-    type: ClaimAttachmentType;
-    path: string;
-    description: string;
-    summary: string | undefined;
-    originatedTimestamp: moment.Moment | undefined;
-    uploadedTimestamp: moment.Moment;
-    summarizedTimestamp: moment.Moment | undefined;
-    tombstonedTimestamp: moment.Moment | undefined;
-}
-
-export enum ClaimAttachmentType {
-    PDF = "PDF",
-    MP4 = "MP4",
-    JPG = "JPG",
-    PNG = "PNG",
-    DOCX = "DOCX",
-    XLSX = "XLSX",
 }
 
 export class Policy implements IPolicy {
@@ -3556,6 +3970,11 @@ export enum ErrorCode {
     CustomerClaimDoesNotExist = "CustomerClaimDoesNotExist",
     InvestigatorDoesNotExist = "InvestigatorDoesNotExist",
     InvestigatorClaimDoesNotExist = "InvestigatorClaimDoesNotExist",
+    DocumentDownloadFromAzureFailed = "DocumentDownloadFromAzureFailed",
+    DocumentEnumerationFromAzureFailed = "DocumentEnumerationFromAzureFailed",
+    DocumentUploadToAzureFailed = "DocumentUploadToAzureFailed",
+    DocumentHashAlreadyExists = "DocumentHashAlreadyExists",
+    DocumentTypeNotSupported = "DocumentTypeNotSupported",
 }
 
 export interface FileResponse {

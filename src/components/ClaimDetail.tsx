@@ -1,4 +1,4 @@
-import * as Api from '@/api/api'
+import * as Api from '@/api/model'
 import PropertyTag from './PropertyTag'
 import Icon from './Icon'
 import Avatar from './Avatar'
@@ -103,17 +103,17 @@ const ClaimDetail = ({ claim }: IClaimDetail) => {
             <div className="row">
               <div className="col-md-6 info-box">
                 <div>
-                  <span className="header">Attachments</span>
-                  <div className="attachments">
-                    {claim.attachments.map((attachment, index) => (
+                  <span className="header">documents</span>
+                  <div className="documents">
+                    {claim.documents.map((document, index) => (
                       <div>
                         <img
-                          className="attachment-icon"
-                          src={`/images/filetypes/${attachment.type.toLowerCase()}.svg`}></img>
+                          className="document-icon"
+                          src={`/images/filetypes/${document.type.toLowerCase()}.svg`}></img>
                         <div className="details">
-                          {attachment.description}
+                          {document.description}
                           <br></br>
-                          <span>{attachment.uploadedTimestamp.format('MM/DD/YYYY')}</span>
+                          <span>{document.uploadedTimestamp.format('MM/DD/YYYY')}</span>
                         </div>
                       </div>
                     ))}
