@@ -64,6 +64,7 @@ const Table = ({
     const sorted = sort(sourceData, sortColumn, sortOrder, column.type)
 
     setData(sorted!)
+    // eslint-disable-next-line
   }, [sourceData, columns, sortColumn, sortOrder])
 
   const unselectAllRows = () => {

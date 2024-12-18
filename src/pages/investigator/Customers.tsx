@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Customer, CustomerCreateOrUpdate, InvestigatorClient } from 'api/model'
+import { Customer, InvestigatorClient } from 'api/model'
 import CustomerList from 'components/CustomerList'
 
 const Customers = () => {
@@ -10,12 +10,13 @@ const Customers = () => {
 
   const [customers, setCustomers] = useState<Customer[]>()
 
-  const handleCustomerUpdate = async (
+  /*  const handleCustomerUpdate = async (
     uniqueID: string,
     editCustomer: CustomerCreateOrUpdate
   ) => {
     return null
   }
+  */
 
   useEffect(() => {
     ;(async () => {

@@ -212,6 +212,8 @@ export function AuthenticationProvider({ children }: { children: any }) {
         localStorage.setItem(authLocalStorageKey, countdown.toString())
       }, 250)
     },
+    // issue with param precedence
+    // eslint-disable-next-line
     [setJwtAccessTokenLifeRemaining]
   )
 

@@ -1,13 +1,54 @@
-import * as Api from '@/api/model'
+import * as Api from 'api/model'
 import PropertyTag from './PropertyTag'
 import Icon from './Icon'
 import Avatar from './Avatar'
+import { useMemo, useState } from 'react'
+import moment from 'moment'
 
 interface IClaimDetail {
   claim: Api.Claim
 }
 
 const ClaimDetail = ({ claim }: IClaimDetail) => {
+  const apiClient = useMemo(
+    () => new Api.AdministratorClient(process.env.REACT_APP_API_URL),
+    []
+  )
+
+  const [selectedFile, setSelectedFile] = useState<File>()
+
+  const handleFileChange = (event: any) => {
+    setSelectedFile(event.target.files[0])
+  }
+
+  const handleUpload = async () => {
+    if (selectedFile) {
+      let fileParameter: Api.FileParameter = {
+        data: selectedFile,
+        fileName: selectedFile.name ?? 'Unknown',
+      }
+
+      try {
+        await apiClient.upload(
+          claim.uniqueID,
+          moment(selectedFile.lastModified),
+          fileParameter
+        )
+      } catch (error: any) {
+        if (error instanceof TypeError && error.message === 'Failed to fetch') {
+          return
+        }
+        const apiError = JSON.parse(error.response)
+
+        switch (apiError?.errorCodeName) {
+          case Api.ErrorCode.DocumentHashAlreadyExists:
+            alert('A file with that hash already exists')
+            break
+        }
+      }
+    }
+  }
+
   return (
     <>
       {claim ? (
@@ -108,6 +149,7 @@ const ClaimDetail = ({ claim }: IClaimDetail) => {
                     {claim.documents.map((document, index) => (
                       <div>
                         <img
+                          alt={document.fileName}
                           className="document-icon"
                           src={`/images/filetypes/${document.type.toLowerCase()}.svg`}></img>
                         <div className="details">
@@ -148,6 +190,10 @@ const ClaimDetail = ({ claim }: IClaimDetail) => {
               </div>
             </div>
           </div>
+          <input type="file" onChange={handleFileChange} />
+          <button onClick={handleUpload} disabled={!selectedFile}>
+            Upload
+          </button>
         </>
       ) : (
         <></>
