@@ -91,61 +91,6 @@ export class AccountClient extends ApiBase {
     return Promise.resolve<FileResponse>(null as any)
   }
 
-  download(
-    code?: string | undefined,
-    fileName?: string | undefined
-  ): Promise<MemoryStream> {
-    let url_ = this.baseUrl + '/test/download?'
-    if (code === null) throw new Error("The parameter 'code' cannot be null.")
-    else if (code !== undefined) url_ += 'code=' + encodeURIComponent('' + code) + '&'
-    if (fileName === null) throw new Error("The parameter 'fileName' cannot be null.")
-    else if (fileName !== undefined)
-      url_ += 'fileName=' + encodeURIComponent('' + fileName) + '&'
-    url_ = url_.replace(/[?&]$/, '')
-
-    let options_: RequestInit = {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-      },
-    }
-
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_)
-      })
-      .then((_response: Response) => {
-        return this.processDownload(_response)
-      })
-  }
-
-  protected processDownload(response: Response): Promise<MemoryStream> {
-    const status = response.status
-    let _headers: any = {}
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v))
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null
-        let resultData200 =
-          _responseText === '' ? null : JSON.parse(_responseText, this.jsonParseReviver)
-        result200 = MemoryStream.fromJS(resultData200)
-        return result200
-      })
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException(
-          'An unexpected server error occurred.',
-          status,
-          _responseText,
-          _headers
-        )
-      })
-    }
-    return Promise.resolve<MemoryStream>(null as any)
-  }
-
   query(question?: string | undefined): Promise<string> {
     let url_ = this.baseUrl + '/test/query?'
     if (question === null) throw new Error("The parameter 'question' cannot be null.")
@@ -1062,6 +1007,87 @@ export class AdministratorClient extends ApiBase {
       })
     }
     return Promise.resolve<Document>(null as any)
+  }
+
+  /*
+    Dowbload a single document for a given claim from blob storage
+
+    ErrorCode.DocumentDoesNotExist
+    ErrorCode.DocumentDownloadFromAzureFailed
+
+    @param claimUniqueID The claims's public unique ID
+
+    @param documentUniqueID The document's public unique ID
+    */
+  download(claimUniqueID: string, documentUniqueID: string): Promise<FileResponse> {
+    let url_ =
+      this.baseUrl + '/administrator/claims/{claimUniqueID}/documents/{documentUniqueID}'
+    if (claimUniqueID === undefined || claimUniqueID === null)
+      throw new Error("The parameter 'claimUniqueID' must be defined.")
+    url_ = url_.replace('{claimUniqueID}', encodeURIComponent('' + claimUniqueID))
+    if (documentUniqueID === undefined || documentUniqueID === null)
+      throw new Error("The parameter 'documentUniqueID' must be defined.")
+    url_ = url_.replace('{documentUniqueID}', encodeURIComponent('' + documentUniqueID))
+    url_ = url_.replace(/[?&]$/, '')
+
+    let options_: RequestInit = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/octet-stream',
+      },
+    }
+
+    return this.transformOptions(options_)
+      .then((transformedOptions_) => {
+        return this.http.fetch(url_, transformedOptions_)
+      })
+      .then((_response: Response) => {
+        return this.processDownload(_response)
+      })
+  }
+
+  protected processDownload(response: Response): Promise<FileResponse> {
+    const status = response.status
+    let _headers: any = {}
+    if (response.headers && response.headers.forEach) {
+      response.headers.forEach((v: any, k: any) => (_headers[k] = v))
+    }
+    if (status === 200 || status === 206) {
+      const contentDisposition = response.headers
+        ? response.headers.get('content-disposition')
+        : undefined
+      let fileNameMatch = contentDisposition
+        ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(
+            contentDisposition
+          )
+        : undefined
+      let fileName =
+        fileNameMatch && fileNameMatch.length > 1
+          ? fileNameMatch[3] || fileNameMatch[2]
+          : undefined
+      if (fileName) {
+        fileName = decodeURIComponent(fileName)
+      } else {
+        fileNameMatch = contentDisposition
+          ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition)
+          : undefined
+        fileName =
+          fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined
+      }
+      return response.blob().then((blob) => {
+        return { fileName: fileName, data: blob, status: status, headers: _headers }
+      })
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException(
+          'An unexpected server error occurred.',
+          status,
+          _responseText,
+          _headers
+        )
+      })
+    }
+    return Promise.resolve<FileResponse>(null as any)
   }
 
   /*
@@ -2595,142 +2621,6 @@ export class StatusClient extends ApiBase {
   }
 }
 
-export abstract class MarshalByRefObject implements IMarshalByRefObject {
-  constructor(data?: IMarshalByRefObject) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property]
-      }
-    }
-  }
-
-  init(_data?: any) {}
-
-  static fromJS(data: any): MarshalByRefObject {
-    data = typeof data === 'object' ? data : {}
-    throw new Error("The abstract class 'MarshalByRefObject' cannot be instantiated.")
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
-    return data
-  }
-}
-
-export interface IMarshalByRefObject {}
-
-export abstract class Stream extends MarshalByRefObject implements IStream {
-  canRead!: boolean
-  canWrite!: boolean
-  canSeek!: boolean
-  canTimeout!: boolean
-  length!: number
-  position!: number
-  readTimeout!: number
-  writeTimeout!: number
-
-  constructor(data?: IStream) {
-    super(data)
-  }
-
-  init(_data?: any) {
-    super.init(_data)
-    if (_data) {
-      this.canRead = _data['canRead']
-      this.canWrite = _data['canWrite']
-      this.canSeek = _data['canSeek']
-      this.canTimeout = _data['canTimeout']
-      this.length = _data['length']
-      this.position = _data['position']
-      this.readTimeout = _data['readTimeout']
-      this.writeTimeout = _data['writeTimeout']
-    }
-  }
-
-  static fromJS(data: any): Stream {
-    data = typeof data === 'object' ? data : {}
-    throw new Error("The abstract class 'Stream' cannot be instantiated.")
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
-    data['canRead'] = this.canRead
-    data['canWrite'] = this.canWrite
-    data['canSeek'] = this.canSeek
-    data['canTimeout'] = this.canTimeout
-    data['length'] = this.length
-    data['position'] = this.position
-    data['readTimeout'] = this.readTimeout
-    data['writeTimeout'] = this.writeTimeout
-    super.toJSON(data)
-    return data
-  }
-}
-
-export interface IStream extends IMarshalByRefObject {
-  canRead: boolean
-  canWrite: boolean
-  canSeek: boolean
-  canTimeout: boolean
-  length: number
-  position: number
-  readTimeout: number
-  writeTimeout: number
-}
-
-export class MemoryStream extends Stream implements IMemoryStream {
-  canRead!: boolean
-  canSeek!: boolean
-  canWrite!: boolean
-  capacity!: number
-  length!: number
-  position!: number
-
-  constructor(data?: IMemoryStream) {
-    super(data)
-  }
-
-  init(_data?: any) {
-    super.init(_data)
-    if (_data) {
-      this.canRead = _data['canRead']
-      this.canSeek = _data['canSeek']
-      this.canWrite = _data['canWrite']
-      this.capacity = _data['capacity']
-      this.length = _data['length']
-      this.position = _data['position']
-    }
-  }
-
-  static fromJS(data: any): MemoryStream {
-    data = typeof data === 'object' ? data : {}
-    let result = new MemoryStream()
-    result.init(data)
-    return result
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {}
-    data['canRead'] = this.canRead
-    data['canSeek'] = this.canSeek
-    data['canWrite'] = this.canWrite
-    data['capacity'] = this.capacity
-    data['length'] = this.length
-    data['position'] = this.position
-    super.toJSON(data)
-    return data
-  }
-}
-
-export interface IMemoryStream extends IStream {
-  canRead: boolean
-  canSeek: boolean
-  canWrite: boolean
-  capacity: number
-  length: number
-  position: number
-}
-
 export abstract class Base implements IBase {
   constructor(data?: IBase) {
     if (data) {
@@ -3370,6 +3260,7 @@ export class Document implements IDocument {
   uniqueID!: string
   type!: DocumentType
   name!: string
+  path!: string
   size!: number
   hash!: string
   description!: string
@@ -3392,6 +3283,7 @@ export class Document implements IDocument {
       this.uniqueID = _data['uniqueID']
       this.type = _data['type']
       this.name = _data['name']
+      this.path = _data['path']
       this.size = _data['size']
       this.hash = _data['hash']
       this.description = _data['description']
@@ -3423,6 +3315,7 @@ export class Document implements IDocument {
     data['uniqueID'] = this.uniqueID
     data['type'] = this.type
     data['name'] = this.name
+    data['path'] = this.path
     data['size'] = this.size
     data['hash'] = this.hash
     data['description'] = this.description
@@ -3447,6 +3340,7 @@ export interface IDocument {
   uniqueID: string
   type: DocumentType
   name: string
+  path: string
   size: number
   hash: string
   description: string
@@ -4716,6 +4610,7 @@ export enum ErrorCode {
   DocumentUploadToAzureFailed = 'DocumentUploadToAzureFailed',
   DocumentHashAlreadyExists = 'DocumentHashAlreadyExists',
   DocumentTypeNotSupported = 'DocumentTypeNotSupported',
+  DocumentDoesNotExist = 'DocumentDoesNotExist',
   ClaimDoesNotExist = 'ClaimDoesNotExist',
 }
 

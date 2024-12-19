@@ -2098,12 +2098,18 @@ form.form-error .input-container {
       vertical-align: top;
       display: inline-block;
       line-height: 18px;
-      transition: color 0.2s;
       width: calc(100% - 90px);
 
-      &:hover {
-        color: var(--color-primary);
-        cursor: pointer;
+      a {
+        color: var(--color-black);
+        text-decoration: none;
+        font-size: 14px;
+        transition: color 0.2s;
+
+        &:hover {
+          color: var(--color-primary);
+          cursor: pointer;
+        }
       }
 
       span {

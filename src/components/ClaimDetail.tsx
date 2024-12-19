@@ -4,6 +4,7 @@ import Icon from './Icon'
 import Avatar from './Avatar'
 import { useMemo, useState } from 'react'
 import moment from 'moment'
+import { on } from 'events'
 
 interface IClaimDetail {
   claim: Api.Claim
@@ -19,6 +20,20 @@ const ClaimDetail = ({ claim }: IClaimDetail) => {
 
   const handleFileChange = (event: any) => {
     setSelectedFile(event.target.files[0])
+  }
+
+  const handleDownload = async (document: Api.Document) => {
+    try {
+      const response = await apiClient.download(claim.uniqueID, document.uniqueID)
+      const a = window.document.createElement('a')
+      a.href = window.URL.createObjectURL(response.data)
+      a.download = document.name
+      window.document.body.appendChild(a)
+      a.click()
+      a.remove()
+    } catch (error: any) {
+      console.log(JSON.stringify(error))
+    }
   }
 
   const handleUpload = async () => {
@@ -153,9 +168,16 @@ const ClaimDetail = ({ claim }: IClaimDetail) => {
                           className="document-icon"
                           src={`/images/filetypes/${document.type.toLowerCase()}.svg`}></img>
                         <div className="details">
-                          {document.description}
-                          <br></br>
-                          <span>{document.uploadedTimestamp.format('MM/DD/YYYY')}</span>
+                          <a
+                            href="#"
+                            onClick={async (e) => {
+                              e.preventDefault()
+                              handleDownload(document)
+                            }}>
+                            {document.description}
+                            <br></br>
+                            <span>{document.uploadedTimestamp.format('MM/DD/YYYY')}</span>
+                          </a>
                         </div>
                       </div>
                     ))}
