@@ -149,7 +149,7 @@ const ClaimDetail = ({ claim }: IClaimDetail) => {
                     {claim.documents.map((document, index) => (
                       <div>
                         <img
-                          alt={document.fileName}
+                          alt={document.name}
                           className="document-icon"
                           src={`/images/filetypes/${document.type.toLowerCase()}.svg`}></img>
                         <div className="details">

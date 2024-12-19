@@ -1000,7 +1000,7 @@ export class AdministratorClient extends ApiBase {
     uniqueID: string,
     lastModifiedTimestamp?: moment.Moment | undefined,
     file?: FileParameter | null | undefined
-  ): Promise<ClaimDocument> {
+  ): Promise<Document> {
     let url_ = this.baseUrl + '/administrator/claims/{uniqueID}/documents?'
     if (uniqueID === undefined || uniqueID === null)
       throw new Error("The parameter 'uniqueID' must be defined.")
@@ -1037,7 +1037,7 @@ export class AdministratorClient extends ApiBase {
       })
   }
 
-  protected processUpload(response: Response): Promise<ClaimDocument> {
+  protected processUpload(response: Response): Promise<Document> {
     const status = response.status
     let _headers: any = {}
     if (response.headers && response.headers.forEach) {
@@ -1048,7 +1048,7 @@ export class AdministratorClient extends ApiBase {
         let result200: any = null
         let resultData200 =
           _responseText === '' ? null : JSON.parse(_responseText, this.jsonParseReviver)
-        result200 = ClaimDocument.fromJS(resultData200)
+        result200 = Document.fromJS(resultData200)
         return result200
       })
     } else if (status !== 200 && status !== 204) {
@@ -1061,7 +1061,7 @@ export class AdministratorClient extends ApiBase {
         )
       })
     }
-    return Promise.resolve<ClaimDocument>(null as any)
+    return Promise.resolve<Document>(null as any)
   }
 
   /*
@@ -3214,7 +3214,7 @@ export class Claim implements IClaim {
   ingestedTimestamp!: moment.Moment | undefined
   adjudicatedTimestamp!: moment.Moment | undefined
   tombstonedTimestamp!: moment.Moment | undefined
-  documents!: ClaimDocument[]
+  documents!: Document[]
   policy!: Policy
   investigator!: Investigator | undefined
 
@@ -3228,7 +3228,7 @@ export class Claim implements IClaim {
         for (let i = 0; i < data.documents.length; i++) {
           let item = data.documents[i]
           this.documents[i] =
-            item && !(<any>item).toJSON ? new ClaimDocument(item) : <ClaimDocument>item
+            item && !(<any>item).toJSON ? new Document(item) : <Document>item
         }
       }
       this.policy =
@@ -3273,8 +3273,7 @@ export class Claim implements IClaim {
         : <any>undefined
       if (Array.isArray(_data['documents'])) {
         this.documents = [] as any
-        for (let item of _data['documents'])
-          this.documents!.push(ClaimDocument.fromJS(item))
+        for (let item of _data['documents']) this.documents!.push(Document.fromJS(item))
       }
       this.policy = _data['policy'] ? Policy.fromJS(_data['policy']) : new Policy()
       this.investigator = _data['investigator']
@@ -3337,7 +3336,7 @@ export interface IClaim {
   ingestedTimestamp: moment.Moment | undefined
   adjudicatedTimestamp: moment.Moment | undefined
   tombstonedTimestamp: moment.Moment | undefined
-  documents: IClaimDocument[]
+  documents: IDocument[]
   policy: IPolicy
   investigator: IInvestigator | undefined
 }
@@ -3367,10 +3366,11 @@ export enum ClaimDisposition {
   Fraudulent = 'Fraudulent',
 }
 
-export class ClaimDocument implements IClaimDocument {
+export class Document implements IDocument {
   uniqueID!: string
-  type!: ClaimDocumentType
-  fileName!: string
+  type!: DocumentType
+  name!: string
+  size!: number
   hash!: string
   description!: string
   summary!: string | undefined
@@ -3379,7 +3379,7 @@ export class ClaimDocument implements IClaimDocument {
   summarizedTimestamp!: moment.Moment | undefined
   tombstonedTimestamp!: moment.Moment | undefined
 
-  constructor(data?: IClaimDocument) {
+  constructor(data?: IDocument) {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property)) (<any>this)[property] = (<any>data)[property]
@@ -3391,7 +3391,8 @@ export class ClaimDocument implements IClaimDocument {
     if (_data) {
       this.uniqueID = _data['uniqueID']
       this.type = _data['type']
-      this.fileName = _data['fileName']
+      this.name = _data['name']
+      this.size = _data['size']
       this.hash = _data['hash']
       this.description = _data['description']
       this.summary = _data['summary']
@@ -3410,9 +3411,9 @@ export class ClaimDocument implements IClaimDocument {
     }
   }
 
-  static fromJS(data: any): ClaimDocument {
+  static fromJS(data: any): Document {
     data = typeof data === 'object' ? data : {}
-    let result = new ClaimDocument()
+    let result = new Document()
     result.init(data)
     return result
   }
@@ -3421,7 +3422,8 @@ export class ClaimDocument implements IClaimDocument {
     data = typeof data === 'object' ? data : {}
     data['uniqueID'] = this.uniqueID
     data['type'] = this.type
-    data['fileName'] = this.fileName
+    data['name'] = this.name
+    data['size'] = this.size
     data['hash'] = this.hash
     data['description'] = this.description
     data['summary'] = this.summary
@@ -3441,10 +3443,11 @@ export class ClaimDocument implements IClaimDocument {
   }
 }
 
-export interface IClaimDocument {
+export interface IDocument {
   uniqueID: string
-  type: ClaimDocumentType
-  fileName: string
+  type: DocumentType
+  name: string
+  size: number
   hash: string
   description: string
   summary: string | undefined
@@ -3454,7 +3457,7 @@ export interface IClaimDocument {
   tombstonedTimestamp: moment.Moment | undefined
 }
 
-export enum ClaimDocumentType {
+export enum DocumentType {
   PDF = 'PDF',
   MP4 = 'MP4',
   JPG = 'JPG',

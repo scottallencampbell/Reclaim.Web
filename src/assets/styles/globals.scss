@@ -84,7 +84,7 @@ select {
 }
 
 .element-loading {
-  opacity: 1;
+  opacity: 0;
 }
 
 .unauth-container {
@@ -462,6 +462,10 @@ form.form-error .input-container {
 
   .bg-light-ex {
     position: relative;
+  }
+
+  .display-4 {
+    font-weight: 200;
   }
 }
 
@@ -2095,6 +2099,7 @@ form.form-error .input-container {
       display: inline-block;
       line-height: 18px;
       transition: color 0.2s;
+      width: calc(100% - 90px);
 
       &:hover {
         color: var(--color-primary);
