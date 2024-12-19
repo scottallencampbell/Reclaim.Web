@@ -2,20 +2,23 @@ import * as Api from 'api/model'
 import PropertyTag from './PropertyTag'
 import Icon from './Icon'
 import Avatar from './Avatar'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import moment from 'moment'
-import { on } from 'events'
 
 interface IClaimDetail {
   claim: Api.Claim
+  handleDocumentDownload: (document: Api.Document) => Promise<any>
+  handleDocumentUpload: (
+    document: Api.FileParameter,
+    timestamp: moment.Moment
+  ) => Promise<any>
 }
 
-const ClaimDetail = ({ claim }: IClaimDetail) => {
-  const apiClient = useMemo(
-    () => new Api.AdministratorClient(process.env.REACT_APP_API_URL),
-    []
-  )
-
+const ClaimDetail = ({
+  claim,
+  handleDocumentDownload,
+  handleDocumentUpload,
+}: IClaimDetail) => {
   const [selectedFile, setSelectedFile] = useState<File>()
 
   const handleFileChange = (event: any) => {
@@ -24,7 +27,7 @@ const ClaimDetail = ({ claim }: IClaimDetail) => {
 
   const handleDownload = async (document: Api.Document) => {
     try {
-      const response = await apiClient.download(claim.uniqueID, document.uniqueID)
+      const response = await handleDocumentDownload(document)
       const a = window.document.createElement('a')
       a.href = window.URL.createObjectURL(response.data)
       a.download = document.name
@@ -44,11 +47,7 @@ const ClaimDetail = ({ claim }: IClaimDetail) => {
       }
 
       try {
-        await apiClient.upload(
-          claim.uniqueID,
-          moment(selectedFile.lastModified),
-          fileParameter
-        )
+        await handleDocumentUpload(fileParameter, moment(selectedFile.lastModified))
       } catch (error: any) {
         if (error instanceof TypeError && error.message === 'Failed to fetch') {
           return
@@ -169,6 +168,7 @@ const ClaimDetail = ({ claim }: IClaimDetail) => {
                           src={`/images/filetypes/${document.type.toLowerCase()}.svg`}></img>
                         <div className="details">
                           <a
+                            // eslint-disable-next-line
                             href="#"
                             onClick={async (e) => {
                               e.preventDefault()

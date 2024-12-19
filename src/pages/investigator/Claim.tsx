@@ -13,6 +13,18 @@ const Claim = () => {
 
   const [claim, setClaim] = useState<Api.Claim>()
 
+  const handleDocumentUpload = async (
+    fileParameter: Api.FileParameter,
+    timestamp: moment.Moment
+  ) => {
+    await apiClient.upload(claim!.uniqueID, timestamp, fileParameter)
+  }
+
+  const handleDocumentDownload = async (document: Api.Document) => {
+    const response = await apiClient.download(claim!.uniqueID, document.uniqueID)
+    return response
+  }
+
   useEffect(() => {
     if (uniqueID === undefined) {
       return
@@ -28,7 +40,13 @@ const Claim = () => {
     })()
   }, [apiClient, uniqueID])
 
-  return claim ? <ClaimDetail claim={claim} /> : null
+  return claim ? (
+    <ClaimDetail
+      claim={claim}
+      handleDocumentDownload={handleDocumentDownload}
+      handleDocumentUpload={handleDocumentUpload}
+    />
+  ) : null
 }
 
 export default Claim
