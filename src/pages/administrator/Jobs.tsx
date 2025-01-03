@@ -1,14 +1,23 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Table from 'components/Table'
 import { AdministratorClient, Job, JobStatus } from 'api/model'
 import * as signalR from '@microsoft/signalr'
 import moment from 'moment'
+import Icon from 'components/Icon'
 
 const Jobs = () => {
   const apiClient = useMemo(
     () => new AdministratorClient(process.env.REACT_APP_API_URL),
     []
   )
+
+  const tableRef = useRef<{ handleExport: () => void } | null>(null)
+
+  const handleExportClick = () => {
+    if (tableRef.current) {
+      tableRef.current.handleExport()
+    }
+  }
 
   const [jobs, setJobs] = useState<Job[]>()
 
@@ -99,8 +108,17 @@ const Jobs = () => {
   return (
     <>
       <div className="header">Scheduled Jobs</div>
+      <div className="menu">
+        <div onClick={handleExportClick}>
+          <Icon name="Download"></Icon>Export
+        </div>
+        <div>
+          <Icon name="MagnifyingGlass"></Icon>Filter
+        </div>
+      </div>
       <div className="inner">
         <Table
+          ref={tableRef}
           id="job-table"
           name="Jobs"
           type="jobs"

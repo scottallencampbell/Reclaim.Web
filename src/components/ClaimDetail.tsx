@@ -4,6 +4,7 @@ import Icon from './Icon'
 import Avatar from './Avatar'
 import { useState } from 'react'
 import moment from 'moment'
+import { Link, useNavigate } from 'react-router-dom'
 
 interface IClaimDetail {
   claim: Api.Claim
@@ -20,6 +21,7 @@ const ClaimDetail = ({
   handleDocumentUpload,
 }: IClaimDetail) => {
   const [selectedFile, setSelectedFile] = useState<File>()
+  const navigate = useNavigate()
 
   const handleFileChange = (event: any) => {
     setSelectedFile(event.target.files[0])
@@ -68,7 +70,24 @@ const ClaimDetail = ({
       {claim ? (
         <>
           <div className="header">Claim {claim.externalID}</div>
-          <div className="inner">
+          <div className="menu">
+            <Link to=".." relative="path">
+              <Icon name="ArrowLeft"></Icon> Return to claims list
+            </Link>
+            <Link to="documents">
+              <Icon name="SquarePlus"></Icon> Add document
+            </Link>
+            <div>
+              <Icon name="WandMagicSparkles"></Icon>Query documents
+            </div>
+            <div>
+              <Icon name="Cogs"></Icon>Set status
+            </div>
+            <div>
+              <Icon name="Gavel"></Icon>Set disposition
+            </div>
+          </div>
+          <div className="inner no-table">
             <div className="row">
               <div className="col-md-6 info-box">
                 <div>
@@ -167,8 +186,8 @@ const ClaimDetail = ({
                           className="document-icon"
                           src={`/images/filetypes/${document.type.toLowerCase()}.svg`}></img>
                         <div className="details">
+                          // eslint-disable-next-line
                           <a
-                            // eslint-disable-next-line
                             href="#"
                             onClick={async (e) => {
                               e.preventDefault()

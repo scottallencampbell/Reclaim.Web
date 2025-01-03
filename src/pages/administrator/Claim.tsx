@@ -21,7 +21,6 @@ const Claim = () => {
   }
 
   const handleDocumentDownload = async (document: Api.Document) => {
-    console.log(claim, document)
     const response = await apiClient.download(claim!.uniqueID, document.uniqueID)
     return response
   }

@@ -12,7 +12,6 @@ const Dashboard = () => {
   )
 
   const [dashboard, setDashboard] = useState<AdministratorDashboard>()
-
   useEffect(() => {
     ;(async () => {
       try {

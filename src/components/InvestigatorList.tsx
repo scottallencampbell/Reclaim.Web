@@ -1,11 +1,12 @@
 import { Investigator } from 'api/model'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import Table from './Table'
 import PropertyBar from './PropertyBar'
 import TextInput from './TextInput'
 import Icon from './Icon'
 import moment from 'moment'
 import { postalCodeRegex } from 'helpers/constants'
+import { TableResize } from 'mui-datatables'
 
 interface IInvestigatorList {
   investigators: Investigator[] | undefined
@@ -20,6 +21,14 @@ const InvestigatorList = ({
   const [editInvestigator, setEditInvestigator] = useState<Investigator>(
     {} as Investigator
   )
+
+  const tableRef = useRef<{ handleExport: () => void } | null>(null)
+
+  const handleExportClick = () => {
+    if (tableRef.current) {
+      tableRef.current.handleExport()
+    }
+  }
 
   const columns = useMemo(
     () => [
@@ -150,8 +159,28 @@ const InvestigatorList = ({
   return (
     <>
       <div className="header">Investigators</div>
+      <div className="menu">
+        {handleUpdateInvestigator ? (
+          <div
+            onClick={() => {
+              setEditInvestigator(new Investigator())
+              setIsPropertyBarVisible(true)
+            }}>
+            <Icon name="SquarePlus"></Icon>Add investigator
+          </div>
+        ) : (
+          <></>
+        )}
+        <div onClick={handleExportClick}>
+          <Icon name="Download"></Icon>Export
+        </div>
+        <div>
+          <Icon name="MagnifyingGlass"></Icon>Filter
+        </div>
+      </div>
       <div className="inner">
         <Table
+          ref={tableRef}
           id="investigator-table"
           name="Investigators"
           type="investigators"
@@ -163,20 +192,7 @@ const InvestigatorList = ({
           }
           onSearchTermsChange={null}
           onRowClick={handleUpdateInvestigator ? handleRowClick : null}
-          initialSortColumn={'lastName'}>
-          {handleUpdateInvestigator ? (
-            <Icon
-              toolTip="Add investigator"
-              name="SquarePlus"
-              onClick={() => {
-                setEditInvestigator(new Investigator())
-                setIsPropertyBarVisible(true)
-              }}
-            />
-          ) : (
-            <></>
-          )}
-        </Table>
+          initialSortColumn={'lastName'}></Table>
       </div>
       {editInvestigator && handleUpdateInvestigator ? (
         <PropertyBar

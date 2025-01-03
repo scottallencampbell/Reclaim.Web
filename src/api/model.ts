@@ -22,91 +22,6 @@ export class AccountClient extends ApiBase {
         this.baseUrl = baseUrl ?? "http://localhost:50000";
     }
 
-    list(code?: string | undefined): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/test/list?";
-        if (code === null)
-            throw new Error("The parameter 'code' cannot be null.");
-        else if (code !== undefined)
-            url_ += "code=" + encodeURIComponent("" + code) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/octet-stream"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processList(_response);
-        });
-    }
-
-    protected processList(response: Response): Promise<FileResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
-            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
-            if (fileName) {
-                fileName = decodeURIComponent(fileName);
-            } else {
-                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            }
-            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<FileResponse>(null as any);
-    }
-
-    query(question?: string | undefined): Promise<string> {
-        let url_ = this.baseUrl + "/test/query?";
-        if (question === null)
-            throw new Error("The parameter 'question' cannot be null.");
-        else if (question !== undefined)
-            url_ += "question=" + encodeURIComponent("" + question) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processQuery(_response);
-        });
-    }
-
-    protected processQuery(response: Response): Promise<string> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<string>(null as any);
-    }
-
     /*
     Authenticate and receive a JWT bearer token
 
@@ -518,7 +433,7 @@ export class AdministratorClient extends ApiBase {
     }
 
     /*
-    View a list of currently logged-in accounts
+    View a list of currently signede-in accounts
 
     */
     authenticated(): Promise<Account[]> {
@@ -751,62 +666,6 @@ export class AdministratorClient extends ApiBase {
     }
 
     /*
-    Download a single document for a given claim from blob storage
-
-    ErrorCode.DocumentDoesNotExist
-    ErrorCode.DocumentDownloadFromAzureFailed
-
-    @param claimUniqueID The claims's public unique ID
-
-    @param documentUniqueID The document's public unique ID
-    */
-    download(claimUniqueID: string, documentUniqueID: string): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/administrator/claims/{claimUniqueID}/documents/{documentUniqueID}";
-        if (claimUniqueID === undefined || claimUniqueID === null)
-            throw new Error("The parameter 'claimUniqueID' must be defined.");
-        url_ = url_.replace("{claimUniqueID}", encodeURIComponent("" + claimUniqueID));
-        if (documentUniqueID === undefined || documentUniqueID === null)
-            throw new Error("The parameter 'documentUniqueID' must be defined.");
-        url_ = url_.replace("{documentUniqueID}", encodeURIComponent("" + documentUniqueID));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "application/octet-stream"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processDownload(_response);
-        });
-    }
-
-    protected processDownload(response: Response): Promise<FileResponse> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
-            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
-            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
-            if (fileName) {
-                fileName = decodeURIComponent(fileName);
-            } else {
-                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            }
-            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<FileResponse>(null as any);
-    }
-
-    /*
     Upload a single document for a given claim to blob storage
 
     ErrorCode.ClaimDoesNotExist
@@ -867,6 +726,116 @@ export class AdministratorClient extends ApiBase {
             });
         }
         return Promise.resolve<Document>(null as any);
+    }
+
+    /*
+    Download a single document for a given claim from blob storage
+
+    ErrorCode.DocumentDoesNotExist
+    ErrorCode.DocumentDownloadFromAzureFailed
+
+    @param uniqueID The claims's public unique ID
+
+    @param documentUniqueID The document's public unique ID
+    */
+    download(uniqueID: string, documentUniqueID: string): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/administrator/claims/{uniqueID}/documents/{documentUniqueID}";
+        if (uniqueID === undefined || uniqueID === null)
+            throw new Error("The parameter 'uniqueID' must be defined.");
+        url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
+        if (documentUniqueID === undefined || documentUniqueID === null)
+            throw new Error("The parameter 'documentUniqueID' must be defined.");
+        url_ = url_.replace("{documentUniqueID}", encodeURIComponent("" + documentUniqueID));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDownload(_response);
+        });
+    }
+
+    protected processDownload(response: Response): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse>(null as any);
+    }
+
+    /*
+    Query all the documents associated to a given claim using Azure OpenAI
+
+    ErrorCode.ClaimDoesNotExist
+    ErrorCode.DocumentEmbeddingsDoNotExistForClaim
+    ErrorCode.DocumentOpenAIQueryFailed
+
+    @param uniqueID The claims's public unique ID
+
+    @param question (optional) A natural-language question to apply to all documents associated with this claim
+    */
+    queryClaimDocuments(uniqueID: string, question?: string | undefined): Promise<DocumentQueryResults> {
+        let url_ = this.baseUrl + "/administrator/claims/{uniqueID}/query?";
+        if (uniqueID === undefined || uniqueID === null)
+            throw new Error("The parameter 'uniqueID' must be defined.");
+        url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
+        if (question === null)
+            throw new Error("The parameter 'question' cannot be null.");
+        else if (question !== undefined)
+            url_ += "question=" + encodeURIComponent("" + question) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processQueryClaimDocuments(_response);
+        });
+    }
+
+    protected processQueryClaimDocuments(response: Response): Promise<DocumentQueryResults> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DocumentQueryResults.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<DocumentQueryResults>(null as any);
     }
 
     /*
@@ -1260,6 +1229,8 @@ export class AdministratorClient extends ApiBase {
     Retrieve a particular investigator in the system
 
     ErrorCode.InvestigatorDoesNotExist
+
+    @param uniqueID The investigator's unique public ID
     */
     getInvestigator(uniqueID: string): Promise<Investigator> {
         let url_ = this.baseUrl + "/administrator/investigators/{uniqueID}";
@@ -1613,15 +1584,15 @@ export class CustomerClient extends ApiBase {
     ErrorCode.DocumentDoesNotExist
     ErrorCode.DocumentDownloadFromAzureFailed
 
-    @param claimUniqueID The claims's public unique ID
+    @param uniqueID The claims's public unique ID
 
     @param documentUniqueID The document's public unique ID
     */
-    download(claimUniqueID: string, documentUniqueID: string): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/customere/claims/{claimUniqueID}/documents/{documentUniqueID}";
-        if (claimUniqueID === undefined || claimUniqueID === null)
-            throw new Error("The parameter 'claimUniqueID' must be defined.");
-        url_ = url_.replace("{claimUniqueID}", encodeURIComponent("" + claimUniqueID));
+    download(uniqueID: string, documentUniqueID: string): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/customere/claims/{uniqueID}/documents/{documentUniqueID}";
+        if (uniqueID === undefined || uniqueID === null)
+            throw new Error("The parameter 'uniqueID' must be defined.");
+        url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
         if (documentUniqueID === undefined || documentUniqueID === null)
             throw new Error("The parameter 'documentUniqueID' must be defined.");
         url_ = url_.replace("{documentUniqueID}", encodeURIComponent("" + documentUniqueID));
@@ -1981,15 +1952,15 @@ export class InvestigatorClient extends ApiBase {
     ErrorCode.DocumentDoesNotExist
     ErrorCode.DocumentDownloadFromAzureFailed
 
-    @param claimUniqueID The claims's public unique ID
+    @param uniqueID The claims's public unique ID
 
     @param documentUniqueID The document's public unique ID
     */
-    download(claimUniqueID: string, documentUniqueID: string): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/investigator/claims/{claimUniqueID}/documents/{documentUniqueID}";
-        if (claimUniqueID === undefined || claimUniqueID === null)
-            throw new Error("The parameter 'claimUniqueID' must be defined.");
-        url_ = url_.replace("{claimUniqueID}", encodeURIComponent("" + claimUniqueID));
+    download(uniqueID: string, documentUniqueID: string): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/investigator/claims/{uniqueID}/documents/{documentUniqueID}";
+        if (uniqueID === undefined || uniqueID === null)
+            throw new Error("The parameter 'uniqueID' must be defined.");
+        url_ = url_.replace("{uniqueID}", encodeURIComponent("" + uniqueID));
         if (documentUniqueID === undefined || documentUniqueID === null)
             throw new Error("The parameter 'documentUniqueID' must be defined.");
         url_ = url_.replace("{documentUniqueID}", encodeURIComponent("" + documentUniqueID));
@@ -3378,6 +3349,57 @@ export enum InvestigatorStatus {
     Terminated = "Terminated",
 }
 
+export class DocumentQueryResults implements IDocumentQueryResults {
+    answer!: string;
+    references!: string[];
+
+    constructor(data?: IDocumentQueryResults) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.references = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.answer = _data["answer"];
+            if (Array.isArray(_data["references"])) {
+                this.references = [] as any;
+                for (let item of _data["references"])
+                    this.references!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): DocumentQueryResults {
+        data = typeof data === 'object' ? data : {};
+        let result = new DocumentQueryResults();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["answer"] = this.answer;
+        if (Array.isArray(this.references)) {
+            data["references"] = [];
+            for (let item of this.references)
+                data["references"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IDocumentQueryResults {
+    answer: string;
+    references: string[];
+}
+
 export class CustomerCreateOrUpdate extends Base implements ICustomerCreateOrUpdate {
     name!: string;
     code!: string;
@@ -4172,6 +4194,8 @@ export enum ErrorCode {
     DocumentHashAlreadyExists = "DocumentHashAlreadyExists",
     DocumentTypeNotSupported = "DocumentTypeNotSupported",
     DocumentDoesNotExist = "DocumentDoesNotExist",
+    DocumentEmbeddingsDoNotExistForClaim = "DocumentEmbeddingsDoNotExistForClaim",
+    DocumentOpenAIQueryFailed = "DocumentOpenAIQueryFailed",
     ClaimDoesNotExist = "ClaimDoesNotExist",
 }
 

@@ -1,12 +1,22 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import Table from 'components/Table'
 import { Account, AdministratorClient } from 'api/model'
+import Icon from 'components/Icon'
+import { table } from 'console'
 
 const SignIns = () => {
   const apiClient = useMemo(
     () => new AdministratorClient(process.env.REACT_APP_API_URL),
     []
   )
+
+  const tableRef = useRef<{ handleExport: () => void } | null>(null)
+
+  const handleExportClick = () => {
+    if (tableRef.current) {
+      tableRef.current.handleExport()
+    }
+  }
 
   const [accounts, setAccounts] = useState<Account[]>()
 
@@ -55,8 +65,17 @@ const SignIns = () => {
   return (
     <>
       <div className="header">Sign-ins</div>
+      <div className="menu">
+        <div onClick={handleExportClick}>
+          <Icon name="Download"></Icon>Export
+        </div>
+        <div>
+          <Icon name="MagnifyingGlass"></Icon>Filter
+        </div>
+      </div>
       <div className="inner">
         <Table
+          ref={tableRef}
           id="sign-in-table"
           name="Sign-Ins"
           type="current sign-ins"

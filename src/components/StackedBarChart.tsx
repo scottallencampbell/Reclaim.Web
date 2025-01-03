@@ -27,11 +27,14 @@ const StackedBarChart = ({ data }: IStackedBarChart) => {
     }
 
     let dict = {} as any
-    const firstDay = moment().startOf('month').toDate()
-    let previousFirstDay = moment(firstDay)
+    const now = moment().utc()
+    const yearAgo = moment({ year: now.year(), month: now.month(), day: 1 }).add(
+      -13,
+      'month'
+    )
 
     for (let month = 0; month < 12; month++) {
-      const key = previousFirstDay.format('YYYY-MM-DD') + 'T00:00:00'
+      const key = yearAgo.add(1, 'month').format('YYYY-MM-DD') + 'T00:00:00'
 
       dict[key] = {
         name: key,
@@ -40,8 +43,6 @@ const StackedBarChart = ({ data }: IStackedBarChart) => {
         Adjudicated: 0,
         Resolved: 0,
       }
-
-      previousFirstDay.add(-1, 'month')
     }
 
     for (const [key, value] of Object.entries(data)) {
@@ -49,7 +50,7 @@ const StackedBarChart = ({ data }: IStackedBarChart) => {
         dict[key][claim.status] = claim.value
       }
     }
-    setMappedData(Object.values(dict).reverse())
+    setMappedData(Object.values(dict))
   }, [data])
 
   return (

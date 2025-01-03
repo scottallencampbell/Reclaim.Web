@@ -16,6 +16,7 @@ import AdministratorAdministrators from './administrator/Administrators'
 import AdministratorDashboard from './administrator/Dashboard'
 import AdministratorClaims from './administrator/Claims'
 import AdministratorClaim from './administrator/Claim'
+import AdministratorClaimDocuments from './administrator/ClaimDocuments'
 import AdministratorInvestigators from './administrator/Investigators'
 import AdministratorCustomers from './administrator/Customers'
 import AdministratorSignIns from './administrator/Signins'
@@ -51,6 +52,9 @@ const App = () => {
           <Route index path="dashboard" element={<AdministratorDashboard />}></Route>
           <Route path="claims" element={<AdministratorClaims />}></Route>
           <Route path="claims/:uniqueID" element={<AdministratorClaim />}></Route>
+          <Route
+            path="claims/:uniqueID/documents"
+            element={<AdministratorClaimDocuments />}></Route>
           <Route path="investigators" element={<AdministratorInvestigators />}></Route>
           <Route path="customers" element={<AdministratorCustomers />}></Route>
           <Route path="administrators" element={<AdministratorAdministrators />}></Route>

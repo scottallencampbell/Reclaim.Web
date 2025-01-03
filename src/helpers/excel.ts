@@ -28,7 +28,7 @@ export const exportFile = async (name: string, data: any) => {
   })
   const link = document.createElement('a')
   link.href = URL.createObjectURL(blob)
-  link.download = `${name} ${moment().format('MMM DD, YYYY hh-mm-ssa')}.xlsx`
+  link.download = `${name} - ${moment().format('MMM DD, YYYY hh-mm-ssa')}.xlsx`
   link.click()
   URL.revokeObjectURL(link.href)
 }

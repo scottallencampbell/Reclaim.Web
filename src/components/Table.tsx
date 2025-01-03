@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import Icon from './Icon'
 import moment from 'moment'
 import React from 'react'
@@ -21,28 +21,45 @@ interface ITable {
   initialSortOrder?: string
   onSearchTermsChange: Function | null
   onRowClick: Function | null
+  triggerExport?: number | null
 }
 
-const Table = ({
-  children,
-  id,
-  name,
-  type,
-  keyField,
-  ignoredFields,
-  columns,
-  sourceData,
-  isPropertyBarVisible,
-  initialSortColumn,
-  initialSortOrder,
-  onSearchTermsChange,
-  onRowClick,
-}: ITable) => {
+const DocumentTypeToDescription = new Map([
+  ['DOCX', 'Word document'],
+  ['XLSX', 'Excel spreadsheet'],
+  ['JPG', 'Image file'],
+  ['PNG', 'Image file'],
+  ['PDF', 'Adobe document'],
+  ['MP4', 'Video file'],
+])
+
+const Table = forwardRef((props: ITable, ref) => {
+  const {
+    children,
+    id,
+    name,
+    type,
+    keyField,
+    ignoredFields,
+    columns,
+    sourceData,
+    isPropertyBarVisible,
+    initialSortColumn,
+    initialSortOrder,
+    onSearchTermsChange,
+    onRowClick,
+    triggerExport,
+  } = props
+
   const [sortColumn, setSortColumn] = useState(initialSortColumn)
   const [sortOrder, setSortOrder] = useState(initialSortOrder)
   const [data, setData] = useState<any[] | undefined>(undefined)
   const [isHoverable, setIsHoverable] = useState(true)
   const [searchTerms, setSearchTerms] = useState('')
+
+  useImperativeHandle(ref, () => ({
+    handleExport,
+  }))
 
   useEffect(() => {
     if (sortColumn === undefined || sortColumn === undefined) {
@@ -154,8 +171,7 @@ const Table = ({
       setIsHoverable(true)
     }
   }
-
-  const handleExport = (name: string, ignoredFields: string[] | undefined) => {
+  const handleExport = (ignoredFields: string[] | undefined) => {
     if (data === undefined) {
       return
     }
@@ -290,6 +306,10 @@ const Table = ({
 
     if (type !== undefined) {
       switch (type) {
+        case 'document':
+          value = `${obj['name']}`
+          break
+
         case 'fullName':
           value = `${obj['firstName']} ${obj['lastName']}`
           break
@@ -367,29 +387,11 @@ const Table = ({
     <></>
   ) : (
     <>
+      <div>{triggerExport}</div>
       {data.length === 0 ? (
         <div className="no-data">No {type} were found</div>
       ) : (
         <div className={`table${isHoverable ? ' is-hoverable' : ''}`}>
-          <div className="table-controls">
-            <div className="search-bar">
-              <div className="search-bar-buttons">
-                <Icon name="Search" className="left"></Icon>
-              </div>
-              <input
-                type="text"
-                value={searchTerms}
-                onChange={(e) => handleSearchTermsChange(e.target.value)}></input>
-            </div>
-            <div className="children">
-              <Icon
-                toolTip="Export"
-                name="Download"
-                onClick={() => handleExport(name, ignoredFields)}
-              />
-              {children}
-            </div>
-          </div>
           <table id={id} className={onRowClick ? 'clickable' : ''}>
             <thead>
               <tr>
@@ -407,7 +409,9 @@ const Table = ({
                     <th
                       key={accessor}
                       className={`${cl} ${type}-header`}
-                      onClick={() => handleSort(accessor)}>
+                      onClick={() => {
+                        label !== '' && sortable !== false && handleSort(accessor)
+                      }}>
                       <div>
                         {labelParts.length === 1 ? (
                           <span>{label}</span>
@@ -448,6 +452,28 @@ const Table = ({
                         switch (type) {
                           case 'propertyTag':
                             tag = <PropertyTag name={value} />
+                            break
+
+                          case 'document':
+                            tag = (
+                              <div className="full-name">
+                                <div>{obj['name']}</div>
+                                <div>
+                                  {DocumentTypeToDescription.has(obj['type'])
+                                    ? DocumentTypeToDescription.get(obj['type'])
+                                    : 'Unknown document type'}{' '}
+                                </div>
+                              </div>
+                            )
+                            break
+
+                          case 'documentType':
+                            tag = (
+                              <img
+                                alt={obj['name']}
+                                className="document-icon"
+                                src={`/images/filetypes/${obj['type'].toLowerCase()}.svg`}></img>
+                            )
                             break
 
                           case 'fullNameAndEmailAddress':
@@ -569,6 +595,6 @@ const Table = ({
       )}
     </>
   )
-}
+})
 
 export default Table

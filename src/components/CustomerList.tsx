@@ -1,5 +1,5 @@
 import { Customer } from 'api/model'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import Table from './Table'
 import PropertyBar from './PropertyBar'
 import TextInput from './TextInput'
@@ -15,6 +15,14 @@ interface ICustomerList {
 const CustomerList = ({ customers, handleUpdateCustomer }: ICustomerList) => {
   const [editCustomer, setEditCustomer] = useState<Customer>(new Customer())
   const [isPropertyBarVisible, setIsPropertyBarVisible] = useState(false)
+
+  const tableRef = useRef<{ handleExport: () => void } | null>(null)
+
+  const handleExportClick = () => {
+    if (tableRef.current) {
+      tableRef.current.handleExport()
+    }
+  }
 
   const columns = useMemo(
     () => [
@@ -154,8 +162,28 @@ const CustomerList = ({ customers, handleUpdateCustomer }: ICustomerList) => {
   return (
     <>
       <div className="header">Customers</div>
+      <div className="menu">
+        {handleUpdateCustomer ? (
+          <div
+            onClick={() => {
+              setEditCustomer(new Customer())
+              setIsPropertyBarVisible(true)
+            }}>
+            <Icon name="SquarePlus"></Icon>Add customer
+          </div>
+        ) : (
+          <></>
+        )}
+        <div onClick={handleExportClick}>
+          <Icon name="Download"></Icon>Export
+        </div>
+        <div>
+          <Icon name="MagnifyingGlass"></Icon>Filter
+        </div>
+      </div>
       <div className="inner">
         <Table
+          ref={tableRef}
           id="customer-table"
           name="Customers"
           type="customers"
@@ -164,16 +192,7 @@ const CustomerList = ({ customers, handleUpdateCustomer }: ICustomerList) => {
           sourceData={customers}
           isPropertyBarVisible={isPropertyBarVisible}
           onSearchTermsChange={null}
-          onRowClick={handleUpdateCustomer ? handleRowClick : null}>
-          <Icon
-            toolTip="Add customer"
-            name="SquarePlus"
-            onClick={() => {
-              setEditCustomer(new Customer())
-              setIsPropertyBarVisible(true)
-            }}
-          />
-        </Table>
+          onRowClick={handleUpdateCustomer ? handleRowClick : null}></Table>
       </div>
       {handleUpdateCustomer ? (
         <PropertyBar
