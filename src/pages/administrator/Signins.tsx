@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState, useRef } from 'react'
 import Table from 'components/Table'
 import { Account, AdministratorClient } from 'api/model'
 import Icon from 'components/Icon'
-import { table } from 'console'
 
 const SignIns = () => {
   const apiClient = useMemo(
@@ -86,7 +85,6 @@ const SignIns = () => {
           onSearchTermsChange={null}
           onRowClick={null}
           initialSortColumn={'lastActiveTimestamp'}
-          children={undefined}
         />
       </div>
     </>

@@ -2,7 +2,7 @@ import { Claim, Document } from 'api/model'
 import { useMemo, useRef } from 'react'
 import Table from './Table'
 import Icon from './Icon'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 interface IClaimDocumentList {
   claim: Claim | undefined

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Claim, AdministratorClient, Document } from 'api/model'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import ClaimDocumentsList from 'components/ClaimDocumentList'
 
 const ClaimDocuments = () => {
@@ -11,7 +11,6 @@ const ClaimDocuments = () => {
 
   const [claim, setClaim] = useState<Claim>()
 
-  const navigate = useNavigate()
   const { uniqueID } = useParams()
 
   const handleRowClick = async (document: Document) => {
@@ -41,7 +40,7 @@ const ClaimDocuments = () => {
         console.log(JSON.stringify(error))
       }
     })()
-  }, [apiClient])
+  }, [apiClient, uniqueID])
 
   return (
     <>

@@ -8,12 +8,11 @@ import { exportFile } from 'helpers/excel'
 import PropertyTag from './PropertyTag'
 
 interface ITable {
-  children?: any
   id: string
   name: string
   type: string
   keyField: string
-  ignoredFields?: string[]
+  ignoredExportFields?: string[]
   columns: any[]
   sourceData: any[] | undefined
   isPropertyBarVisible: boolean
@@ -35,12 +34,11 @@ const DocumentTypeToDescription = new Map([
 
 const Table = forwardRef((props: ITable, ref) => {
   const {
-    children,
     id,
     name,
     type,
     keyField,
-    ignoredFields,
+    ignoredExportFields,
     columns,
     sourceData,
     isPropertyBarVisible,
@@ -171,16 +169,13 @@ const Table = forwardRef((props: ITable, ref) => {
       setIsHoverable(true)
     }
   }
-  const handleExport = (ignoredFields: string[] | undefined) => {
+  const handleExport = () => {
     if (data === undefined) {
       return
     }
 
-    if (!ignoredFields) {
-      ignoredFields = []
-    }
+    var ignoredFields = ['avatarUrl', 'uniqueID'].concat(ignoredExportFields ?? [])
 
-    ignoredFields.push('avatarUrl', 'uniqueID')
     const flattenedData = flatten(data, ignoredFields)
     exportFile(name, flattenedData)
   }

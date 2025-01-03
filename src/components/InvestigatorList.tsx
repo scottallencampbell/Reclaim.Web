@@ -6,7 +6,6 @@ import TextInput from './TextInput'
 import Icon from './Icon'
 import moment from 'moment'
 import { postalCodeRegex } from 'helpers/constants'
-import { TableResize } from 'mui-datatables'
 
 interface IInvestigatorList {
   investigators: Investigator[] | undefined

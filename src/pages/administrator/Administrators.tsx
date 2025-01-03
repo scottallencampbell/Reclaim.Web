@@ -75,7 +75,6 @@ const Administrators = () => {
           onSearchTermsChange={null}
           onRowClick={null}
           initialSortColumn={'lastName'}
-          children={undefined}
         />
       </div>
     </>

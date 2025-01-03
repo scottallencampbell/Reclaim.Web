@@ -128,7 +128,6 @@ const Jobs = () => {
           isPropertyBarVisible={false}
           onRowClick={null}
           onSearchTermsChange={null}
-          children={undefined}
         />
       </div>
     </>
